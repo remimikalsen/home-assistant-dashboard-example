@@ -1,0 +1,35 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  large: true
+  title: CCTV Opptak
+  card:
+    type: custom:layout-card
+    layout_type: custom:horizontal-layout
+    layout:
+      width: 400
+      max_cols: 4
+      card_margin: 10px
+    cards:
+      - type: custom:frigate-card
+        view:
+          default: snapshot
+        cameras:
+          - camera_entity: camera.hovedinngang
+            live_provider: ha
+      - type: custom:frigate-card
+        view:
+          default: snapshot
+        cameras:
+          - camera_entity: camera.verandador
+            live_provider: ha
+      - type: custom:frigate-card
+        view:
+          default: snapshot
+        cameras:
+          - camera_entity: camera.garasje_oppe
+      - type: custom:frigate-card
+        view:
+          default: snapshot
+        cameras:
+          - camera_entity: camera.garasje_nede

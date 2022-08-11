@@ -1,0 +1,55 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  large: true
+  title: Smarthøyttalere
+  card:
+    type: custom:layout-card
+    layout_type: custom:horizontal-layout
+    layout:
+      width: 200
+      max_cols: 4
+      card_margin: 20px
+    cards:
+      - type: "custom:button-card"
+        template:
+          - popup_info_card
+        entity: media_player.nest_audio_stue
+        show_state: false
+        name: Stue
+      - type: "custom:button-card"
+        template:
+          - popup_info_card
+        entity: media_player.nest_hub_kjokken
+        show_state: false
+        name: Kjøkken
+      - type: "custom:button-card"
+        template:
+          - popup_info_card
+        entity: media_player.nest_audio_kaja
+        show_state: false
+        name: Kaja
+      - type: "custom:button-card"
+        template:
+          - popup_info_card
+        entity: media_player.nest_audio_sunniva
+        show_state: false
+        name: Sunniva
+      - type: "custom:button-card"
+        template:
+          - popup_info_card
+        entity: media_player.nest_audio_hovedsoverom
+        show_state: false
+        name: Hovedsoverom
+      - type: "custom:button-card"
+        template:
+          - popup_info_card
+        entity: media_player.nest_audio_mannehula
+        show_state: false
+        name: ManCave
+      - type: "custom:button-card"
+        template:
+          - popup_info_card
+        entity: media_player.nest_audio_garasje
+        show_state: false
+        name: Garasjeboden

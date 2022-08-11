@@ -1,0 +1,33 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: Sirener
+  card:
+    type: custom:layout-card
+    layout_type: custom:vertical-layout
+    cards:
+      - type: entities
+        entities:
+          - entity: group.sirener
+            icon: mdi:volume-high
+            name: Sirenegruppe
+      - type: entities
+        entities:
+          - entity: siren.sirene_ute_forside
+            icon: mdi:volume-high
+            name: Utesirene
+          - entity: switch.sirene_gang_oppe
+            icon: mdi:volume-high
+            name: Kjøkken, gulv
+          - entity: switch.roykvarsler_gang_oppe_alarm
+            icon: mdi:volume-high
+            name: Gang oppe, tak
+          - entity: switch.multisirene_oppe_alarm
+            icon: mdi:volume-high
+            name: Gang oppe, gulv
+          - entity: switch.multisirene_nede_alarm
+            icon: mdi:volume-high
+            name: Yttergang, gulv
+          - entity: switch.roykvarsler_gang_nede_alarm
+            icon: mdi:volume-high
+            name: Gang nede, tak

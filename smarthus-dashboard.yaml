@@ -1,0 +1,1494 @@
+button_card_templates: !include smarthus-dashboard/button_card_templates.yaml
+resources:
+  - url: /hacsfiles/frigate-hass-card/frigate-hass-card.js
+    type: module
+  - url: /hacsfiles/surveillance-card/surveillance-card.js?v=0
+    type: module
+
+kiosk_mode:
+  hide_header: true
+
+views:
+  - type: custom:grid-layout
+    path: 0
+    layout:
+      #default
+      margin: 0
+      #grid-gap: var(--custom-layout-card-padding)
+      grid-gap: 15px
+      grid-template-columns: 300px repeat(3, 1fr) 0fr
+      grid-template-rows: 15px repeat(3, fit-content(100%)) 55px
+      grid-template-areas: |
+        "sidebar . . . ."
+        "sidebar stue kaja sunniva ."
+        "sidebar mancave garasje sov-vask ."
+        "sidebar uteomrade ganger yttergang-bod ."
+        "footer_personlig footer_servere footer_dingser footer_strom ."
+      mediaquery:
+        #phone
+        "(max-width: 800px)":
+          grid-gap: 40px
+          grid-template-columns: auto
+          grid-template-rows: auto auto 0px repeat(12, auto)
+          grid-template-areas: |
+            "sidebar"
+            "footer_personlig"
+            "."
+            "mancave"
+            "garasje"
+            "stue"
+            "kaja"
+            "sunniva"
+            "sov-vask"
+            "ganger"
+            "yttergang-bod"
+            "uteomrade"
+            "footer_servere"
+            "footer_dingser"
+            "footer_strom"
+        #tablet
+        "(max-width: 1200px)":
+          grid-gap: 5px
+          grid-template-columns: 300px repeat(3, 1fr) 0fr
+          grid-template-rows: 40px repeat(3, min-content) 55px auto
+          grid-template-areas: |
+            "sidebar . . . ."
+            "sidebar stue kaja sunniva ."
+            "sidebar mancave garasje sov-vask ."
+            "sidebar uteomrade ganger yttergang-bod ."
+            "footer_personlig footer_servere footer_dingser footer_strom ."
+            ". . . . ."
+        #tablet
+        "(max-width: 1920px)":
+          grid-gap: 10px
+          grid-template-columns: 300px repeat(3, 1fr) 0fr
+          grid-template-rows: 20px repeat(3, fit-content(100%)) 55px
+          grid-template-areas: |
+            "sidebar . . . ."
+            "sidebar stue kaja sunniva ."
+            "sidebar mancave garasje sov-vask ."
+            "sidebar uteomrade ganger yttergang-bod ."
+            "footer_personlig footer_servere footer_dingser footer_strom ."
+
+    cards:
+      - type: custom:button-card #extra_styles fix
+        styles: { card: [display: none] }
+
+      #################################################
+      #                                               #
+      #                    SIDEBAR                    #
+      #                                               #
+      #################################################
+      - type: custom:mod-card
+        view_layout:
+          grid-area: sidebar
+        style:
+          .: |
+            ha-card {
+              background-color: transparent;
+            }
+          hui-grid-card$: |
+            #root {
+              justify-items: center !important;
+            }
+        card:
+          type: grid
+          columns: 1
+          square: false
+          cards:
+            - card:
+              type: custom:button-card
+              template: buttons_sidebar
+              custom_fields:
+                clock:
+                  card:
+                    type: custom:button-card
+                    template: button_clock
+                    entity: sensor.time
+                    tap_action: !include smarthus-dashboard/clock.yaml
+                    custom_fields:
+                      nighttime:
+                        card:
+                          type: custom:button-card
+                          template: button_clock_nighttime
+                          entity: binary_sensor.det_er_natt
+                      workday:
+                        card:
+                          type: custom:button-card
+                          template: button_clock_workday
+                          entity: binary_sensor.workday_today
+                      day: '[[[ return states["sensor.norwegian_weekday"].state ]]]'
+                      date: '[[[ return states["sensor.norwegian_month_and_day"].state ]]]'
+                weather:
+                  card:
+                    type: weather-forecast
+                    entity: weather.myhome
+                    name: "Hjemme"
+                    style: |
+                      ha-card .content {
+                        width: 200px;
+                        margin: 0 auto;
+                      }
+                      ha-card .name-state {
+                        display: none
+                      }
+                      ha-card .temp-attribute .attribute {
+                        display: block !important;
+                      }
+                      ha-card {
+                        background-color: transparent;
+                        box-shadow: none;
+                      }
+                    show_current: true
+                    show_forecast: false
+                    show_title: false
+                    secondary_info_attribute: wind_speed
+                    tap_action: !include smarthus-dashboard/weather.yaml
+                big_buttons:
+                  card:
+                    type: custom:button-card
+                    template: button_sidebar_big_layout
+                    custom_fields:
+                      alarm:
+                        card:
+                          type: custom:button-card
+                          template: button_sidebar_big
+                          entity: alarm_control_panel.innbruddsalarm
+                          icon: mdi:shield-home
+                          state:
+                            - value: disarmed
+                              styles:
+                                icon:
+                                  - color: rgb(68, 115, 158)
+                            - value: armed_away
+                              styles:
+                                icon:
+                                  - color: darkred
+                            - value: armed_home
+                              styles:
+                                icon:
+                                  - color: darkred
+                            - value: arming
+                              styles:
+                                card:
+                                  - animation: blink 2s ease infinite
+                                icon:
+                                  - color: orange
+                            - value: pending
+                              styles:
+                                card:
+                                  - animation: blink 2s ease infinite
+                                icon:
+                                  - color: orange
+                            - value: triggered
+                              styles:
+                                card:
+                                  - animation: blink 2s ease infinite
+                                icon:
+                                  - color: darkred
+                          tap_action: !include smarthus-dashboard/alarmpanel.yaml
+                      cctv:
+                        card:
+                          type: custom:button-card
+                          template: button_sidebar_big
+                          icon: mdi:cctv
+                          color: rgb(68, 115, 158)
+                          tap_action: !include smarthus-dashboard/birdseye.yaml
+                small_buttons:
+                  card:
+                    type: custom:button-card
+                    template: buttons_sidebar_small_layout
+                    custom_fields:
+                      fire:
+                        card:
+                          type: custom:button-card
+                          template: button_sidebar_small
+                          entity: alert.brannalarm
+                          icon: mdi:fire
+                          state:
+                            - value: idle
+                              styles:
+                                icon:
+                                  - color: rgb(68, 115, 158)
+                            - value: "on"
+                              styles:
+                                card:
+                                  - animation: blink 2s ease infinite
+                                icon:
+                                  - color: darkred
+                          tap_action: !include smarthus-dashboard/brannalarm.yaml
+                      sirens:
+                        card:
+                          type: custom:button-card
+                          template: button_sidebar_small
+                          entity: group.sirener
+                          icon: mdi:volume-high
+                          name: Sirener
+                          tap_action: !include smarthus-dashboard/sirener.yaml
+                      cctv:
+                        card:
+                          type: custom:button-card
+                          template: button_sidebar_small
+                          icon: mdi:record-rec
+                          color: rgb(68, 115, 158)
+                          styles:
+                            icon:
+                              - height: 50px
+                          show_name: false
+                          tap_action: !include smarthus-dashboard/cctv-recordings.yaml
+                      leak:
+                        card:
+                          type: custom:button-card
+                          template: button_sidebar_small
+                          entity: binary_sensor.alle_lekkasjesensorer
+                          icon: mdi:water-outline
+                          state:
+                            - value: "on"
+                              styles:
+                                card:
+                                  - animation: blink 2s ease infinite
+                                icon:
+                                  - color: darkred
+                          tap_action: !include smarthus-dashboard/vannlekkasjer.yaml
+                      messages:
+                        card:
+                          type: custom:button-card
+                          template: button_sidebar_small
+                          entity: binary_sensor.aktive_varsler
+                          icon: mdi:android-messages
+                          state:
+                            - value: "on"
+                              styles:
+                                card:
+                                  - animation: blink 2s ease infinite
+                                icon:
+                                  - color: orange
+                          tap_action: !include smarthus-dashboard/varsler.yaml
+                      car:
+                        card:
+                          type: custom:button-card
+                          template: button_sidebar_small
+                          entity: sensor.elbil_lader_status
+                          icon: mdi:car-electric
+                          state:
+                            - value: error
+                              styles:
+                                card:
+                                  - animation: blink 2s ease infinite
+                                icon:
+                                  - color: darkred
+                            - value: charging
+                              styles:
+                                card:
+                                  - animation: blink 2s ease infinite
+                                icon:
+                                  - color: "#4F7942"
+                            - value: completed
+                              styles:
+                                icon:
+                                  - color: "#4F7942"
+                            - value: awaiting_start
+                              styles:
+                                icon:
+                                  - color: "#ff8c00"
+                            - value: ready_to_charge
+                              styles:
+                                icon:
+                                  - color: "#ff8c00"
+                            - value: disconnected
+                              styles:
+                                icon:
+                                  - color: rgb(68, 115, 158)
+                          tap_action: !include smarthus-dashboard/bil.yaml
+                      birthdays:
+                        card:
+                          type: custom:button-card
+                          template: button_sidebar_small
+                          entity: input_boolean.noen_har_bursdag
+                          icon: mdi:party-popper
+                          state:
+                            - value: "on"
+                              styles:
+                                card:
+                                  - animation: blink 2s ease infinite
+                                icon:
+                                  - color: orange
+                          tap_action: !include smarthus-dashboard/birthdays.yaml
+                      mail:
+                        card:
+                          type: custom:button-card
+                          template: button_sidebar_small
+                          entity: binary_sensor.post_i_dag
+                          icon: mdi:mailbox
+                          color: rgb(68, 115, 158)
+                          state:
+                            - value: "on"
+                              styles:
+                                icon:
+                                  - color: orange
+                          tap_action: !include smarthus-dashboard/post.yaml
+                      trash:
+                        card:
+                          type: custom:button-card
+                          template: button_sidebar_small
+                          entity: binary_sensor.soppel_i_morgen
+                          icon: mdi:trash-can
+                          state:
+                            - value: "on"
+                              styles:
+                                icon:
+                                  - color: orange
+                          tap_action: !include smarthus-dashboard/soppel.yaml
+
+      #################################################
+      #                                               #
+      #                  CONTENT                      #
+      #                                               #
+      #################################################
+
+      - view_layout:
+          grid-area: stue
+        type: custom:mod-card
+        style:
+          .: |
+            ha-card {
+              background-color: transparent; 
+            }
+          hui-grid-card$: |
+            #root {
+              justify-items: center !important;
+              box-shadow: none;
+              min-width: 245px;
+            }
+        card:
+          type: grid
+          columns: 1
+          square: false
+          cards:
+            - type: "custom:button-card"
+              template: button_content_group
+              name: Stue og kjøkken
+              custom_fields:
+                tiny_buttons:
+                  card:
+                    type: horizontal-stack
+                    cards:
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                          - button_temperature
+                        entity: sensor.luftkvalitet_i_stue_temperature
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                          - button_humidity
+                        entity: sensor.luftkvalitet_i_stue_humidity
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                          - button_voc
+                        entity: sensor.luftkvalitet_i_stue_voc
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                          - button_window
+                        entity: binary_sensor.vindu_kjokken_veranda_access_control_window_door_is_open
+                      - type: "custom:button-card"
+                        template: button_content_group_tiny
+                        entity: binary_sensor.verandador_access_control_window_door_is_open
+                      - type: "custom:button-card"
+                        template: button_content_group_tiny
+                        entity: group.bevegelse_stue
+                        tap_action:
+                          action: more-info
+                        icon: "mdi:motion-sensor"
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                        icon: mdi:fridge
+                        entity: sensor.kjoleskapsensor_temperature
+                        state:
+                          - value: 7
+                            operator: ">"
+                            styles:
+                              card:
+                                - animation: blink 2s ease infinite
+                              icon:
+                                - color: red
+                          - value: 5
+                            operator: ">"
+                            styles:
+                              card:
+                                - animation: blink 2s ease infinite
+                              icon:
+                                - color: orange
+                          - value: 0
+                            operator: ">"
+                            styles:
+                              icon:
+                                - color: rgb(68, 115, 158)
+                action_buttons:
+                  card:
+                    type: horizontal-stack
+                    cards:
+                      - type: "custom:button-card"
+                        template: button_content_group_action
+                        entity: light.stuelys
+                        tap_action: !include smarthus-dashboard/stue.yaml
+                        hold_action:
+                          action: toggle
+                      - type: "custom:button-card"
+                        template: button_content_group_action
+                        color: rgb(68, 115, 158)
+                        entity: cover.persienner_stue
+      - view_layout:
+          grid-area: kaja
+        type: custom:mod-card
+        style:
+          .: |
+            ha-card {
+              background-color: transparent;
+            }
+          hui-grid-card$: |
+            #root {
+              justify-items: center !important;
+              box-shadow: none;
+              min-width: 245px;
+            }
+        card:
+          type: grid
+          columns: 1
+          square: false
+          cards:
+            - type: "custom:button-card"
+              template: button_content_group
+              name: Kaja
+              custom_fields:
+                tiny_buttons:
+                  card:
+                    type: horizontal-stack
+                    cards:
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                        icon: mdi:weather-night
+                        entity: binary_sensor.natta_for_kaja
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                          - button_temperature
+                        entity: sensor.luftkvalitet_hos_kaja_temperature
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                          - button_humidity
+                        entity: sensor.luftkvalitet_hos_kaja_humidity
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                          - button_voc
+                        entity: sensor.luftkvalitet_hos_kaja_voc
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                          - button_co2
+                        entity: sensor.co2_kaja
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                          - button_lux
+                        entity: sensor.lux_kaja
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                          - button_window
+                        entity: binary_sensor.vinduer_hos_kaja
+                      - type: "custom:button-card"
+                        template: button_content_group_tiny
+                        entity: binary_sensor.bevegelse_kaja
+                        icon: "mdi:motion-sensor"
+                action_buttons:
+                  card:
+                    type: horizontal-stack
+                    cards:
+                      - type: "custom:button-card"
+                        template: button_content_group_action
+                        entity: light.taklys_pa_kaja_sitt_rom
+                        tap_action: !include smarthus-dashboard/kaja.yaml
+                        hold_action:
+                          action: toggle
+      - view_layout:
+          grid-area: sunniva
+        type: custom:mod-card
+        style:
+          .: |
+            ha-card {
+              background-color: transparent;
+            }
+          hui-grid-card$: |
+            #root {
+              justify-items: center !important;
+              box-shadow: none;
+              min-width: 245px;
+            }
+        card:
+          type: grid
+          columns: 1
+          square: false
+          cards:
+            - type: "custom:button-card"
+              template: button_content_group
+              name: Sunniva
+              custom_fields:
+                tiny_buttons:
+                  card:
+                    type: horizontal-stack
+                    cards:
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                        icon: mdi:weather-night
+                        entity: binary_sensor.natta_for_sunniva
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                          - button_temperature
+                        entity: sensor.luftkvalitet_hos_sunniva_temperature
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                          - button_heating
+                        entity: climate.sunniva
+                        color: |
+                            [[[
+                              if (states['climate.sunniva']) {
+                                if (states['climate.sunniva'].attributes.hvac_action == "idle") return 'rgb(68, 115, 158)';
+                                else if (states['climate.sunniva'].attributes.hvac_action == "heating") return 'var(--paper-item-icon-active-color)';
+                              }
+                            ]]]
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                          - button_humidity
+                        entity: sensor.luftkvalitet_hos_sunniva_humidity
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                          - button_voc
+                        entity: sensor.luftkvalitet_hos_sunniva_voc
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                          - button_co2
+                        entity: sensor.co2_sunniva
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                          - button_lux
+                        entity: sensor.lux_sunniva
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                          - button_window
+                        entity: binary_sensor.vindu_sunniva_access_control_window_door_is_open
+                      - type: "custom:button-card"
+                        template: button_content_group_tiny
+                        entity: binary_sensor.bevegelse_sunniva
+                        icon: "mdi:motion-sensor"
+                action_buttons:
+                  card:
+                    type: horizontal-stack
+                    cards:
+                      - type: "custom:button-card"
+                        template: button_content_group_action
+                        entity: light.taklys_pa_sunniva_sitt_rom
+                        tap_action: !include smarthus-dashboard/sunniva.yaml
+                        hold_action:
+                          action: toggle
+
+      - view_layout:
+          grid-area: ganger
+        type: custom:mod-card
+        style:
+          .: |
+            ha-card {
+              background-color: transparent;
+            }
+          hui-grid-card$: |
+            #root {
+              justify-items: center !important;
+              box-shadow: none;
+              min-width: 245px;
+            }
+        card:
+          type: grid
+          columns: 1
+          square: false
+          cards:
+            - type: "custom:button-card"
+              template: button_content_group_double
+              name: Gang oppe og nede
+              custom_fields:
+                first:
+                  card:
+                    type: "custom:button-card"
+                    template: button_content_group
+                    name: Gang oppe
+                    custom_fields:
+                      tiny_buttons:
+                        card:
+                          type: horizontal-stack
+                          cards:
+                            - type: "custom:button-card"
+                              template:
+                                - button_content_group_tiny
+                                - button_temperature
+                              entity: sensor.bevegelse_hue_gang_oppe_temperature
+                            - type: "custom:button-card"
+                              template:
+                                - button_content_group_tiny
+                              entity: light.taklyset_i_gangen_oppe
+                              tap_action:
+                                action: more-info
+                              hold_action:
+                                action: toggle
+                            - type: "custom:button-card"
+                              template:
+                                - button_content_group_tiny
+                                - button_lux
+                              entity: sensor.bevegelse_hue_gang_oppe_illuminance_lux
+                            - type: "custom:button-card"
+                              template:
+                                - button_content_group_tiny
+                              entity: binary_sensor.gang_oppe_occupancy
+                second:
+                  card:
+                    type: "custom:button-card"
+                    template: button_content_group
+                    name: Gang nede
+                    custom_fields:
+                      tiny_buttons:
+                        card:
+                          type: horizontal-stack
+                          cards:
+                            - type: "custom:button-card"
+                              template:
+                                - button_content_group_tiny
+                                - button_temperature
+                              entity: sensor.roykvarsler_gang_nede_temperature
+                            - type: "custom:button-card"
+                              template:
+                                - button_content_group_tiny
+                              entity: binary_sensor.bevegelse_innerst_i_gang_nede_occupancy
+                            - type: "custom:button-card"
+                              template:
+                                - button_content_group_tiny
+                              entity: binary_sensor.bevegelse_gang_nede_home_security_motion_detection
+                            - type: "custom:button-card"
+                              template:
+                                - button_content_group_tiny
+                              tap_action:
+                                action: more-info
+                              entity: light.taklys_gang_nede_innerst
+                            - type: "custom:button-card"
+                              template:
+                                - button_content_group_tiny
+                              tap_action:
+                                action: more-info
+                              entity: light.taklys_gang_nede_trapp
+                            - type: "custom:button-card"
+                              template:
+                                - button_content_group_tiny
+                              tap_action:
+                                action: more-info
+                              entity: light.taklys_gang_nede_garderobe
+                            - type: "custom:button-card"
+                              template:
+                                - button_content_group_tiny
+                                - button_kattedo
+                              entity: counter.kattedo_antall_ganger_brukt
+                              hold_action:
+                                action: call-service
+                                service: script.reset_kattedo
+      - view_layout:
+          grid-area: yttergang-bod
+        type: custom:mod-card
+        style:
+          .: |
+            ha-card {
+              background-color: transparent;
+            }
+          hui-grid-card$: |
+            #root {
+              justify-items: center !important;
+              box-shadow: none;
+              min-width: 245px;
+            }
+        card:
+          type: grid
+          columns: 1
+          square: false
+          cards:
+            - type: "custom:button-card"
+              template: button_content_group_double
+              name: Yttergang og bod nede
+              custom_fields:
+                first:
+                  card:
+                    type: "custom:button-card"
+                    template: button_content_group
+                    name: Yttergang
+                    custom_fields:
+                      tiny_buttons:
+                        card:
+                          type: horizontal-stack
+                          cards:
+                            - type: "custom:button-card"
+                              template:
+                                - button_content_group_tiny
+                                - button_temperature
+                              entity: sensor.hovedinngangsdor_device_temperature
+                            - type: "custom:button-card"
+                              template:
+                                - button_content_group_tiny
+                              entity: light.taklyset_i_yttergangen
+                              tap_action:
+                                action: more-info
+                              hold_action:
+                                action: toggle
+                            - type: "custom:button-card"
+                              template:
+                                - button_content_group_tiny
+                              entity: binary_sensor.hovedinngangsdor_access_control_window_door_is_open
+
+                second:
+                  card:
+                    type: "custom:button-card"
+                    template: button_content_group
+                    name: Bod & Bad
+                    custom_fields:
+                      tiny_buttons:
+                        card:
+                          type: horizontal-stack
+                          cards:
+                            - type: "custom:button-card"
+                              template:
+                                - button_content_group_tiny
+                                - button_temperature
+                              entity: sensor.roykvarsler_bod_nede_air_temperature
+                            - type: "custom:button-card"
+                              template:
+                                - button_content_group_tiny
+                              entity: binary_sensor.bevegelse_bod_nede_home_security_motion_detection
+                            - type: "custom:button-card"
+                              template: button_content_group_tiny
+                              tap_action:
+                                action: more-info
+                              entity: light.taklys_bod_nede
+                            - type: "custom:button-card"
+                              template:
+                                - button_content_group_tiny
+                              color-type: blank-card
+                              styles:
+                                card:
+                                  - width: 21px
+                            - type: "custom:button-card"
+                              template:
+                                - button_content_group_tiny
+                                - button_temperature
+                              entity: sensor.temperatur_og_luftfuktighet_bad_oppe_temperature
+                            - type: "custom:button-card"
+                              template:
+                                - button_content_group_tiny
+                                - button_humidity
+                              entity: sensor.temperatur_og_luftfuktighet_bad_oppe_humidity
+
+      - view_layout:
+          grid-area: sov-vask
+        type: custom:mod-card
+        style:
+          .: |
+            ha-card {
+              background-color: transparent;
+            }
+          hui-grid-card$: |
+            #root {
+              justify-items: center !important;
+              box-shadow: none;
+              min-width: 245px;
+            }
+        card:
+          type: grid
+          columns: 1
+          square: false
+          cards:
+            - type: "custom:button-card"
+              template: button_content_group_double
+              name: Hovedsoverom og vaskerom
+              custom_fields:
+                first:
+                  card:
+                    type: "custom:button-card"
+                    template: button_content_group
+                    name: "Hovedsoverom"
+                    custom_fields:
+                      tiny_buttons:
+                        card:
+                          type: horizontal-stack
+                          cards:
+                            - type: "custom:button-card"
+                              template:
+                                - button_content_group_tiny
+                                - button_temperature
+                              entity: sensor.luftkvalitet_pa_hovedsoverom_temperature
+                            - type: "custom:button-card"
+                              template:
+                                - button_content_group_tiny
+                                - button_heating
+                              entity: climate.hovedsoverom
+                              color: |
+                                  [[[
+                                    if (states['climate.hovedsoverom']) {
+                                      if (states['climate.hovedsoverom'].attributes.hvac_action == "idle") return 'rgb(68, 115, 158)';
+                                      else if (states['climate.hovedsoverom'].attributes.hvac_action == "heating") return 'var(--paper-item-icon-active-color)';
+                                    }
+                                  ]]]
+                            - type: "custom:button-card"
+                              template:
+                                - button_content_group_tiny
+                                - button_humidity
+                              entity: sensor.luftkvalitet_pa_hovedsoverom_humidity
+                            - type: "custom:button-card"
+                              template:
+                                - button_content_group_tiny
+                                - button_voc
+                              entity: sensor.luftkvalitet_pa_hovedsoverom_voc
+                            - type: "custom:button-card"
+                              template:
+                                - button_content_group_tiny
+                                - button_window
+                              entity: binary_sensor.vinduer_pa_hovedsoverom
+                second:
+                  card:
+                    type: "custom:button-card"
+                    template: button_content_group
+                    name: Vaskerom
+                    custom_fields:
+                      tiny_buttons:
+                        card:
+                          type: horizontal-stack
+                          cards:
+                            - type: "custom:button-card"
+                              template:
+                                - button_content_group_tiny
+                                - button_temperature
+                              entity: sensor.roykvarsler_vaskerom_air_temperature
+                            - type: "custom:button-card"
+                              template:
+                                - button_content_group_tiny
+                              icon: mdi:tumble-dryer
+                              color: rgb(68, 115, 158)
+                              state:
+                                - value: 25
+                                  operator: ">"
+                                  color: var(--paper-item-icon-active-color)
+                              entity: sensor.stikkontakt_torketrommel_power
+                            - type: "custom:button-card"
+                              template:
+                                - button_content_group_tiny
+                              icon: mdi:washing-machine
+                              color: rgb(68, 115, 158)
+                              state:
+                                - value: 25
+                                  operator: ">"
+                                  color: var(--paper-item-icon-active-color)
+                              entity: sensor.stikkontakt_vaskemaskin_power
+                            - type: "custom:button-card"
+                              template:
+                                - button_content_group_tiny
+                              icon: mdi:water-boiler
+                              color: rgb(68, 115, 158)
+                              state:
+                                - value: 25
+                                  operator: ">"
+                                  color: var(--paper-item-icon-active-color)
+                              entity: sensor.varmtvannsbereder_vaskerom_power
+
+      - view_layout:
+          grid-area: mancave
+        type: custom:mod-card
+        style:
+          .: |
+            ha-card {
+              background-color: transparent;
+            }
+          hui-grid-card$: |
+            #root {
+              justify-items: center !important;
+              box-shadow: none;
+              min-width: 245px;
+            }
+        card:
+          type: grid
+          columns: 1
+          square: false
+          cards:
+            - type: "custom:button-card"
+              template: button_content_group
+              name: ManCave & Innerbod
+              custom_fields:
+                tiny_buttons:
+                  card:
+                    type: horizontal-stack
+                    cards:
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                          - button_temperature
+                        entity: sensor.temperatur_mancave
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                          - button_heating
+                        entity: climate.mancave
+                        color: |
+                            [[[
+                              if (states['climate.mancave']) {
+                                if (states['climate.mancave'].attributes.hvac_action == "idle") return 'rgb(68, 115, 158)';
+                                else if (states['climate.mancave'].attributes.hvac_action == "heating") return 'var(--paper-item-icon-active-color)';
+                              }
+                            ]]]                        
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                          - button_co2
+                        entity: sensor.co2_mancave
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                          - button_window
+                        entity: binary_sensor.vinduet_pa_mannehula_access_control_window_door_is_open
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                        entity: binary_sensor.dorsensor_mancave_door_window
+                      - type: "custom:button-card"
+                        template: button_content_group_tiny
+                        entity: group.bevegelse_mancave
+                        icon: "mdi:motion-sensor"
+                        tap_action:
+                          action: more-info
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                        color-type: blank-card
+                        styles:
+                          card:
+                            - width: 21px
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                          - button_temperature
+                        entity: sensor.bevegelse_mancave_innerbod_device_temperature
+                      - type: "custom:button-card"
+                        template: button_content_group_tiny
+                        entity: binary_sensor.bevegelse_mancave_innerbod_occupancy
+                        icon: "mdi:motion-sensor"
+                      - type: "custom:button-card"
+                        template: button_content_group_tiny
+                        tap_action:
+                          action: more-info
+                        entity: light.taklys_mancave_innerbod
+                action_buttons:
+                  card:
+                    type: horizontal-stack
+                    cards:
+                      - type: "custom:button-card"
+                        template: button_content_group_action
+                        entity: light.lysene_pa_mannehula
+                        tap_action: !include smarthus-dashboard/mancave.yaml
+                        hold_action:
+                          action: toggle
+      - view_layout:
+          grid-area: garasje
+        type: custom:mod-card
+        style:
+          .: |
+            ha-card {
+              background-color: transparent;
+            }
+          hui-grid-card$: |
+            #root {
+              justify-items: center !important;
+              box-shadow: none;
+              min-width: 245px;
+            }
+        card:
+          type: grid
+          columns: 1
+          square: false
+          cards:
+            - type: "custom:button-card"
+              tap_action: !include smarthus-dashboard/garasje.yaml
+              template: button_content_group
+              name: Garasje
+              custom_fields:
+                tiny_buttons:
+                  card:
+                    type: horizontal-stack
+                    cards:
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                          - button_temperature_outdoor
+                        entity: sensor.roykvarsler_garasje_nede_air_temperature
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                        icon: mdi:car-outline
+                        color: rgb(68, 115, 158)
+                        state:
+                          - value: 0
+                            operator: ">"
+                            styles:
+                              icon:
+                                - color: var(--paper-item-icon-active-color)
+                        entity: sensor.garasje_nede_car
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                          - button_temperature_garasjebod
+                        entity: sensor.temperatur_og_luftfuktighet_garasje_temperature
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                          - button_heating
+                        entity: climate.garasjebod
+                        color: |
+                            [[[
+                              if (states['climate.garasjebod']) {
+                                if (states['climate.garasjebod'].attributes.hvac_action == "idle") return 'rgb(68, 115, 158)';
+                                else if (states['climate.garasjebod'].attributes.hvac_action == "heating") return 'var(--paper-item-icon-active-color)';
+                              }
+                            ]]]
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                          - button_humidity
+                        entity: sensor.temperatur_og_luftfuktighet_garasje_humidity
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                          - button_door
+                        entity: binary_sensor.garasjedorer
+                action_buttons:
+                  card:
+                    type: horizontal-stack
+                    cards:
+                      - type: "custom:button-card"
+                        tap_action: !include smarthus-dashboard/garasje.yaml
+                        template:
+                          - button_content_group_action
+                        icon: mdi:garage
+                        state:
+                          - value: "on"
+                            icon: mdi:garage-open
+                            styles:
+                              card:
+                                - animation: blink 2s ease infinite
+                              icon:
+                                - color: orange
+                        entity: binary_sensor.garasjeporter
+                      - type: "custom:button-card"
+                        tap_action: !include smarthus-dashboard/blomster.yaml
+                        template:
+                          - button_content_group_action
+                        icon: mdi:flower
+                        color: rgb(68, 115, 158)
+                        state:
+                          - value: "on"
+                            color: var(--paper-item-icon-active-color)
+                        entity: switch.blomsterlys
+      - view_layout:
+          grid-area: uteomrade
+        type: custom:mod-card
+        style:
+          .: |
+            ha-card {
+              background-color: transparent;
+            }
+          hui-grid-card$: |
+            #root {
+              justify-items: center !important;
+              box-shadow: none;
+              min-width: 245px;
+            }
+        card:
+          type: grid
+          columns: 1
+          square: false
+          cards:
+            - type: "custom:button-card"
+              template: button_content_group
+              name: Uteområde
+              custom_fields:
+                tiny_buttons:
+                  card:
+                    type: horizontal-stack
+                    cards:
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                          - button_lux_outdoor
+                        entity: sensor.temperatursensor_hovedinngang_illuminance
+                        styles:
+                          card:
+                            - margin-left: 3px
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                        icon: mdi:car-outline
+                        entity: sensor.hovedinngang_car
+                        color: rgb(68, 115, 158)
+                        state:
+                          - value: 0
+                            operator: ">"
+                            color: var(--paper-item-icon-active-color)
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                        icon: mdi:motion-sensor
+                        entity: binary_sensor.hovedinngang_person_motion
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                        color-type: blank-card
+                        styles:
+                          card:
+                            - width: 21px
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                          - button_lux_outdoor
+                        entity: sensor.temperatursensor_verandador_illuminance
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                        icon: mdi:motion-sensor
+                        entity: binary_sensor.verandador_person_motion
+                      - type: "custom:button-card"
+                        template:
+                          - button_content_group_tiny
+                        icon: mdi:pool
+                        state:
+                          - value: 1500
+                            operator: ">"
+                            styles:
+                              card:
+                                - animation: blink 2s ease infinite
+                              icon:
+                                - color: "#4F7942"
+                          - value: 5
+                            operator: ">"
+                            styles:
+                              icon:
+                                - color: var(--paper-item-icon-active-color)
+                          - value: 5
+                            operator: "<"
+                            styles:
+                              icon:
+                                - color: darkred
+                        entity: sensor.spa_bad_power
+
+                action_buttons:
+                  card:
+                    type: horizontal-stack
+                    cards:
+                      - type: "custom:button-card"
+                        styles:
+                          card:
+                            - width: 80px
+                            - background-color: transparent
+                            - box-shadow: none
+                          grid:
+                            - grid-template-areas: '"s" "n"'
+                            - grid-template-rows: auto 12px
+                          name:
+                            - font-size: 12px
+                          state:
+                            - font-size: 22px
+                        show_name: true
+                        show_state: true
+                        template: button_content_group_action
+                        name: "Skyggen"
+                        entity: sensor.laveste_utetemperatur
+                      - type: "custom:button-card"
+                        styles:
+                          card:
+                            - width: 80px
+                            - background-color: transparent
+                            - box-shadow: none
+                          grid:
+                            - grid-template-areas: '"s" "n"'
+                            - grid-template-rows: auto 12px
+                          name:
+                            - font-size: 12px
+                          state:
+                            - font-size: 22px
+                        show_name: true
+                        show_state: true
+                        name: Verandakroken
+                        template: button_content_group_action
+                        entity: sensor.temperatursensor_verandador_air_temperature
+
+      - type: horizontal-stack
+        view_layout:
+          grid-area: footer_strom
+        cards:
+          - type: custom:mod-card
+            style:
+              .: |
+                ha-card {
+                  background-color: transparent;
+                }
+              hui-grid-card$: |
+                #root {
+                  justify-items: center !important;
+                  box-shadow: none;
+                  border: 0;
+                  #border-top: 1px solid rgb(68, 115, 158);
+                  padding-top: 5px;
+                }
+            card:
+              type: grid
+              columns: 1
+              square: false
+              cards:
+                - type: horizontal-stack
+                  cards:
+                    - type: custom:button-card
+                      template: button_electricity_overview
+                      tap_action: !include smarthus-dashboard/stromforbruk.yaml
+                      custom_fields:
+                        consumption_icon: >
+                          [[[
+                            return `<ha-icon 
+                              icon="mdi:home-lightning-bolt-outline"
+                              style="font-size: 14px; width: 27px; height: 27px; color: rgb(68, 115, 158); ">
+                              </ha-icon>`
+                          ]]]
+                        consumption_text: >
+                          [[[
+                            return `<span style="color: var(--text-color-sensor);">${states['sensor.power_tomasjordvegen_129'].state} W</span>`
+                          ]]]
+                        price_icon: >
+                          [[[
+                            return `<ha-icon
+                              icon="mdi:cash-multiple"
+                              style="font-size: 14px; width: 27px; height: 27px; color: rgb(68, 115, 158); ">
+                              </ha-icon>`
+                          ]]]
+                        price_text: >
+                          [[[ 
+                            return `<span style="color: var(--text-color-sensor);">${states['sensor.norwegian_strompris'].state}</span></div>`
+                          ]]]
+
+      - type: horizontal-stack
+        view_layout:
+          grid-area: footer_servere
+        cards:
+          - type: custom:mod-card
+            style:
+              .: |
+                ha-card {
+                  background-color: transparent;
+                }
+              hui-grid-card$: |
+                #root {
+                  justify-items: center !important;
+                  box-shadow: none;
+                  border: 0;
+                  #border-top: 1px solid rgb(68, 115, 158);
+                  padding-top: 5px;
+                }
+            card:
+              type: grid
+              columns: 1
+              square: false
+              cards:
+                - type: horizontal-stack
+                  cards:
+                    - type: custom:button-card
+                      template: button_footer
+                      entity: >-
+                        binary_sensor.problemer_med_ha_server
+                      state:
+                        - value: "on"
+                          styles:
+                            card:
+                              - animation: blink 2s ease infinite
+                            icon:
+                              - color: darkred
+                      name: HA-server
+                      icon: mdi:raspberry-pi
+                      tap_action: !include smarthus-dashboard/ha-server.yaml
+                    - type: custom:button-card
+                      template: button_footer
+                      entity: >-
+                        binary_sensor.problemer_med_kubernetes
+                      name: K8s
+                      icon: mdi:server
+                      state:
+                        - value: "on"
+                          styles:
+                            card:
+                              - animation: blink 2s ease infinite
+                            icon:
+                              - color: darkred
+                      tap_action: !include smarthus-dashboard/kubernetes.yaml
+                    - type: custom:button-card
+                      template: button_footer
+                      entity: >-
+                        binary_sensor.problemer_med_backup
+                      state:
+                        - value: "on"
+                          styles:
+                            card:
+                              - animation: blink 2s ease infinite
+                            icon:
+                              - color: darkred
+                      name: Backup
+                      icon: mdi:nas
+                      tap_action: !include smarthus-dashboard/backup.yaml
+                    - type: custom:button-card
+                      template: button_footer
+                      entity: >-
+                        binary_sensor.minst_en_ups_mangler_strom
+                      state:
+                        - value: "on"
+                          styles:
+                            card:
+                              - animation: blink 2s ease infinite
+                            icon:
+                              - color: darkred
+                      name: UPS
+                      icon: mdi:battery-charging-high
+                      tap_action: !include smarthus-dashboard/ups.yaml
+
+      - type: horizontal-stack
+        view_layout:
+          grid-area: footer_dingser
+        cards:
+          - type: custom:mod-card
+            style:
+              .: |
+                ha-card {
+                  background-color: transparent;
+                }
+              hui-grid-card$: |
+                #root {
+                  justify-items: center !important;
+                  box-shadow: none;
+                  border: 0;
+                  #border-top: 1px solid rgb(68, 115, 158);
+                  padding-top: 5px;
+                }
+            card:
+              type: grid
+              columns: 1
+              square: false
+              cards:
+                - type: horizontal-stack
+                  cards:
+                    - type: custom:button-card
+                      template: button_footer
+                      entity: >-
+                        binary_sensor.octoprint_printing
+                      state:
+                        - value: "on"
+                          styles:
+                            card:
+                              - animation: blink 2s ease infinite
+                            icon:
+                              - color: "#4F7942"
+                      name: 3D-printer
+                      icon: mdi:printer-3d
+                      tap_action: !include smarthus-dashboard/3dprinter.yaml
+                    - type: custom:button-card
+                      template: button_footer
+                      icon: mdi:speaker
+                      entity: binary_sensor.at_least_one_speaker_active
+                      name: Høyttalere
+                      tap_action: !include smarthus-dashboard/speakers.yaml
+
+      - type: horizontal-stack
+        view_layout:
+          grid-area: footer_personlig
+        cards:
+          - type: custom:mod-card
+            style:
+              .: |
+                ha-card {
+                  background-color: transparent;
+                }
+              hui-grid-card$: |
+                #root {
+                  justify-items: center !important;
+                  box-shadow: none;
+                  border: 0;
+                  #border-top: 1px solid rgb(68, 115, 158);
+                  padding-top: 5px;
+                }
+            card:
+              type: grid
+              columns: 1
+              square: false
+              cards:
+                - type: horizontal-stack
+                  cards:
+                    - type: custom:button-card
+                      template: button_tiny_person
+                      entity: person.remi_mikalsen
+                      name: Person
+                      tap_action: !include smarthus-dashboard/remi.yaml
+                      state:
+                        - value: "home"
+                          styles:
+                            custom_fields:
+                              icon:
+                                - border-color: rgb(68, 115, 158)
+                        - value: "Jobb Remi"
+                          styles:
+                            custom_fields:
+                              icon:
+                                - border-color: "#4F7942"
+                      custom_fields:
+                        icon: >
+                          [[[ return entity === undefined ? null : `<img
+                          src="${states[entity.entity_id].attributes.entity_picture}" width="100%">`;
+                          ]]]
+                        zone: |
+                          [[[
+                            if (states['person.remi_mikalsen'].state == 'not_home') { 
+                            return `Borte`;
+                            } else if (states['person.remi_mikalsen'].state == 'Jobb Remi') {
+                            return `På jobb`;
+                            } else if (states['person.remi_mikalsen'].state == 'home') {
+                            return `Hjemme`;
+                            } else {
+                            return `${entity.state}`;
+                            }
+                          ]]]
+                    - type: custom:button-card
+                      template: button_footer
+                      color-type: blank-card
+                      styles:
+                        card:
+                          - width: 15px
+
+                    - type: custom:button-card
+                      template: button_footer
+                      icon: mdi:bus
+                      color: rgb(68, 115, 158)
+                      name: Busstider
+                      tap_action: !include smarthus-dashboard/buss-remi.yaml

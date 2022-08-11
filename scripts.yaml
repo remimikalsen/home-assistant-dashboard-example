@@ -1,0 +1,218 @@
+update_alarm_sist_aktivert_tekst:
+  description: Parses alarm_sist_aktivert to people and places
+  sequence:
+    - service: python_script.set_state
+      data_template:
+        entity_id: sensor.alarm_sist_aktivert_tekst
+        state:
+          "{% if states('sensor.alarm_sist_aktivert')|regex_match('.*#K(\\d)#.*')\
+          \ and states('input_text.kodepanel_' + (states('sensor.alarm_sist_aktivert')|regex_findall_index('.*#K(\\\
+          d)#.*'))) != \"\" %}\n  {% set state_text = \"fra \" + states('input_text.kodepanel_'\
+          \ + (states('sensor.alarm_sist_aktivert')|regex_findall_index('.*#K(\\d)#.*')))\
+          \ %}\n  {% if states('sensor.alarm_sist_aktivert')|regex_match('.*#B(\\d)#.*')\
+          \ and states('input_text.user_' + (states('sensor.alarm_sist_aktivert')|regex_findall_index('.*#B(\\\
+          d)#.*'))) != \"\" %}\n    {% set state_text = state_text + \" av \" + states('input_text.user_'\
+          \ + (states('sensor.alarm_sist_aktivert')|regex_findall_index('.*#B(\\d)#.*')))\
+          \ %}\n  {% endif %}\n  {{ state_text }}\n{% endif %}\n"
+update_alarm_sist_deaktivert_tekst:
+  description: Parses alarm_sist_deaktivert to people and places
+  sequence:
+    - service: python_script.set_state
+      data_template:
+        entity_id: sensor.alarm_sist_deaktivert_tekst
+        state:
+          "{% if states('sensor.alarm_sist_deaktivert')|regex_match('.*#K(\\d)#.*')\
+          \ and states('input_text.kodepanel_' + (states('sensor.alarm_sist_deaktivert')|regex_findall_index('.*#K(\\\
+          d)#.*'))) != \"\"  %}\n  {% set state_text = \"fra \" + states('input_text.kodepanel_'\
+          \ + (states('sensor.alarm_sist_deaktivert')|regex_findall_index('.*#K(\\d)#.*')))\
+          \ %}\n  {% if states('sensor.alarm_sist_deaktivert')|regex_match('.*#B(\\\
+          d)#.*') and states('input_text.user_' + (states('sensor.alarm_sist_deaktivert')|regex_findall_index('.*#B(\\\
+          d)#.*'))) != \"\" %}\n    {% set state_text = state_text + \" av \" + states('input_text.user_'\
+          \ + (states('sensor.alarm_sist_deaktivert')|regex_findall_index('.*#B(\\d)#.*')))\
+          \ %}\n  {% endif %}\n  {{ state_text }}\n{% endif %}\n"
+master_kodepanel_alarm_aktivert:
+  description: Sjekker om master kodepanel er det som har slått på alarmen
+  sequence:
+    - service: python_script.set_state
+      data_template:
+        entity_id: sensor.alarm_sist_aktivert
+        state:
+          "{% if states('sensor.alarm_sist_aktivert') == \"\" %}\n  {{ \"#K1#\"\
+          \ }}\n{% else %}\n  {{ states('sensor.alarm_sist_aktivert') }}\n{% endif %}\n"
+master_kodepanel_alarm_deaktivert:
+  description: Sjekker om master kodepanel er det som har slått av alarmen
+  sequence:
+    - service: python_script.set_state
+      data_template:
+        entity_id: sensor.alarm_sist_deaktivert
+        state:
+          "{% if states('sensor.alarm_sist_deaktivert') == \"\" %}\n  {{ \"#K1#\"\
+          \ }}\n{% else %}\n  {{ states('sensor.alarm_sist_deaktivert') }}\n{% endif\
+          \ %}\n"
+apne_hoyre_garasjeport:
+  description: Åpne høyre garasjeport
+  sequence:
+    - alias: Sjekk om porten er lukket
+      condition: state
+      entity_id: binary_sensor.status_hoyre_garasjeport_access_control_window_door_is_open
+      state: "off"
+    - alias: Kjør garasjeportmotoren
+      service: homeassistant.turn_on
+      target:
+        entity_id: switch.garasjeport_hoyre
+    - alias: Wait 5s
+      delay: 5
+    - alias: Sjekk om porten fremdeles er lukket
+      condition: state
+      entity_id: binary_sensor.status_hoyre_garasjeport_access_control_window_door_is_open
+      state: "off"
+    - alias: Kjør garasjeportmotoren på nytt
+      service: homeassistant.turn_on
+      target:
+        entity_id: switch.garasjeport_hoyre
+lukk_hoyre_garasjeport:
+  description: Lukke høyre garasjeport
+  sequence:
+    - alias: Sjekk om porten er åpen
+      condition: state
+      entity_id: binary_sensor.status_hoyre_garasjeport_access_control_window_door_is_open
+      state: "on"
+    - alias: Kjør garasjeportmotoren
+      service: homeassistant.turn_on
+      target:
+        entity_id: switch.garasjeport_hoyre
+    - alias: Wait 30s
+      delay: 30
+    - alias: Sjekk om porten fremdeles er åpen
+      condition: state
+      entity_id: binary_sensor.status_hoyre_garasjeport_access_control_window_door_is_open
+      state: "on"
+    - alias: Kjør garasjeportmotoren på nytt
+      service: homeassistant.turn_on
+      target:
+        entity_id: switch.garasjeport_hoyre
+google_speaker_announcement_startup:
+  alias: GoogleSpeakerAnnouncementStartup
+  sequence:
+    - service: media_player.volume_mute
+      data:
+        entity_id: "{{ player_id }}"
+        is_volume_muted: true
+    - delay:
+        milliseconds: 100
+    - service: media_player.volume_set
+      data_template:
+        entity_id: "{{ player_id }}"
+        volume_level: "{{ announcement_volume }}"
+    - delay:
+        milliseconds: 100
+    - service: media_player.volume_mute
+      data:
+        entity_id: "{{ player_id }}"
+        is_volume_muted: false
+google_speaker_announcement_shutdown:
+  alias: GoogleSpeakerAnnouncementShutdown
+  sequence:
+    - service: media_player.volume_set
+      data_template:
+        entity_id: "{{ player_id }}"
+        volume_level: "{{ states('input_number.volume_smart_speaker_default') }}"
+    - delay:
+        milliseconds: 100
+    - service: media_player.turn_off
+      data:
+        entity_id: "{{ player_id }}"
+announcement:
+  alias: Announcement
+  sequence:
+    - service: script.google_speaker_announcement_startup
+      data:
+        player_id: "{{ player_id }}"
+        announcement_volume: "{{ announcement_volume}}"
+    - service: tts.google_say
+      data:
+        entity_id: "{{ player_id }}"
+        message: "{{ announcement_message  }}"
+    - delay:
+        seconds: "{{ announcement_length }}"
+    - service: script.google_speaker_announcement_shutdown
+      data:
+        player_id: "{{ player_id }}"
+announcement_google_hoyttalere:
+  alias: Announcement hovedhoyttalere
+  sequence:
+    - service: media_player.volume_set
+      data_template:
+        entity_id: "{{ entity_id }}"
+        volume_level: "{{ volume }}"
+    - delay:
+        milliseconds: 100
+    - service: tts.google_say
+      data:
+        entity_id: "{{ entity_id }}"
+        message: "{{ message }}"
+    - delay:
+        seconds: "{{ message_length }}"
+    - service: media_player.volume_set
+      data_template:
+        entity_id: "{{ entity_id }}"
+        volume_level: "{{ states('input_number.volume_smart_speaker_default') }}"
+  mode: single
+announcement_google_hoyttalere_daytimeonly:
+  alias: Announcement hovedhoyttalere daytime only
+  sequence:
+    - condition: state
+      entity_id: binary_sensor.det_er_natt
+      state: "off"
+    - service: script.announcement_google_hoyttalere
+      data:
+        entity_id: "{{ entity_id }}"
+        volume: "{{ volume }}"
+        message: "{{ message }}"
+        message_length: "{{ message_length }}"
+  mode: single
+
+popup_cctv:
+  sequence:
+    - service: browser_mod.popup
+      data_template:
+        deviceID: "{{ deviceID }}"
+        title: CCTV
+        hide_header: true
+        large: true
+        card:
+          type: custom:mod-card
+          view_layout:
+            grid-area: sidebar
+          style:
+            .: |
+              ha-card {
+                background-color: transparent;
+                height: 600px;
+              }
+          card:
+            type: grid
+            columns: 1
+            square: false
+            cards:
+              - type: custom:surveillance-card
+                thumb_interval: 15
+                update_interval: 2
+                recording_duration: 10
+                show_capture_buttons: false
+                #camera_view: live
+                cameras:
+                  - entity: camera.hovedinngang
+                    motion_entity: binary_sensor.hovedinngang_person_motion
+                  - entity: camera.garasje_nede
+                    motion_entity: group.bevegelse_garasje_nede
+                  - entity: camera.garasje_oppe
+                    motion_entity: group.bevegelse_garasje_oppe
+                  - entity: camera.verandador
+                    motion_entity: binary_sensor.verandador_person_motion
+
+reset_kattedo:
+  sequence:
+    - service: counter.reset
+      target:
+        entity_id: counter.kattedo_antall_ganger_brukt

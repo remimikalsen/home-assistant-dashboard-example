@@ -1,0 +1,116 @@
+manuelle_persienner:
+  name: Hold posisjon på persienner
+  icon: mdi:pin
+manuelle_lys_mannehula:
+  name: Manuelle lys på ManCave
+  icon: mdi:pin
+varsle_at_noen_kommer:
+  name: Engangsvarsel om at noen kommer
+  icon: mdi:walk
+varsle_vaskemaskin_ferdig:
+  name: Varsle når vaskemaskin ferdig
+  icon: mdi:washing-machine
+vaskemaskin_ferdig:
+  name: Vaskemaskin ferdig
+  icon: mdi:washing-machine
+varsle_torketrommel_ferdig:
+  name: Varsle når tørketrommel ferdig
+  icon: mdi:tumble-dryer
+torketrommel_ferdig:
+  name: Tørketrommel ferdig
+  icon: mdi:washing-machine
+vaskemaskin_startet:
+  name: Vaskemaskin startet
+  icon: mdi:washing-machine
+torketrommel_startet:
+  name: Tørketrommel startet
+  icon: mdi:tumble-dryer
+disko_sunniva:
+  name: Disco pågår hos Sunniva
+disko_kaja:
+  name: Disco pågår hos Kaja
+lerret_mancave:
+  name: Lerret mancave
+varsle_lyd_kaja_natt:
+  name: Varsle når Kaja lager lyd på natta
+  icon: mdi:walk
+varsle_lyd_sunniva_natt:
+  name: Varsle når Sunniva lager lyd på natta
+  icon: mdi:walk
+noen_har_bursdag:
+  name: Noen har bursdag
+  icon: mdi:party-popper
+varsle_inne_viktig_bevegelse_kamera:
+  name: Varsle innendørs bevegelse på kamera
+  icon: mdi:cctv
+varsle_mobil_viktig_bevegelse_kamera:
+  name: Varsle til mobil bevegelse på kamera
+  icon: mdi:cctv
+# Alarm - away mode - which sensors should trigger the alarm
+vindu_sunniva_trigge_full_alarm:
+  name: Vindu Sunniva
+dor_mancave_trigge_full_alarm:
+  name: Dør Mancave
+mellomdor_garasje_trigge_full_alarm:
+  name: Mellomdør garasje
+ytterdor_garasje_trigge_full_alarm:
+  name: Ytterdør garasje
+ytterdor_hovedinngang_trigge_full_alarm:
+  name: Ytterdør hovedinngang
+stort_vindu_hovedsoverom_trigge_full_alarm:
+  name: Stort vindu hovedsoverom
+lite_vindu_hovedsoverom_trigge_full_alarm:
+  name: Lite vindu hovedsoverom
+verandavindu_kjokken_trigge_full_alarm:
+  name: Verandavindu kjøkken
+verandador_trigge_full_alarm:
+  name: Verandadør
+vindu_mancave_trigge_full_alarm:
+  name: Vindu Mancave
+venstre_vindu_kaja_trigge_full_alarm:
+  name: Venstre vindu Kaja
+hoyre_vindu_kaja_trigge_full_alarm:
+  name: Høyre vindu Kaja
+hoyre_garasjeport_trigge_full_alarm:
+  name: Høyre garasjeport
+venstre_garasjeport_trigge_full_alarm:
+  name: Venstre garasjeport
+bevegelse_gang_nede_trigge_full_alarm:
+  name: Gang nede
+bevegelse_gang_oppe_trigge_full_alarm:
+  name: Gang oppe
+bevegelse_mancave_trigge_full_alarm:
+  name: Mancave
+bevegelse_stue_trigge_full_alarm:
+  name: Stue
+bevegelse_kaja_trigge_full_alarm:
+  name: Kaja
+bevegelse_sunniva_trigge_full_alarm:
+  name: Sunniva
+# Alarm - home mode - which sensors should trigger the home alarm
+vindu_sunniva_trigge_skallalarm:
+  name: Vindu Sunniva
+mellomdor_garasje_trigge_skallalarm:
+  name: Mellomdør garasje
+ytterdor_garasje_trigge_skallalarm:
+  name: Ytterdør garasje
+ytterdor_hovedinngang_trigge_skallalarm:
+  name: Ytterdør hovedinngang
+stort_vindu_hovedsoverom_trigge_skallalarm:
+  name: Stort vindu hovedsoverom
+lite_vindu_hovedsoverom_trigge_skallalarm:
+  name: Lite vindu hovedsoverom
+verandavindu_kjokken_trigge_skallalarm:
+  name: Verandavindu kjøkken
+verandador_trigge_skallalarm:
+  name: Verandadør
+vindu_mancave_trigge_skallalarm:
+  name: Vindu Mancave
+venstre_vindu_kaja_trigge_skallalarm:
+  name: Venstre vindu Kaja
+hoyre_vindu_kaja_trigge_skallalarm:
+  name: Høyre vindu Kaja
+hoyre_garasjeport_trigge_skallalarm:
+  name: Høyre garasjeport
+venstre_garasjeport_trigge_skallalarm:
+  name: Venstre garasjeport

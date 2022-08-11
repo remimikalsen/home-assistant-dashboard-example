@@ -1,0 +1,1089 @@
+binary_sensor:
+  # Brannalarmvelgere
+  - name: "Advarsel brannalarm utløst"
+    unique_id: advarsel_brannalarm_utlost
+    state: >
+      {{
+        is_state('binary_sensor.roykvarsler_gang_nede_smoke', 'on') or
+        is_state('binary_sensor.roykvarsler_gang_oppe_smoke', 'on') or
+        is_state('binary_sensor.roykvarsler_bod_nede_smoke_alarm_smoke_detected', 'on') or
+        is_state('binary_sensor.roykvarsler_garasje_nede_smoke_alarm_smoke_detected', 'on') or
+        is_state('binary_sensor.roykvarsler_garasje_oppe_smoke_alarm_smoke_detected', 'on') or
+        is_state('binary_sensor.roykvarsler_hovedsoverom_smoke_alarm_smoke_detected', 'on') or
+        is_state('binary_sensor.roykvarsler_mancave_smoke_alarm_smoke_detected', 'on') or
+        is_state('binary_sensor.roykvarsler_stue_smoke_alarm_smoke_detected', 'on') or
+        is_state('binary_sensor.roykvarsler_sunniva_smoke_alarm_smoke_detected', 'on') or
+        is_state('binary_sensor.roykvarsler_kaja_smoke_alarm_smoke_detected', 'on') or
+        is_state('binary_sensor.roykvarsler_vaskerom_smoke_alarm_smoke_detected', 'on') or
+        is_state('binary_sensor.garasje_mellomdor_heat_alarm_overheat_detected', 'on') or
+        is_state('binary_sensor.garasje_ytterdor_heat_alarm_overheat_detected', 'on') or
+        is_state('binary_sensor.roykvarsler_bod_nede_heat_alarm_overheat_detected', 'on') or
+        is_state('binary_sensor.roykvarsler_garasje_nede_heat_alarm_overheat_detected', 'on') or
+        is_state('binary_sensor.roykvarsler_hovedsoverom_heat_alarm_overheat_detected', 'on') or
+        is_state('binary_sensor.roykvarsler_mancave_heat_alarm_overheat_detected', 'on') or
+        is_state('binary_sensor.roykvarsler_stue_heat_alarm_overheat_detected', 'on') or
+        is_state('binary_sensor.roykvarsler_sunniva_heat_alarm_overheat_detected', 'on') or
+        is_state('binary_sensor.roykvarsler_kaja_heat_alarm_overheat_detected', 'on') or
+        is_state('binary_sensor.roykvarsler_vaskerom_heat_alarm_overheat_detected', 'on') or
+        is_state('binary_sensor.temperatursensor_hovedinngang_heat_alarm_overheat_detected', 'on') or
+        is_state('binary_sensor.temperatursensor_verandador_heat_alarm_overheat_detected', 'on') or
+        is_state('binary_sensor.vindu_kjokken_veranda_heat_alarm_overheat_detected', 'on')
+      }}
+  # Innbruddsalarmsensorer (full alarm)
+  - name: "Vindu Sunniva full alarm trigget"
+    unique_id: vindu_sunniva_full_alarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.vindu_sunniva_access_control_window_door_is_open', 'on') %} mdi:window-open
+      {% else %} mdi:window-closed
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        is_state('binary_sensor.vindu_sunniva_access_control_window_door_is_open', 'on')
+        and 
+        is_state('input_boolean.vindu_sunniva_trigge_full_alarm', 'on')
+      }}
+  - name: "Dør Mancave full alarm trigget"
+    unique_id: dor_mancave_full_alarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.dorsensor_mancave_door_window', 'on') %} mdi:door-open
+      {% else %} mdi:door-closed
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        is_state('binary_sensor.dorsensor_mancave_door_window', 'on')
+        and 
+        is_state('input_boolean.dor_mancave_trigge_full_alarm', 'on')
+      }}
+  - name: "Mellomdør garasje full alarm trigget"
+    unique_id: mellomdor_garasje_full_alarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.garasje_mellomdor_access_control_window_door_is_open', 'on') %} mdi:door-open
+      {% else %} mdi:door-closed
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        is_state('binary_sensor.garasje_mellomdor_access_control_window_door_is_open', 'on')
+        and 
+        is_state('input_boolean.mellomdor_garasje_trigge_full_alarm', 'on')
+      }}
+  - name: "Ytterdør garasje full alarm trigget"
+    unique_id: ytterdor_garasje_full_alarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.garasje_ytterdor_access_control_window_door_is_open', 'on') %} mdi:door-open
+      {% else %} mdi:door-closed
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        is_state('binary_sensor.garasje_ytterdor_access_control_window_door_is_open', 'on')
+        and 
+        is_state('input_boolean.ytterdor_garasje_trigge_full_alarm', 'on')
+      }}
+  - name: "Ytterdør hovedinngang full alarm trigget"
+    unique_id: ytterdor_hovedinngang_full_alarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.hovedinngangsdor_access_control_window_door_is_open', 'on') %} mdi:door-open
+      {% else %} mdi:door-closed
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        is_state('binary_sensor.hovedinngangsdor_access_control_window_door_is_open', 'on')
+        and 
+        is_state('input_boolean.ytterdor_hovedinngang_trigge_full_alarm', 'on')
+      }}
+  - name: "Stort vindu hovedsoverom full alarm trigget"
+    unique_id: stort_vindu_hovedsoverom_full_alarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.vindu_hovedsoverom_stort_access_control_window_door_is_open', 'on') %} mdi:window-open
+      {% else %} mdi:window-closed
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        is_state('binary_sensor.vindu_hovedsoverom_stort_access_control_window_door_is_open', 'on')
+        and 
+        is_state('input_boolean.stort_vindu_hovedsoverom_trigge_full_alarm', 'on')
+      }}
+  - name: "Lite vindu hovedsoverom full alarm trigget"
+    unique_id: lite_vindu_hovedsoverom_full_alarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.vindu_hovedsoverom_lite_access_control_window_door_is_open', 'on') %} mdi:window-open
+      {% else %} mdi:window-closed
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        is_state('binary_sensor.vindu_hovedsoverom_lite_access_control_window_door_is_open', 'on')
+        and 
+        is_state('input_boolean.lite_vindu_hovedsoverom_trigge_full_alarm', 'on')
+      }}
+  - name: "Verandavindu kjøkken full alarm trigget"
+    unique_id: verandavindu_kjokken_full_alarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.vindu_kjokken_veranda_access_control_window_door_is_open', 'on') %} mdi:window-open
+      {% else %} mdi:window-closed
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        is_state('binary_sensor.vindu_kjokken_veranda_access_control_window_door_is_open', 'on')
+        and 
+        is_state('input_boolean.verandavindu_kjokken_trigge_full_alarm', 'on')
+      }}
+  - name: "Verandadør full alarm trigget"
+    unique_id: verandador_full_alarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.verandador_access_control_window_door_is_open', 'on') %} mdi:door-open
+      {% else %} mdi:door-closed
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        is_state('binary_sensor.verandador_access_control_window_door_is_open', 'on')
+        and 
+        is_state('input_boolean.verandador_trigge_full_alarm', 'on')
+      }}
+  - name: "Vindu Mancave full alarm trigget"
+    unique_id: vindu_mancave_full_alarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.vinduet_pa_mannehula_access_control_window_door_is_open', 'on') or 
+          is_state('sensor.vibrasjon_pa_vindu_i_mancave_action', 'vibration') or 
+          is_state('sensor.vibrasjon_pa_vindu_i_mancave_action', 'tilt') or
+          is_state('sensor.vibrasjon_pa_vindu_i_mancave_action', 'drop') %} mdi:window-open
+      {% else %} mdi:window-closed
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        ( is_state('binary_sensor.vinduet_pa_mannehula_access_control_window_door_is_open', 'on') or 
+          is_state('sensor.vibrasjon_pa_vindu_i_mancave_action', 'vibration') or 
+          is_state('sensor.vibrasjon_pa_vindu_i_mancave_action', 'tilt') or
+          is_state('sensor.vibrasjon_pa_vindu_i_mancave_action', 'drop') )
+        and 
+        is_state('input_boolean.vindu_mancave_trigge_full_alarm', 'on')
+      }}
+  - name: "Venstre vindu Kaja full alarm trigget"
+    unique_id: venstre_vindu_kaja_full_alarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.vindu_venstre_kaja_access_control_window_door_is_open', 'on') %} mdi:window-open
+      {% else %} mdi:window-closed
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        is_state('binary_sensor.vindu_venstre_kaja_access_control_window_door_is_open', 'on')
+        and 
+        is_state('input_boolean.venstre_vindu_kaja_trigge_full_alarm', 'on')
+      }}
+  - name: "Høyre vindu Kaja full alarm trigget"
+    unique_id: hoyre_vindu_kaja_full_alarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.vindu_hoyre_kaja_access_control_window_door_is_open', 'on') %} mdi:window-open
+      {% else %} mdi:window-closed
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        is_state('binary_sensor.vindu_hoyre_kaja_access_control_window_door_is_open', 'on')
+        and 
+        is_state('input_boolean.hoyre_vindu_kaja_trigge_full_alarm', 'on')
+      }}
+  - name: "Høyre garasjeport full alarm trigget"
+    unique_id: hoyre_garasjeport_full_alarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.status_hoyre_garasjeport_access_control_window_door_is_open', 'on') %} mdi:garage-open
+      {% else %} mdi:garage
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        is_state('binary_sensor.status_hoyre_garasjeport_access_control_window_door_is_open', 'on')
+        and 
+        is_state('input_boolean.hoyre_garasjeport_trigge_full_alarm', 'on')
+      }}
+  - name: "Venstre garasjeport full alarm trigget"
+    unique_id: venstre_garasjeport_full_alarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.status_venstre_garasjeport_access_control_window_door_is_open', 'on') %} mdi:garage-open
+      {% else %} mdi:garage
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        is_state('binary_sensor.status_venstre_garasjeport_access_control_window_door_is_open', 'on')
+        and 
+        is_state('input_boolean.venstre_garasjeport_trigge_full_alarm', 'on')
+      }}
+  - name: "Bevegelse gang nede full alarm trigget"
+    unique_id: bevegelse_gang_nede_full_alarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.bevegelse_gang_nede_home_security_motion_detection', 'on') %} mdi:motion-sensor
+      {% else %} mdi:motion-sensor-off
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        is_state('binary_sensor.bevegelse_gang_nede_home_security_motion_detection', 'on')
+        and 
+        is_state('input_boolean.bevegelse_gang_nede_trigge_full_alarm', 'on')
+      }}
+  - name: "Bevegelse gang oppe full alarm trigget"
+    unique_id: bevegelse_gang_oppe_full_alarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.binary_sensor.gang_oppe_occupancy', 'on') %} mdi:motion-sensor
+      {% else %} mdi:motion-sensor-off
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        is_state('binary_sensor.binary_sensor.gang_oppe_occupancy', 'on')
+        and 
+        is_state('input_boolean.bevegelse_gang_oppe_trigge_full_alarm', 'on')
+      }}
+  - name: "Bevegelse mancave full alarm trigget"
+    unique_id: bevegelse_mancave_full_alarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.bevegelse_mancave_occupancy', 'on') or 
+          is_state('binary_sensor.bevegelse_mancave_trening', 'on') or 
+          is_state('binary_sensor.motion_mancave', 'on') %} mdi:motion-sensor
+      {% else %} mdi:motion-sensor-off
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        ( is_state('binary_sensor.bevegelse_mancave_occupancy', 'on') or 
+          is_state('binary_sensor.bevegelse_mancave_trening', 'on') or 
+          is_state('binary_sensor.motion_mancave', 'on') )
+        and 
+        is_state('input_boolean.bevegelse_mancave_trigge_full_alarm', 'on')
+      }}
+  - name: "Bevegelse stue full alarm trigget"
+    unique_id: bevegelse_stue_full_alarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.bevegelse_stue_home_security_motion_detection', 'on') %} mdi:motion-sensor
+      {% else %} mdi:motion-sensor-off
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        is_state('binary_sensor.bevegelse_stue_home_security_motion_detection', 'on')
+        and 
+        is_state('input_boolean.bevegelse_stue_trigge_full_alarm', 'on')
+      }}
+  - name: "Bevegelse Kaja full alarm trigget"
+    unique_id: bevegelse_kaja_full_alarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.bevegelse_kaja', 'on') %} mdi:motion-sensor
+      {% else %} mdi:motion-sensor-off
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        is_state('binary_sensor.bevegelse_kaja', 'on')
+        and 
+        is_state('input_boolean.bevegelse_kaja_trigge_full_alarm', 'on')
+      }}
+  - name: "Bevegelse Sunniva full alarm trigget"
+    unique_id: bevegelse_sunniva_full_alarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.bevegelse_sunniva', 'on') %} mdi:motion-sensor
+      {% else %} mdi:motion-sensor-off
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        is_state('binary_sensor.bevegelse_sunniva', 'on')
+        and 
+        is_state('input_boolean.bevegelse_sunniva_trigge_full_alarm', 'on')
+      }}
+  # Innbruddsalarmsensorer (skallalarm)
+  - name: "Vindu Sunniva skallalarm trigget"
+    unique_id: vindu_sunniva_skallalarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.vindu_sunniva_access_control_window_door_is_open', 'on') %} mdi:window-open
+      {% else %} mdi:window-closed
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        is_state('binary_sensor.vindu_sunniva_access_control_window_door_is_open', 'on')
+        and 
+        is_state('input_boolean.vindu_sunniva_trigge_skallalarm', 'on')
+      }}
+  - name: "Dør Mancave skallalarm trigget"
+    unique_id: dor_mancave_skallalarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.dorsensor_mancave_door_window', 'on') %} mdi:door-open
+      {% else %} mdi:door-closed
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        is_state('binary_sensor.dorsensor_mancave_door_window', 'on')
+        and 
+        is_state('input_boolean.dor_mancave_trigge_skallalarm', 'on')
+      }}
+  - name: "Mellomdør garasje skallalarm trigget"
+    unique_id: mellomdor_garasje_skallalarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.garasje_mellomdor_access_control_window_door_is_open', 'on') %} mdi:door-open
+      {% else %} mdi:door-closed
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        is_state('binary_sensor.garasje_mellomdor_access_control_window_door_is_open', 'on')
+        and 
+        is_state('input_boolean.mellomdor_garasje_trigge_skallalarm', 'on')
+      }}
+  - name: "Ytterdør garasje skallalarm trigget"
+    unique_id: ytterdor_garasje_skallalarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.garasje_ytterdor_access_control_window_door_is_open', 'on') %} mdi:door-open
+      {% else %} mdi:door-closed
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        is_state('binary_sensor.garasje_ytterdor_access_control_window_door_is_open', 'on')
+        and 
+        is_state('input_boolean.ytterdor_garasje_trigge_skallalarm', 'on')
+      }}
+  - name: "Ytterdør hovedinngang skallalarm trigget"
+    unique_id: ytterdor_hovedinngang_skallalarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.hovedinngangsdor_access_control_window_door_is_open', 'on') %} mdi:door-open
+      {% else %} mdi:door-closed
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        is_state('binary_sensor.hovedinngangsdor_access_control_window_door_is_open', 'on')
+        and 
+        is_state('input_boolean.ytterdor_hovedinngang_trigge_skallalarm', 'on')
+      }}
+  - name: "Stort vindu hovedsoverom skallalarm trigget"
+    unique_id: stort_vindu_hovedsoverom_skallalarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.vindu_hovedsoverom_stort_access_control_window_door_is_open', 'on') %} mdi:window-open
+      {% else %} mdi:window-closed
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        is_state('binary_sensor.vindu_hovedsoverom_stort_access_control_window_door_is_open', 'on')
+        and 
+        is_state('input_boolean.stort_vindu_hovedsoverom_trigge_skallalarm', 'on')
+      }}
+  - name: "Lite vindu hovedsoverom skallalarm trigget"
+    unique_id: lite_vindu_hovedsoverom_skallalarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.vindu_hovedsoverom_lite_access_control_window_door_is_open', 'on') %} mdi:window-open
+      {% else %} mdi:window-closed
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        is_state('binary_sensor.vindu_hovedsoverom_lite_access_control_window_door_is_open', 'on')
+        and 
+        is_state('input_boolean.lite_vindu_hovedsoverom_trigge_skallalarm', 'on')
+      }}
+  - name: "Verandavindu kjøkken skallalarm trigget"
+    unique_id: verandavindu_kjokken_skallalarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.vindu_kjokken_veranda_access_control_window_door_is_open', 'on') %} mdi:window-open
+      {% else %} mdi:window-closed
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        is_state('binary_sensor.vindu_kjokken_veranda_access_control_window_door_is_open', 'on')
+        and 
+        is_state('input_boolean.verandavindu_kjokken_trigge_skallalarm', 'on')
+      }}
+  - name: "Verandadør skallalarm trigget"
+    unique_id: verandador_skallalarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.verandador_access_control_window_door_is_open', 'on') %} mdi:door-open
+      {% else %} mdi:door-closed
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        is_state('binary_sensor.verandador_access_control_window_door_is_open', 'on')
+        and 
+        is_state('input_boolean.verandador_trigge_skallalarm', 'on')
+      }}
+  - name: "Vindu Mancave skallalarm trigget"
+    unique_id: vindu_mancave_skallalarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.vinduet_pa_mannehula_access_control_window_door_is_open', 'on') or 
+          is_state('sensor.vibrasjon_pa_vindu_i_mancave_action', 'vibration') or 
+          is_state('sensor.vibrasjon_pa_vindu_i_mancave_action', 'tilt') or
+          is_state('sensor.vibrasjon_pa_vindu_i_mancave_action', 'drop') %} mdi:window-open
+      {% else %} mdi:window-closed
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        ( is_state('binary_sensor.vinduet_pa_mannehula_access_control_window_door_is_open', 'on') or 
+          is_state('sensor.vibrasjon_pa_vindu_i_mancave_action', 'vibration') or 
+          is_state('sensor.vibrasjon_pa_vindu_i_mancave_action', 'tilt') or
+          is_state('sensor.vibrasjon_pa_vindu_i_mancave_action', 'drop') )
+        and 
+        is_state('input_boolean.vindu_mancave_trigge_skallalarm', 'on')
+      }}
+  - name: "Venstre vindu Kaja skallalarm trigget"
+    unique_id: venstre_vindu_kaja_skallalarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.vindu_venstre_kaja_access_control_window_door_is_open', 'on') %} mdi:window-open
+      {% else %} mdi:window-closed
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        is_state('binary_sensor.vindu_venstre_kaja_access_control_window_door_is_open', 'on')
+        and 
+        is_state('input_boolean.venstre_vindu_kaja_trigge_skallalarm', 'on')
+      }}
+  - name: "Høyre vindu Kaja skallalarm trigget"
+    unique_id: hoyre_vindu_kaja_skallalarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.vindu_hoyre_kaja_access_control_window_door_is_open', 'on') %} mdi:window-open
+      {% else %} mdi:window-closed
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        is_state('binary_sensor.vindu_hoyre_kaja_access_control_window_door_is_open', 'on')
+        and 
+        is_state('input_boolean.hoyre_vindu_kaja_trigge_skallalarm', 'on')
+      }}
+  - name: "Høyre garasjeport skallalarm trigget"
+    unique_id: hoyre_garasjeport_skallalarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.status_hoyre_garasjeport_access_control_window_door_is_open', 'on') %} mdi:garage-open
+      {% else %} mdi:garage
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        is_state('binary_sensor.status_hoyre_garasjeport_access_control_window_door_is_open', 'on')
+        and 
+        is_state('input_boolean.hoyre_garasjeport_trigge_skallalarm', 'on')
+      }}
+  - name: "Venstre garasjeport skallalarm trigget"
+    unique_id: venstre_garasjeport_skallalarm_trigget
+    icon: >
+      {% if is_state('binary_sensor.status_venstre_garasjeport_access_control_window_door_is_open', 'on') %} mdi:garage-open
+      {% else %} mdi:garage
+      {% endif %}
+    delay_off: 0:00:15
+    state: >
+      {{ 
+        is_state('binary_sensor.status_venstre_garasjeport_access_control_window_door_is_open', 'on')
+        and 
+        is_state('input_boolean.venstre_garasjeport_trigge_skallalarm', 'on')
+      }}
+  # Advarsler som trigger alerts (som igjen kan mutes)
+  - name: "Advarsel verandadør er åpen"
+    unique_id: advarsel_verandador_apen
+    state: >
+      {{ 
+        is_state('binary_sensor.verandador_access_control_window_door_is_open', 'on')
+        and (
+          is_state('alarm_control_panel.innbruddsalarm', 'armed_home') or
+          is_state('alarm_control_panel.innbruddsalarm', 'armed_away') or
+          is_state('alarm_control_panel.innbruddsalarm', 'arming') 
+        )
+      }}
+  - name: "Advarsel hovedinngangsdør er åpen"
+    unique_id: advarsel_hovedinngangsdor_apen
+    state: >
+      {{ 
+        is_state('binary_sensor.hovedinngangsdor_access_control_window_door_is_open', 'on')
+        and (
+          is_state('alarm_control_panel.innbruddsalarm', 'armed_home') or
+          is_state('alarm_control_panel.innbruddsalarm', 'armed_away') or
+          (as_timestamp(now()) - as_timestamp(states.binary_sensor.hovedinngangsdor_access_control_window_door_is_open.last_changed)) > 300
+        )
+      }}
+  - name: "Advarsel mellomdør garasje er åpen"
+    unique_id: advarsel_mellomdor_garasje_apen
+    state: >
+      {{ 
+        is_state('binary_sensor.garasje_mellomdor_access_control_window_door_is_open', 'on')
+        and (
+          is_state('binary_sensor.det_er_natt', 'on') or
+          is_state('alarm_control_panel.innbruddsalarm', 'armed_home') or
+          is_state('alarm_control_panel.innbruddsalarm', 'armed_away') or
+          is_state('alarm_control_panel.innbruddsalarm', 'arming') 
+        )
+      }}
+  - name: "Advarsel ytterdør garasje er åpen"
+    unique_id: advarsel_ytterdor_garasje_apen
+    state: >
+      {{ 
+        is_state('binary_sensor.garasje_ytterdor_access_control_window_door_is_open', 'on')
+        and (
+          is_state('binary_sensor.det_er_natt', 'on') or
+          is_state('alarm_control_panel.innbruddsalarm', 'armed_home') or
+          is_state('alarm_control_panel.innbruddsalarm', 'armed_away') or
+          is_state('alarm_control_panel.innbruddsalarm', 'arming') 
+        )
+      }}
+  - name: "Advarsel venstre garasjeport er åpen"
+    unique_id: advarsel_venstre_garasjeport_apen
+    state: >
+      {{ 
+        is_state('binary_sensor.status_venstre_garasjeport_access_control_window_door_is_open', 'on')
+        and (
+          (as_timestamp(now()) - as_timestamp(states.binary_sensor.status_venstre_garasjeport_access_control_window_door_is_open.last_changed)) > 14400 or
+          is_state('binary_sensor.det_er_natt', 'on') or
+          is_state('alarm_control_panel.innbruddsalarm', 'armed_home') or
+          (is_state('alarm_control_panel.innbruddsalarm', 'armed_away') and (as_timestamp(now()) - as_timestamp(states.alarm_control_panel.innbruddsalarm.last_changed)) > 600)
+        )
+      }}
+  - name: "Advarsel høyre garasjeport er åpen"
+    unique_id: advarsel_hoyre_garasjeport_apen
+    state: >
+      {{ 
+        is_state('binary_sensor.status_hoyre_garasjeport_access_control_window_door_is_open', 'on')
+        and (
+          (as_timestamp(now()) - as_timestamp(states.binary_sensor.status_hoyre_garasjeport_access_control_window_door_is_open.last_changed)) > 14400 or
+          is_state('binary_sensor.det_er_natt', 'on') or
+          is_state('alarm_control_panel.innbruddsalarm', 'armed_home')  or
+          (is_state('alarm_control_panel.innbruddsalarm', 'armed_away') and (as_timestamp(now()) - as_timestamp(states.alarm_control_panel.innbruddsalarm.last_changed)) > 600)
+        )
+      }}
+  - name: "Advarsel kjøkkenvinduet er åpent"
+    unique_id: advarsel_kjokkenvindu_veranda_apent
+    state: >
+      {{ 
+        is_state('binary_sensor.vindu_kjokken_veranda_access_control_window_door_is_open', 'on') 
+        and (
+          (is_state('binary_sensor.det_er_natt', 'on') and (as_timestamp(now()) - as_timestamp(states.binary_sensor.vindu_kjokken_veranda_access_control_window_door_is_open.last_changed)) > 60) or
+          is_state('alarm_control_panel.innbruddsalarm', 'armed_home') or
+          is_state('alarm_control_panel.innbruddsalarm', 'armed_away') or
+          is_state('alarm_control_panel.innbruddsalarm', 'arming') 
+        )
+      }}
+  - name: "Advarsel dør ManCave er åpen"
+    unique_id: advarsel_dor_mancave_apen
+    state: >
+      {{ 
+        is_state('binary_sensor.dorsensor_mancave_door_window', 'on')
+        and (
+          (is_state('binary_sensor.det_er_natt', 'on') and (as_timestamp(now()) - as_timestamp(states.binary_sensor.dorsensor_mancave_door_window.last_changed)) > 60) or
+          (is_state('alarm_control_panel.innbruddsalarm', 'armed_home') and (as_timestamp(now()) - as_timestamp(states.binary_sensor.dorsensor_mancave_door_window.last_changed)) > 60) or
+          is_state('alarm_control_panel.innbruddsalarm', 'armed_away') or
+          is_state('alarm_control_panel.innbruddsalarm', 'arming') 
+        )
+      }}
+  - name: "Advarsel noe lusker i garasjen"
+    unique_id: advarsel_noe_lusker_i_garasjen
+    state: >
+      {{ 
+        (is_state('group.bevegelse-garasje-oppe', 'on') or
+        is_state('group.bevegelse-garasje-nede', 'on'))
+        and (
+          ((is_state('binary_sensor.det_er_natt', 'on') or is_state('alarm_control_panel.innbruddsalarm', 'armed_home') or is_state('alarm_control_panel.innbruddsalarm', 'armed_away')) and
+          is_state('binary_sensor.status_venstre_garasjeport_access_control_window_door_is_open', 'off') and
+          is_state('binary_sensor.status_hoyre_garasjeport_access_control_window_door_is_open', 'off'))
+        )
+      }}
+  - name: "Advarsel lyd hos Kaja"
+    unique_id: advarsel_lyd_hos_kaja
+    state: >
+      {{ 
+        is_state('binary_sensor.natta_for_kaja', 'on')
+        and 
+        is_state('input_boolean.varsle_lyd_kaja_natt', 'on')
+        and
+        states('sensor.lydniva_lydsensor_kaja')|float(default=0) > states('input_number.lydgrense_kaja')|float(default=0)
+      }}
+  - name: "Advarsel lyd hos Sunniva"
+    unique_id: advarsel_lyd_hos_sunniva
+    state: >
+      {{ 
+        is_state('binary_sensor.natta_for_sunniva', 'on')
+        and 
+        is_state('input_boolean.varsle_lyd_sunniva_natt', 'on')
+        and
+        states('sensor.lydniva_lydsensor_sunniva')|float(default=0) > states('input_number.lydgrense_sunniva')|float(default=0)
+      }}
+  - name: "Det er natt"
+    unique_id: det_er_natt
+    state: >
+      {% if is_state('binary_sensor.workday_tomorrow', 'off') and is_state('binary_sensor.workday_today', 'on') %}
+
+        {% if states('input_datetime.natt_i_huset_helg') >  states('input_datetime.morgen_i_huset') %}
+          {{ states('input_datetime.natt_i_huset_helg') < states('sensor.time') or states('sensor.time') < states('input_datetime.morgen_i_huset') }}
+        {% else %}
+          {{ states('input_datetime.natt_i_huset_helg') > states('sensor.time') or states('sensor.time') < states('input_datetime.morgen_i_huset') }}
+        {% endif %}
+
+      {% elif is_state('binary_sensor.workday_tomorrow', 'off') and is_state('binary_sensor.workday_today', 'off') %}
+
+        {% if states('input_datetime.natt_i_huset_helg') >  states('input_datetime.morgen_i_huset_helg') %}
+          {{ states('input_datetime.natt_i_huset_helg') < states('sensor.time') or states('sensor.time') < states('input_datetime.morgen_i_huset_helg') }}
+        {% else %}
+          {{ states('input_datetime.natt_i_huset_helg') > states('sensor.time') or states('sensor.time') < states('input_datetime.morgen_i_huset_helg') }}
+        {% endif %}
+
+      {% elif is_state('binary_sensor.workday_tomorrow', 'on') and is_state('binary_sensor.workday_today', 'off') %}
+
+        {% if states('input_datetime.natt_i_huset') >  states('input_datetime.morgen_i_huset_helg') %}
+          {{ states('input_datetime.natt_i_huset') < states('sensor.time') or states('sensor.time') < states('input_datetime.morgen_i_huset_helg') }}
+        {% else %}
+          {{ states('input_datetime.natt_i_huset') > states('sensor.time') or states('sensor.time') < states('input_datetime.morgen_i_huset_helg') }}
+        {% endif %}
+
+      {% else %}
+
+        {% if states('input_datetime.natt_i_huset') >  states('input_datetime.morgen_i_huset') %}
+          {{ states('input_datetime.natt_i_huset') < states('sensor.time') or states('sensor.time') < states('input_datetime.morgen_i_huset') }}
+        {% else %}
+          {{ states('input_datetime.natt_i_huset') > states('sensor.time') or states('sensor.time') < states('input_datetime.morgen_i_huset') }}
+        {% endif %}
+
+      {% endif %}
+  - name: "Natta for Sunniva"
+    unique_id: det_er_natt_sunniva
+    state: >
+      {% if is_state('binary_sensor.workday_tomorrow', 'off') and is_state('binary_sensor.workday_today', 'on') %}
+
+        {% if states('input_datetime.leggetid_for_sunniva_i_helg_og_ferie') >  states('input_datetime.morgen_i_huset') %}
+          {{ states('input_datetime.leggetid_for_sunniva_i_helg_og_ferie') < states('sensor.time') or states('sensor.time') < states('input_datetime.morgen_i_huset') }}
+        {% else %}
+          {{ states('input_datetime.leggetid_for_sunniva_i_helg_og_ferie') > states('sensor.time') or states('sensor.time') < states('input_datetime.morgen_i_huset') }}
+        {% endif %}
+
+      {% elif is_state('binary_sensor.workday_tomorrow', 'off') and is_state('binary_sensor.workday_today', 'off') %}
+
+        {% if states('input_datetime.leggetid_for_sunniva_i_helg_og_ferie') >  states('input_datetime.morgen_i_huset_helg') %}
+          {{ states('input_datetime.leggetid_for_sunniva_i_helg_og_ferie') < states('sensor.time') or states('sensor.time') < states('input_datetime.morgen_i_huset_helg') }}
+        {% else %}
+          {{ states('input_datetime.leggetid_for_sunniva_i_helg_og_ferie') > states('sensor.time') or states('sensor.time') < states('input_datetime.morgen_i_huset_helg') }}
+        {% endif %}
+
+      {% elif is_state('binary_sensor.workday_tomorrow', 'on') and is_state('binary_sensor.workday_today', 'off') %}
+
+        {% if states('input_datetime.leggetid_for_sunniva_pa_hverdager') >  states('input_datetime.morgen_i_huset_helg') %}
+          {{ states('input_datetime.leggetid_for_sunniva_pa_hverdager') < states('sensor.time') or states('sensor.time') < states('input_datetime.morgen_i_huset_helg') }}
+        {% else %}
+          {{ states('input_datetime.leggetid_for_sunniva_pa_hverdager') > states('sensor.time') or states('sensor.time') < states('input_datetime.morgen_i_huset_helg') }}
+        {% endif %}
+
+      {% else %}
+
+        {% if states('input_datetime.leggetid_for_sunniva_pa_hverdager') >  states('input_datetime.morgen_i_huset') %}
+          {{ states('input_datetime.leggetid_for_sunniva_pa_hverdager') < states('sensor.time') or states('sensor.time') < states('input_datetime.morgen_i_huset') }}
+        {% else %}
+          {{ states('input_datetime.leggetid_for_sunniva_pa_hverdager') > states('sensor.time') or states('sensor.time') < states('input_datetime.morgen_i_huset') }}
+        {% endif %}
+
+      {% endif %}
+  - name: "Natta for Kaja"
+    unique_id: det_er_natt_kaja
+    state: >
+      {% if is_state('binary_sensor.workday_tomorrow', 'off') and is_state('binary_sensor.workday_today', 'on') %}
+
+        {% if states('input_datetime.leggetid_for_kaja_i_helg_og_ferie') >  states('input_datetime.morgen_i_huset') %}
+          {{ states('input_datetime.leggetid_for_kaja_i_helg_og_ferie') < states('sensor.time') or states('sensor.time') < states('input_datetime.morgen_i_huset') }}
+        {% else %}
+          {{ states('input_datetime.leggetid_for_kaja_i_helg_og_ferie') > states('sensor.time') or states('sensor.time') < states('input_datetime.morgen_i_huset') }}
+        {% endif %}
+
+      {% elif is_state('binary_sensor.workday_tomorrow', 'off') and is_state('binary_sensor.workday_today', 'off') %}
+
+        {% if states('input_datetime.leggetid_for_kaja_i_helg_og_ferie') >  states('input_datetime.morgen_i_huset_helg') %}
+          {{ states('input_datetime.leggetid_for_kaja_i_helg_og_ferie') < states('sensor.time') or states('sensor.time') < states('input_datetime.morgen_i_huset_helg') }}
+        {% else %}
+          {{ states('input_datetime.leggetid_for_kaja_i_helg_og_ferie') > states('sensor.time') or states('sensor.time') < states('input_datetime.morgen_i_huset_helg') }}
+        {% endif %}
+
+      {% elif is_state('binary_sensor.workday_tomorrow', 'on') and is_state('binary_sensor.workday_today', 'off') %}
+
+        {% if states('input_datetime.leggetid_for_kaja_pa_hverdager') >  states('input_datetime.morgen_i_huset_helg') %}
+          {{ states('input_datetime.leggetid_for_kaja_pa_hverdager') < states('sensor.time') or states('sensor.time') < states('input_datetime.morgen_i_huset_helg') }}
+        {% else %}
+          {{ states('input_datetime.leggetid_for_kaja_pa_hverdager') > states('sensor.time') or states('sensor.time') < states('input_datetime.morgen_i_huset_helg') }}
+        {% endif %}
+
+      {% else %}
+
+        {% if states('input_datetime.leggetid_for_kaja_pa_hverdager') >  states('input_datetime.morgen_i_huset') %}
+          {{ states('input_datetime.leggetid_for_kaja_pa_hverdager') < states('sensor.time') or states('sensor.time') < states('input_datetime.morgen_i_huset') }}
+        {% else %}
+          {{ states('input_datetime.leggetid_for_kaja_pa_hverdager') > states('sensor.time') or states('sensor.time') < states('input_datetime.morgen_i_huset') }}
+        {% endif %}
+
+      {% endif %}
+  - name: "Post i dag"
+    unique_id: post_i_dag
+    state: >
+      {% if (now().day|string + ".") in states('sensor.posten_delivery_0') %}
+      {{ "I dag" in states('sensor.posten_delivery_0') }}
+      {% else %}
+      False
+      {% endif %}
+  - name: "Minst en UPS mangler strøm"
+    unique_id: minst_en_ups_mangler_Strom
+    state: >
+      {{ 
+        is_state('switch.ups_1_stikkontakt', 'off')
+        or 
+        is_state('switch.ups_2_stikkontakt', 'off')
+        or
+        is_state('switch.ups_3_stikkontakt', 'off')
+      }}
+  - name: "Problemer med backup"
+    unique_id: problemer_med_backup
+    delay_on: 0:03:00
+    state: >
+      {{ 
+        states('sensor.rpi_home_backup_server_used_percent')|float(default=100) > 85
+        or 
+        states('sensor.rpi_home_backup_server_media_securebackup_raid_used_percent')|float(default=100) > 85
+      }}
+        # or
+        # states('sensor.rpi_backup_server_used_percent')|float(default=100) > 85
+        # or
+        # states('sensor.rpi_backup_server_media_securebackup_raid_used_percent')|float(default=100) > 85
+  - name: "Problemer med HA server"
+    unique_id: problemer_med_ha_server
+    delay_on: 0:03:00
+    state: >
+      {{ 
+        states('sensor.processor_use_percent')|float(default=100) > 85
+        or 
+        states('sensor.memory_use_percent')|float(default=100) > 85
+        or
+        states('sensor.disk_use_percent')|float(default=100) > 85
+      }}
+  - name: "Problemer med kubernetes"
+    unique_id: problemer_med_kubernetes
+    delay_on: 0:03:00
+    state: >
+      {{ 
+        states('sensor.proxmox_node_1_cpu_used')|float(default=100) > 85
+        or 
+        states('sensor.proxmox_node_1_ram_used_percent')|float(default=100) > 85
+        or
+        states('sensor.proxmox_node_1_composite_temperature')|float(default=100) > 65
+        or
+        states('sensor.proxmox_node_1_mnt_data_used_percent')|float(default=100) > 85
+        or
+        is_state('binary_sensor.node1_frigate_running', 'off')
+        or
+        states('sensor.home_server_cpu_used')|float(default=100) > 85
+        or 
+        states('sensor.home_server_ram_used_percent')|float(default=100) > 85
+        or
+        states('sensor.home_server_package_id_0_temperature')|float(default=100) > 65
+        or
+        states('sensor.home_server_used_percent')|float(default=100) > 85
+      }}
+
+  - name: At least one speaker active
+    unique_id: at_least_one_speaker_active
+    state: >
+      {{ 
+        not is_state('media_player.nest_audio_stue', 'off')
+        or 
+        not is_state('media_player.nest_hub_kjokken', 'off')
+        or 
+        not is_state('media_player.nest_audio_kaja', 'off')
+        or 
+        not is_state('media_player.nest_audio_sunniva', 'off')
+        or 
+        not is_state('media_player.nest_audio_hovedsoverom', 'off')
+        or 
+        not is_state('media_player.nest_audio_mannehula', 'off')
+        or 
+        not is_state('media_player.nest_audio_garasje', 'off')
+      }}
+
+  - name: Important motion on camera
+    unique_id: important_motion_on_camera
+    delay_off: 0:03:00
+    state: >
+      {{ 
+        is_state('group.bevegelse_garasje_oppe', 'on')
+        or 
+        is_state('group.bevegelse_garasje_nede', 'on')
+        or 
+        is_state('binary_sensor.hovedinngang_person_motion', 'on')
+        or 
+        is_state('binary_sensor.verandador_person_motion', 'on')
+      }}
+
+  - name: Aktive varsler
+    unique_id: aktive_varsler
+    state: >
+      {{
+        is_state('alert.garasjeport_hoyre', 'on')
+        or 
+        is_state('alert.garasjeport_venstre', 'on')
+        or 
+        is_state('alert.kjokkenvindu_veranda', 'on')
+        or 
+        is_state('alert.hovedinngangsdor', 'on')
+        or 
+        is_state('alert.garasje_ytterdor', 'on')
+        or 
+        is_state('alert.garasje_mellomdor', 'on')
+        or 
+        is_state('alert.dor_mancave', 'on')
+        or 
+        is_state('alert.lusking_i_garasjen', 'on')
+        or 
+        is_state('alert.lyd_hos_kaja_natt', 'on')
+        or 
+        is_state('alert.lyd_hos_sunniva_natt', 'on')
+        or 
+        is_state('alert.verandador', 'on')
+        or 
+        is_state('input_boolean.torketrommel_ferdig', 'on')
+        or 
+        is_state('input_boolean.vaskemaskin_ferdig', 'on')
+        or
+        is_state('input_boolean.stromstans_pa_spa_bad', 'on')
+        or
+        is_state('input_boolean.3d_printer_er_ferdig', 'on')
+      }}
+
+sensor:
+  - name: "Alarm trigget fra"
+    unique_id: alarm_trigget_fra
+    state: ""
+  - name: "Brannalarm trigget fra"
+    unique_id: brannalarm_trigget_fra
+    state: ""
+  - name: "Alarm sist aktivert"
+    state: ""
+  - name: "Alarm sist deaktivert"
+    state: ""
+  - name: "Alarm sist aktivert tekst"
+    state: ""
+  - name: "Alarm sist deaktivert tekst"
+    state: ""
+
+  # Per 14.01.2021
+  #Nettleie fastbeløp    2000,00 kr/år >> 0,0526 pr. kWh ved 38.000 kWh/år
+  #Nettleie energi         12,00 øre/kWh
+  #Nettleie forbruksavg    16,69 øre/kWh
+  #Avgift Energifondet     01,00 øre/kWh
+  #Tibber-abonnement       31,20 kr/mnd >> 0,0102 pr. kWh ved 38.000 kWh/år
+  #Strøm smartlading       20% prisgaranti
+
+  - name: "Electricity price infrastructure Tomasjordvegen 129"
+    unique_id: electricity_price_infrastructure_tomasjordvegen_129
+    device_class: "monetary"
+    state_class: "measurement"
+    #last_reset: "1970-01-01T00:00:00+00:00"
+    #icon_template: "mdi:currency-usd"
+    unit_of_measurement: "NOK/kWh"
+    state: >
+      {{ 
+      (0.0526 + 0.12 + 0.1669 + 0.01 + 0.0102)|round(3)
+      }}
+
+  - name: "Electricity price total Tomasjordvegen 129"
+    unique_id: electricity_price_total_tomasjordvegen_129
+    device_class: "monetary"
+    state_class: "measurement"
+    #last_reset: "1970-01-01T00:00:00+00:00"
+    #icon_template: "mdi:currency-usd"
+    unit_of_measurement: "NOK/kWh"
+    state: >
+      {{ 
+      ((states('sensor.electricity_price_infrastructure_tomasjordvegen_129')|float(default=0))
+      +(states('sensor.electricity_price_tomasjordvegen_129')|float(default=0))
+      )|round(3)
+      }}
+
+  - name: "Accumulated cost infrastructure Tomasjordvegen 129"
+    unique_id: accumulated_cost_infrastructure_tomasjordvegen_129
+    device_class: "monetary"
+    state_class: "measurement"
+    #last_reset: "1970-01-01T00:00:00+00:00"
+    #icon_template: "mdi:currency-usd"
+    unit_of_measurement: "NOK"
+    state: >
+      {{
+      ((states('sensor.electricity_price_infrastructure_tomasjordvegen_129')|float(default=0))
+      *(states('sensor.accumulated_consumption_tomasjordvegen_129')|float(default=0))) | round(2)
+      }}
+
+  - name: "Accumulated cost total Tomasjordvegen 129"
+    unique_id: accumulated_cost_total_tomasjordvegen_129
+    device_class: "monetary"
+    state_class: "measurement"
+    #last_reset: "1970-01-01T00:00:00+00:00"
+    #icon_template: "mdi:currency-usd"
+    unit_of_measurement: "NOK"
+    state: >
+      {{ 
+      ((states('sensor.accumulated_cost_tomasjordvegen_129')|float(default=0))
+      +(states('sensor.accumulated_cost_infrastructure_tomasjordvegen_129')|float(default=0))
+      )|round(2)
+      }}
+
+  - name: "Accumulated cost total current hour Tomasjordvegen 129"
+    unique_id: accumulated_cost_total_current_hour_tomasjordvegen_129
+    device_class: "monetary"
+    state_class: "measurement"
+    #last_reset: "1970-01-01T00:00:00+00:00"
+    #icon_template: "mdi:currency-usd"
+    unit_of_measurement: "NOK"
+    state: >
+      {{
+      ((states('sensor.electricity_price_total_tomasjordvegen_129')|float(default=0))
+      *(states('sensor.accumulated_consumption_current_hour_tomasjordvegen_129')|float(default=0))) | round(2)
+      }}
+
+  - name: "Norwegian weekday"
+    unique_id: norwegian_weekday
+    state: >
+      {% if now().weekday() == 0 %}
+        Mandag
+      {% elif now().weekday() == 1 %}
+        Tirsdag
+      {% elif now().weekday() == 2 %}
+        Onsdag
+      {% elif now().weekday() == 3 %}
+        Torsdag
+      {% elif now().weekday() == 4 %}
+        Fredag
+      {% elif now().weekday() == 5 %}
+        Lørdag
+      {% elif now().weekday() == 6 %}
+        Søndag
+      {% else %}
+        WTF?
+      {% endif %}
+
+  - name: "Norwegian month"
+    unique_id: norwegian_month
+    state: >
+      {% if now().month == 1 %}
+        Januar
+      {% elif now().month == 2 %}
+        Februar
+      {% elif now().month == 3 %}
+        Mars
+      {% elif now().month == 4 %}
+        April
+      {% elif now().month == 5 %}
+        Mai
+      {% elif now().month == 6 %}
+        Juni
+      {% elif now().month == 7 %}
+        Juli
+      {% elif now().month == 8 %}
+        August
+      {% elif now().month == 9 %}
+        September
+      {% elif now().month == 10 %}
+        Oktober
+      {% elif now().month == 11 %}
+        November
+      {% elif now().month == 12 %}
+        Desember
+      {% else %}
+        WTF?
+      {% endif %}
+
+  - name: "Norwegian month and day"
+    unique_id: norwegian_month_and_day
+    state: >
+      {{ now().day }}. {{ states('sensor.norwegian_month').lower() }}
+
+  - name: "Norwegian strømpris"
+    unique_id: norwegian_strompris
+    state: >
+      {{ (states('sensor.electricity_price_tomasjordvegen_129')|float(default=0) * 100)|round(1)|string| replace(".", ",") }} øre/kWh
+
+  - name: "Remi to home direction"
+    unique_id: remi_to_home_direction
+    state: >
+      {% if states is not none and states['proximity.remi_to_home'].attributes.dir_of_travel == 'towards' %}
+        (beveger seg hjemover)
+      {% elif states is not none and states['proximity.remi_to_home'].attributes.dir_of_travel == 'away_from' %}
+        (beveger seg hjemmefra)
+      {% elif states is not none and states['proximity.remi_to_home'].attributes.dir_of_travel == 'stationary' %}
+        
+      {% elif states is not none and states['proximity.remi_to_home'].attributes.dir_of_travel == 'arrived' %}
+        
+      {% else %}
+
+      {% endif %}
+
+  - name: "Kaja to home direction"
+    unique_id: kaja_to_home_direction
+    state: >
+      {% if states is not none and states['proximity.kaja_to_home'].attributes.dir_of_travel == 'towards' %}
+        (beveger seg hjemover)
+      {% elif states is not none and states['proximity.kaja_to_home'].attributes.dir_of_travel == 'away_from' %}
+        (beveger seg hjemmefra)
+      {% elif states is not none and states['proximity.kaja_to_home'].attributes.dir_of_travel == 'stationary' %}
+        
+      {% elif states is not none and states['proximity.kaja_to_home'].attributes.dir_of_travel == 'arrived' %}
+        
+      {% else %}
+
+      {% endif %}
+
+  - name: "Remi to home travel distance rounded"
+    unique_id: remi_to_home_travel_distance_rounded
+    state: >
+      {% if state_attr('sensor.fra_remi_til_hjem', 'distance') != none %}
+        {{ states['sensor.fra_remi_til_hjem'].attributes.distance|float(default=0)|round(1) }}
+      {% endif %}
+
+  - name: "Kaja to home travel distance rounded"
+    unique_id: kaja_to_home_travel_distance_rounded
+    state: >
+      {% if state_attr('sensor.fra_kaja_til_hjem', 'distance') != none %}
+        {{ states['sensor.fra_kaja_til_hjem'].attributes.distance|float(default=0)|round(1) }}
+      {% endif %}
+
+  - name: "Remi current location"
+    unique_id: remi_current_location
+    state: >
+      {% if state_attr('sensor.mobilremi_geocoded_location', 'thoroughfare') != none %}
+        {{ states['sensor.mobilremi_geocoded_location'].attributes.thoroughfare + " " if states['sensor.mobilremi_geocoded_location'].attributes.thoroughfare != 'null' }}{{ states['sensor.mobilremi_geocoded_location'].attributes.sub_thoroughfare if states['sensor.mobilremi_geocoded_location'].attributes.sub_thoroughfare != 'null' }}{{ ', ' if states['sensor.mobilremi_geocoded_location'].attributes.thoroughfare != 'null' or states['sensor.mobilremi_geocoded_location'].attributes.sub_thoroughfare != 'null' }}{{ states['sensor.mobilremi_geocoded_location'].attributes.sub_administrative_area + ', ' if states['sensor.mobilremi_geocoded_location'].attributes.sub_administrative_area != 'null' }}{{ states['sensor.mobilremi_geocoded_location'].attributes.country if states['sensor.mobilremi_geocoded_location'].attributes.country != 'null' }}
+      {% endif %}
+
+  - name: "Kaja current location"
+    unique_id: kaja_current_location
+    state: >
+      {% if state_attr('sensor.kaja_s6_geocoded_location', 'thoroughfare') != none %}
+        {{ states['sensor.kaja_s6_geocoded_location'].attributes.thoroughfare + " " if states['sensor.kaja_s6_geocoded_location'].attributes.thoroughfare != 'null' }}{{ states['sensor.kaja_s6_geocoded_location'].attributes.sub_thoroughfare if states['sensor.kaja_s6_geocoded_location'].attributes.sub_thoroughfare != 'null' }}{{ ', ' if states['sensor.kaja_s6_geocoded_location'].attributes.thoroughfare != 'null' or states['sensor.kaja_s6_geocoded_location'].attributes.sub_thoroughfare != 'null' }}{{ states['sensor.kaja_s6_geocoded_location'].attributes.sub_administrative_area + ', ' if states['sensor.kaja_s6_geocoded_location'].attributes.sub_administrative_area != 'null' }}{{ states['sensor.kaja_s6_geocoded_location'].attributes.country if states['sensor.kaja_s6_geocoded_location'].attributes.country != 'null' }}
+      {% endif %}
+
+  - name: "Høyeste utetemperatur"
+    unique_id: utetemp_max_now
+    unit_of_measurement: '°C'
+    state: >
+        {% set temp = states("sensor.temperatursensor_baksiden_air_temperature")|float(default=0),
+            states("sensor.temperatursensor_forsiden_kjokken_air_temperature")|float(default=0),
+            states("sensor.temperatursensor_hovedinngang_air_temperature")|float(default=0),
+            states("sensor.temperatursensor_verandador_air_temperature")|float(default=0) %}
+        {{ temp|max }}
+
+  - name: "Laveste utetemperatur"
+    unique_id: utetemp_min_now
+    unit_of_measurement: '°C'
+    state: >
+        {% set temp = states("sensor.temperatursensor_baksiden_air_temperature")|float(default=0),
+            states("sensor.temperatursensor_forsiden_kjokken_air_temperature")|float(default=0),
+            states("sensor.temperatursensor_hovedinngang_air_temperature")|float(default=0),
+            states("sensor.temperatursensor_verandador_air_temperature")|float(default=0) %}
+        {{ temp|min }}

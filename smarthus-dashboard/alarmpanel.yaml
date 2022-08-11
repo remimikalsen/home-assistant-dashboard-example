@@ -1,0 +1,78 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  large: true
+  title: Alarmpanel
+  card:
+    type: custom:layout-card
+    layout_type: custom:horizontal-layout
+    layout:
+      width: 300
+      max_cols: 4
+      card_margin: 20px
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: alarm-panel
+            style: |
+              ha-card {
+                box-shadow: none;
+              }
+            states:
+              - arm_home
+              - arm_away
+            entity: alarm_control_panel.innbruddsalarm
+            name: Alarm
+          - type: custom:mod-card
+            style:
+              .: |
+                ha-card {
+                  background-color: transparent;
+                }
+              hui-grid-card$: |
+                #root {
+                  justify-items: center !important;
+                }
+                .card-header {
+                  text-align: center;
+                }
+            card:
+              type: grid
+              columns: 1
+              square: false
+              cards:
+                - type: horizontal-stack
+                  cards:
+                    - type: custom:button-card
+                      template: button_edit_alarm
+                      icon: mdi:shield-edit
+                      color: rgb(68, 115, 158)
+                      name: Rediger full alarm
+                      tap_action:
+                        !include edit-full-alarm.yaml 
+                    - type: custom:button-card
+                      template: button_edit_alarm
+                      icon: mdi:shield-edit-outline
+                      color: rgb(68, 115, 158)
+                      name: Rediger skallalarm
+                      tap_action:
+                        !include edit-skallalarm.yaml 
+      - type: custom:mod-card
+        style:
+          .: |
+            ha-card {
+              background-color: transparent;
+              box-shadow: none;
+            }
+        card:
+          type: custom:html-template-card
+          ignore_line_breaks: true
+          content: >
+            <div style="min-height: 180px;">
+
+            <p style="font-size: 1.6em; margin-top: 8px;">Sist
+            trigget fra:</p>
+
+            <span>{{ states('sensor.alarm_trigget_fra') }}</span>
+
+            </div>

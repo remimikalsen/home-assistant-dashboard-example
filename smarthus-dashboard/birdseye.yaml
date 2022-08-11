@@ -1,0 +1,19 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  large: true
+  title: CCTV
+  card:        
+    type: custom:frigate-card
+    view:
+      default: live
+    menu:
+      buttons:
+        frigate: false
+        live: false
+        clips: false
+        snapshots: false
+        frigate_ui: false
+    cameras:
+      - camera_name: birdseye
+        live_provider: frigate-jsmpeg

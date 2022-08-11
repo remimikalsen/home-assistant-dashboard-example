@@ -1,0 +1,105 @@
+project_id: <REDACTED>
+service_account: !include google-service-account.json
+report_state: true
+#expose_by_default: false
+exposed_domains:
+  - cover
+  - light
+entity_config:
+  light.spot_tak_i_gang_oppe_1_level_light_color_on_off:
+    expose: false
+  light.spot_tak_i_gang_oppe_2_level_light_color_on_off:
+    expose: false
+  light.taklys_1_yttergang_nede_level_light_color_on_off:
+    expose: false
+  light.taklys_2_yttergang_nede_level_light_color_on_off:
+    expose: false
+  light.spotter_pa_mannehula:
+    expose: false
+  script.apne_hoyre_garasjeport:
+    expose: true
+    name: Åpne høyre garasjeport
+  script.lukk_hoyre_garasjeport:
+    expose: true
+    name: Lukk høyre garasjeport
+  switch.panelovn_hovedsoverom:
+    expose: true
+    name: Panelovn på hovedsoverommet
+  switch.panelovn_sunniva:
+    expose: true
+    name: Panelovn på Sunniva sitt rom
+  switch.panelovn_mancave:
+    expose: true
+    name: Panelovn på mannehula
+  sensor.roykvarsler_garasje_nede_air_temperature:
+    expose: true
+    name: Temperaturen i garasjen
+  sensor.temperatur_og_luftfuktighet_garasje_temperature:
+    expose: true
+    name: Temperaturen i garasjeboden
+  sensor.roykvarsler_sunniva_air_temperature:
+    expose: true
+    name: Temperaturen på Sunniva sitt rom
+  sensor.roykvarsler_kaja_air_temperature:
+    expose: true
+    name: Temperaturen på Kaja sitt rom
+  sensor.roykvarsler_hovedsoverom_air_temperature:
+    expose: true
+    name: Temperaturen på hovedsoverommet
+  sensor.roykvarsler_stue_air_temperature:
+    expose: true
+    name: Temperaturen i stua
+  sensor.temperatursensor_hovedinngang_air_temperature:
+    expose: true
+    name: Temperaturen ved ytterdøra
+  sensor.temperatursensor_verandador_air_temperature:
+    expose: true
+    name: Temperatur ved verandadøra
+  switch.garasjeport_hoyre:
+    expose: true
+    name: Høyre garasjeport
+  input_boolean.lerret_mancave:
+    expose: true
+    name: Lerret
+  light.browser_mod_30f62bbe_3aeb0ff1:
+    expose: false
+  light.browser_mod_abd730be_7db185b4:
+    expose: false
+  light.browser_mod_dbc6cbe0_acbef65d:
+    expose: false
+  light.browser_mod_f68d91d5_ff60303e:
+    expose: false
+  light.samsungtablet:
+    expose: false
+  light.taklys_1_bod_nede:
+    expose: false
+  light.taklys_2_bod_nede:
+    expose: false
+  light.taklys_3_bod_nede:
+    expose: false
+  light.taklys_1_gang_nede_innerst:
+    expose: false
+  light.taklys_2_gang_nede_innerst:
+    expose: false
+  light.taklys_3_gang_nede_innerst:
+    expose: false
+  light.taklys_1_gang_nede_trapp:
+    expose: false
+  light.taklys_2_gang_nede_trapp:
+    expose: false
+  light.taklys_3_gang_nede_trapp:
+    expose: false
+  light.taklys_1_gang_nede_garderobe:
+    expose: false
+  light.taklys_2_gang_nede_garderobe:
+    expose: false
+  light.taklys_3_gang_nede_garderobe:
+    expose: false
+  light.taklys_4_gang_nede_garderobe:
+    expose: false
+  light.taklys_1_mancave_innerbod:
+    expose: false
+  light.taklys_2_mancave_innerbod:
+    expose: false
+  light.taklys_3_mancave_innerbod:
+    expose: false

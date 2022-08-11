@@ -1,0 +1,33 @@
+- platform: switch
+  name: Lampa bak sofaen i stua
+  entity_id: switch.lampe_sofa_stue
+- platform: switch
+  name: Taklyset i stua
+  entity_id: switch.spot_tak_stue
+- platform: switch
+  name: Vinduslyset i stua
+  entity_id: switch.spotter_vindu_stue
+- platform: switch
+  name: Lyset over speilet i stua
+  entity_id: switch.spot_speil_stue
+- platform: switch
+  name: Treningslyset på mannehula
+  entity_id: switch.spot_mancave_trening
+- platform: switch
+  name: Kontorlyset på mannehula
+  entity_id: switch.spot_mancave_kontor
+- platform: group
+  name: Taklyset i gangen oppe
+  entities:
+    - light.taklys_1_gang_oppe
+    - light.taklys_2_gang_oppe
+- platform: group
+  name: Spotter på mannehula
+  entities:
+    - light.lys_mancave_trening
+    - light.lys_mancave_kontor
+- platform: group
+  name: Taklyset i yttergangen
+  entities:
+    - light.taklys_1_yttergang
+    - light.taklys_2_yttergang

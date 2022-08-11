@@ -1,0 +1,32 @@
+binary_sensor.dorsensor_mancave_door_window:
+  device_class: door
+binary_sensor.vindu_barnerom_access_control_window_door_is_open:
+  device_class: window
+binary_sensor.vindu_hovedsoverom_venstre_hovedsoverom_v_access_control_window_door_is_open:
+  device_class: window
+binary_sensor.vindu_hovedsoverom_hoyre_access_control_window_door_is_open:
+  device_class: window
+binary_sensor.vindu_kjokken_veranda_access_control_window_door_is_open:
+  device_class: window
+binary_sensor.philips_sml001_3a921709_occupancy:
+  friendly_name: Bevegelse gang oppe occupancy
+binary_sensor.vindu_sunniva_access_control_window_door_is_open:
+  device_class: window
+binary_sensor.vindu_hovedsoverom_lite_hovedsoverom_v_access_control_window_door_is_open:
+  device_class: window
+binary_sensor.vindu_hovedsoverom_stort_access_control_window_door_is_open:
+  device_class: window
+binary_sensor.status_hoyre_garasjeport_access_control_window_door_is_open:
+  device_class: garage_door
+binary_sensor.status_venstre_garasjeport_access_control_window_door_is_open:
+  device_class: garage_door
+cover.persienner_stue:
+  device_class: shutter
+binary_sensor.vindu_hovedsoverom_lite_access_control_window_door_is_open:
+  device_class: window
+binary_sensor.vindu_hoyre_kaja_access_control_window_door_is_open:
+  device_class: window
+binary_sensor.vinduet_pa_mannehula_access_control_window_door_is_open:
+  device_class: window
+binary_sensor.vindu_venstre_kaja_access_control_window_door_is_open:
+  device_class: window

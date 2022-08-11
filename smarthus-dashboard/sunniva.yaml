@@ -1,0 +1,7 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: Sunniva
+  card:
+    type: light
+    entity: light.taklys_pa_sunniva_sitt_rom

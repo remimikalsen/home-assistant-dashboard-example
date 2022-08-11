@@ -1,0 +1,14 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: Post
+  card:
+    type: custom:html-template-card
+    title: Posten leveringsdatoer
+    ignore_line_breaks: true
+    content: |
+      <ul style="margin-top: 0; line-height: 35px">
+      <li>{{ states('sensor.posten_delivery_0') }}</li>
+      <li>{{ states('sensor.posten_delivery_1') }}</li>
+      <li>{{ states('sensor.posten_delivery_2') }}</li>
+      </ul>

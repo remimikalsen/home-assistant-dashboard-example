@@ -1,0 +1,488 @@
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+frontend:
+  extra_module_url:
+    - /hacsfiles/lovelace-card-mod/card-mod.js
+#    - url: /hacsfiles/frigate-hass-card/frigate-hass-card.js
+#      type: module
+#    - url: /hacsfiles/surveillance-card/surveillance-card.js?v=0
+#      type: module
+
+browser_mod:
+  prefix: "browser_mod_"
+  devices:
+    abd730be-7db185b4:
+      name: LaptopJobbFirefox
+    a72ce3b5-dae1b140:
+      name: LaptopJobbChrome
+    30f62bbe-3aeb0ff1:
+      name: CompanionAppRemiMobil
+    dbc6cbe0_acbef65d:
+      name: LenovoTabletNede
+      camera: true
+    ea8a20d5_efbf05e4:
+      name: SamsungTabletOppe
+      camera: true
+
+recorder:
+  db_url: !secret recorder_db_url
+  purge_keep_days: 7
+  auto_purge: false
+  exclude:
+    domains:
+      - media_player
+      - uptime
+      - time_date
+      - worldclock
+      - light
+      - camera
+      - climate
+      - weather
+      - sun
+      - switch
+    entity_globs:
+      - sensor.date*
+      - sensor.time*
+      - sensor.uptime*
+      - binary_sensor.bbsb*
+      - sensor.epson_xp_540*
+      - sensor.home_server_snap_canonical*
+      - sensor.remiks*
+      - sensor.*battery_level
+      - binary_sensor.*battery_low
+      - binary_sensor.*battery_level
+      - binary_sensor.*_replace_battery_now
+      - sensor.*battery
+      - sensor.*battery_health
+      - sensor.*battery_state
+      - sensor.*current
+      - sensor.*speed
+      - sensor.current*
+      - sensor.*fps
+      - sensor.*thread
+      - sensor.*sleeping
+
+proximity:
+  home:
+    #ignored_zones:
+    #  - Jobb Remi
+    devices:
+      - device_tracker.mobil_remi
+      - device_tracker.karis_mobil
+      - device_tracker.mobil_kari
+      - device_tracker.kaja_s6
+    tolerance: 50
+    unit_of_measurement: km
+  remi_to_home:
+    zone: home
+    devices:
+      - device_tracker.mobil_remi
+    tolerance: 50
+    unit_of_measurement: km
+  kaja_to_home:
+    zone: home
+    devices:
+      - device_tracker.kaja_s6
+    tolerance: 50
+    unit_of_measurement: km
+
+logger:
+  default: warning
+  logs:
+    custom_components.remiks_renovasjon: warning
+    requests.packages.urllib3: critical
+
+birthdays:
+  - name: "Remi"
+    date_of_birth: 1918-01-01
+    icon: mdi:chess-king
+
+spotcast:
+  sp_dc: <REDACTED>
+  sp_key: <REDACTED>
+  country: NO
+
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 172.30.33.0/24
+
+rfxtrx:
+  device: /dev/serial/by-id/usb-RFXCOM_RFXtrx433XL_DO5P0A83-if00-port0
+
+# Text to speech
+tts:
+  - platform: google_translate
+    language: "no"
+    cache: true
+    cache_dir: /tmp/tts
+    time_memory: 300
+    service_name: google_say
+
+notify:
+  - name: Mannehule
+    platform: tts
+    tts_service: tts.google_say
+    media_player: media_player.nest_audio_mannehula
+  - name: Hovedsoverom
+    platform: tts
+    tts_service: tts.google_say
+    media_player: media_player.nest_audio_hovedsoverom
+  - name: Stue
+    platform: tts
+    tts_service: tts.google_say
+    media_player: media_player.nest_audio_stue
+  - name: Garasje
+    platform: tts
+    tts_service: tts.google_say
+    media_player: media_player.nest_audio_garasje
+  - name: Alarmer
+    platform: group
+    services:
+      - service: mobile_app_mobilremi
+        data:
+          ttl: 0
+          priority: high
+          channel: alarm_stream_max
+      - service: slack
+  - name: Varsler
+    platform: group
+    services:
+      - service: slack
+  - name: Debug
+    platform: group
+    services:
+      - service: slack
+        data:
+          target: "#smarthus-debug"
+
+homeassistant:
+  customize: !include customize.yaml
+  allowlist_external_urls:
+    - "https://<REDACTED>/api/frigate/notifications"
+
+lovelace:
+  dashboards:
+    smarthome-yaml:
+      mode: yaml
+      title: Smarthus
+      icon: mdi:home-assistant
+      show_in_sidebar: true
+      filename: smarthus-dashboard.yaml
+
+alert: !include alerts.yaml
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+light: !include light.yaml
+google_assistant: !include google_assistant.yaml
+template: !include templates.yaml
+input_text: !include input_texts.yaml
+input_boolean: !include input_booleans.yaml
+input_number: !include input_numbers.yaml
+python_script:
+
+climate:
+  - platform: generic_thermostat
+    name: Garasjebod
+    heater: switch.panelovn_garasjebod
+    target_sensor: sensor.temperatur_og_luftfuktighet_garasje_temperature
+    min_temp: 4
+    max_temp: 15
+    ac_mode: false
+    #target_temp: 10
+    cold_tolerance: 1
+    hot_tolerance: 1
+    min_cycle_duration:
+      seconds: 600
+    #initial_hvac_mode: "off"
+  - platform: generic_thermostat
+    name: Sunniva
+    heater: switch.panelovn_sunniva
+    target_sensor: sensor.roykvarsler_sunniva_air_temperature
+    min_temp: 14
+    max_temp: 23
+    ac_mode: false
+    target_temp: 19
+    cold_tolerance: 0.5
+    hot_tolerance: 0.5
+    min_cycle_duration:
+      seconds: 600
+    #initial_hvac_mode: "off"
+  - platform: generic_thermostat
+    name: Hovedsoverom
+    heater: switch.panelovn_hovedsoverom
+    target_sensor: sensor.roykvarsler_hovedsoverom_air_temperature
+    min_temp: 14
+    max_temp: 23
+    ac_mode: false
+    target_temp: 19
+    cold_tolerance: 0.5
+    hot_tolerance: 0.5
+    min_cycle_duration:
+      seconds: 600
+    #initial_hvac_mode: "off"
+  - platform: generic_thermostat
+    name: ManCave
+    heater: switch.panelovn_mancave
+    target_sensor: sensor.roykvarsler_mancave_air_temperature
+    min_temp: 14
+    max_temp: 23
+    ac_mode: false
+    target_temp: 20
+    cold_tolerance: 0.5
+    hot_tolerance: 0.5
+    min_cycle_duration:
+      seconds: 600
+    #initial_hvac_mode: "off"
+  - platform: generic_thermostat
+    name: Kjøkken
+    heater: switch.panelovn_kjokken
+    target_sensor: sensor.roykvarsler_stue_air_temperature
+    min_temp: 14
+    max_temp: 23
+    ac_mode: false
+    target_temp: 20
+    cold_tolerance: 0.5
+    hot_tolerance: 0.5
+    min_cycle_duration:
+      seconds: 600
+    #initial_hvac_mode: "off"
+
+alarm_control_panel:
+  - platform: manual
+    name: Innbruddsalarm
+    code: !secret alarm_control_panel_code
+    #code_template: "{{ states('input_text.masterkode_alarm')|int(default=0) }}"
+    arming_time: 30
+    delay_time: 15
+    trigger_time: 1200
+    disarmed:
+      trigger_time: 0
+    armed_home:
+      arming_time: 0
+      delay_time: 20
+      trigger_time: 120
+
+remiks_renovasjon:
+  streets: ["<REDACTED>"]
+  following: ["Optisk sortert avfall", "Glass og metallemballasje"]
+  days_notice: 1
+
+nordpool:
+
+proxmoxve:
+  - host: <REDACTED>
+    username: <REDACTED>
+    password: <REDACTED>
+    verify_ssl: false
+    nodes:
+      - node: node1
+        containers:
+          - 100
+
+binary_sensor:
+  - platform: workday
+    name: workday_today
+    country: "NO"
+  - platform: workday
+    name: workday_tomorrow
+    country: "NO"
+    days_offset: 1
+  - platform: remiks_renovasjon
+  - platform: hikvision
+    name: IP Camera Hovedinngang
+    host: <REDACTED>
+    username: !secret hikvision_user
+    password: !secret hikvision_pw
+    port: 80
+    ssl: false
+  - platform: hikvision
+    name: IP Camera Verandadør
+    host:<REDACTED>
+    username: !secret hikvision_user
+    password: !secret hikvision_pw
+    port: 80
+    ssl: false
+  - platform: hikvision
+    name: IP Camera Garasje
+    host: <REDACTED>
+    username: !secret hikvision_user
+    password: !secret hikvision_pw
+    port: 80
+    ssl: false
+
+sensor:
+  # Kystens hus 'NSR:StopPlace:52250'
+  # Siriusvegen sør (mot sentrum) 'NSR:Quay:90446'
+  # Tomasjordnes (mot sentrum) 'NSR:Quay:88471'
+  # Lunheim skole 'NSR:StopPlace:54618'
+  # Tromsø Prostneset 'NSR:StopPlace:52273'
+  - platform: entur_public_transport
+    scan_interval: 240
+    name: Buss til jobb Remi
+    stop_ids:
+      - "NSR:StopPlace:52250"
+      - "NSR:Quay:90446"
+      - "NSR:Quay:88471"
+      - "NSR:StopPlace:54618"
+      - "NSR:StopPlace:52273"
+    line_whitelist:
+      - TRO:Line:1_20
+      - TRO:Line:1_24
+      - TRO:Line:1_450
+    number_of_departures: 3
+  - platform: remiks_renovasjon
+  - platform: rest
+    name: PostenDeliveryDays
+    resource: https://www.posten.no/levering-av-post/_/component/main/1/leftRegion/1?postCode=9024
+    headers:
+      x-requested-with: XMLHttpRequest
+      Referer: https://www.posten.no/levering-av-post
+    scan_interval: 57600
+    value_template: "{{ value_json.nextDeliveryDays }}"
+  - platform: nordpool
+    region: "Tromsø"
+  - platform: command_line
+    name: RPi CPU Temperature
+    command: "cat /sys/class/thermal/thermal_zone0/temp"
+    unit_of_measurement: "°C"
+    value_template: "{{ value | multiply(0.001) | round(0) }}"
+  - platform: systemmonitor
+    resources:
+      - type: last_boot
+      - type: disk_use_percent
+        arg: /
+      - type: memory_use_percent
+      - type: processor_use
+  #===================
+  #=== System Up Time
+  #===================
+  - platform: uptime
+
+  - platform: template
+    sensors:
+      #==========================
+      #=== Home Assistant uptime
+      #==========================
+      ha_uptime:
+        friendly_name: HA Uptime
+        value_template: >
+          {% if states('sensor.uptime') == '0.0' %} 
+            Just restarted...
+          {% else %}
+            {% macro phrase(value, name) %}
+            {%- set value = value | int(default=0) %}
+            {%- set end = 's' if value > 1 else '' %}
+            {{- '{} {}{}'.format(value, name, end) if value | int(default=0) > 0 else '' }}
+            {%- endmacro %}
+            
+            {% set weeks = (states('sensor.uptime') | int(default=0) / 7) | int(default=0) %}
+            {% set days = (states('sensor.uptime') | int(default=0)) - (weeks * 7) %}
+            {% set hours = (states('sensor.uptime') | float(default=0) - states('sensor.uptime') | int(default=0)) * 24 %}
+            {% set minutes = (hours - hours | int(default=0)) * 60 %}
+
+            {{ [ phrase(weeks, 'week'), phrase(days, 'day'), phrase(hours, 'hr'), phrase(minutes, 'min') ] | select('!=','') | list | join(', ') }}
+          {% endif %}
+
+      #=========================================
+      #=== Raspberry Pi last boot date and time
+      #=========================================
+      last_boot_date_time:
+        friendly_name: Last Boot
+        value_template: >
+          {% set date = as_timestamp(states('sensor.last_boot')) | timestamp_custom('%d') %}
+          {% set date = '{:01}'.format(date | int(default=0)) %}
+          {% if date in ('1', '21', '31') %}
+            {% set date = date ~ 'st' %}
+          {% elif date in ('2', '22') %}
+            {% set date = date ~ 'nd' %}
+          {% elif date in ('3', '23') %}
+            {% set date = date ~ 'rd' %}
+          {% else %}
+            {% set date = date ~ 'th' %}
+          {% endif %}
+
+          {{ as_timestamp(states('sensor.last_boot')) | timestamp_custom('%H:%M on %a') }} {{ date }} {{ as_timestamp(states('sensor.last_boot')) | timestamp_custom('%b %Y') }}
+
+      #=========================
+      #=== Raspberry Pi Up Time
+      #=========================
+      rpi_uptime:
+        friendly_name: RPi Uptime
+        value_template: >
+          {% set up_time = as_timestamp(now()) - as_timestamp(states('sensor.last_boot')) %}
+
+          {% set minutes = (up_time // 60) | int(default=0) %}
+          {% set hours = (minutes // 60) %}
+          {% set days = (hours // 24) %}
+          {% set weeks = (days // 7) %}
+
+          {% set minutes = (minutes % 60) %}
+          {% set hours =  (hours % 24) %}
+          {% set days = (days % 7) %}
+
+          {% macro phrase(value, name) %}
+                    {%- set value = value %}
+                    {%- set end = 's' if value > 1 else '' %}
+                    {{- '{} {}{}'.format(value, name, end) if value | int(default=0) > 0 else '' }}
+          {%- endmacro %}
+                    
+          {% set text = [ phrase(weeks, 'week'), phrase(days, 'day'), phrase(hours, 'hr'), phrase(minutes, 'min') ] | select('!=','') | list | join(', ') %}
+          {% set last_comma = text.rfind(',') %}
+          {% if last_comma != -1 %}
+            {% set text = text[:last_comma] + ' and' + text[last_comma + 1:] %}
+          {% endif %}
+
+          {{ text }}
+
+  - platform: time_date
+    display_options:
+      - "time"
+      - "date"
+      - "date_time"
+      - "date_time_utc"
+      - "date_time_iso"
+      - "time_date"
+      - "time_utc"
+      - "beat"
+  - platform: integration
+    source: sensor.panelovn_kjokken_power
+    name: Panelovn Kjøkken kWh
+    unit_prefix: k
+    round: 2
+  - platform: integration
+    source: sensor.panelovn_mancave_power
+    name: Panelovn ManCave kWh
+    unit_prefix: k
+    round: 2
+  - platform: integration
+    source: sensor.panelovn_sunniva_power
+    name: Panelovn Sunniva kWh
+    unit_prefix: k
+    round: 2
+  - platform: integration
+    source: sensor.stikkontakt_torketrommel_power
+    name: Tørketrommel kWh
+    unit_prefix: k
+    method: left
+    round: 2
+  - platform: integration
+    source: sensor.stikkontakt_vaskemaskin_power
+    name: Vaskemaskin kWh
+    unit_prefix: k
+    method: left
+    round: 2
+  - platform: integration
+    source: sensor.varmtvannsbereder_vaskerom_power
+    name: Varmtvannsbereder kWh
+    unit_prefix: k
+    method: left
+    round: 2
+  - platform: integration
+    source: sensor.wallpanel_strombryter_power
+    name: WallPanel oppe kWh
+    unit_prefix: k
+    round: 2

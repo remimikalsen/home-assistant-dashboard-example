@@ -1,0 +1,32 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: Bursdager
+  card:
+    type: vertical-stack
+    cards:
+      - type: conditional
+        conditions:
+          - entity: input_boolean.noen_har_bursdag
+            state: "on"
+        card:
+          type: button
+          entity: input_boolean.noen_har_bursdag
+          name: Slå av bursdagsvarselet
+      - type: custom:auto-entities
+        card:
+          type: entities
+        filter:
+          include:
+            - domain: birthdays
+              options:
+                secondary_info: >-
+                  Blir {{ state_attr(entity, 'age_at_next_birthday') }} år {{
+                  strptime(state_attr(entity, 'date_of_birth'),
+                  '%Y-%m-%d').strftime('%-d. %B (f. %Y)') }}
+          exclude: []
+        sort:
+          method: state
+          numeric: true
+          reverse: false
+        show_empty: true

@@ -1,0 +1,17 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: Gang oppe
+  large: true
+  card:
+    type: custom:layout-card
+    layout_type: custom:horizontal-layout
+    layout:
+      width: 350
+      max_cols: 3
+      card_margin: 20px
+    cards:
+      - type: picture-entity
+        entity: binary_sensor.octoprint_printing
+        camera_image: camera.octoprint
+        camera_view: live

@@ -1,0 +1,39 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: HA RPi
+  large: true
+  card:
+    type: custom:layout-card
+    layout_type: custom:horizontal-layout
+    layout:
+      width: 350
+      max_cols: 3
+      card_margin: 20px
+    cards:
+      - type: history-graph
+        entities:
+          - entity: sensor.processor_use_percent
+          - entity: sensor.memory_use_percent
+        hours_to_show: 1
+        refresh_interval: 0
+      - type: history-graph
+        entities:
+          - entity: sensor.processor_use_percent
+          - entity: sensor.memory_use_percent
+        hours_to_show: 24
+        refresh_interval: 0
+      - type: entities
+        entities:
+          - entity: binary_sensor.rpi_power_status
+            name: Power
+          - entity: sensor.rpi_uptime
+            name: Uptime
+          - entity: sensor.rpi_cpu_temperature
+            name: CPU temperature
+          - entity: sensor.argon_one_addon_fan_speed
+            name: Fan speed
+          - entity: sensor.memory_use_percent
+          - entity: sensor.processor_use_percent
+          - entity: sensor.disk_use_percent
+        show_header_toggle: false

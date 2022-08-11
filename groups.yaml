@@ -1,0 +1,26 @@
+bevegelse-mancave:
+  name: Bevegelse ManCave
+  entities:
+    - binary_sensor.bevegelse_mancave_occupancy
+    - binary_sensor.bevegelse_mancave_trening
+    - binary_sensor.motion_mancave
+sirener:
+  name: Sirener
+  entities:
+    - switch.sirene_gang_oppe
+    - switch.roykvarsler_gang_oppe_alarm
+    - switch.roykvarsler_gang_nede_alarm
+    - switch.multisirene_nede_alarm
+    - switch.multisirene_oppe_alarm
+    - siren.sirene_ute_forside
+bevegelse-garasje-oppe:
+  - binary_sensor.garasje_oppe_cat_motion
+  - binary_sensor.garasje_oppe_mouse_motion
+  - binary_sensor.garasje_oppe_person_motion
+bevegelse-garasje-nede:
+  - binary_sensor.garasje_nede_cat_motion
+  - binary_sensor.garasje_nede_mouse_motion
+  - binary_sensor.garasje_nede_person_motion
+bevegelse-stue:
+  - binary_sensor.browser_mod_ea8a20d5_efbf05e4
+  - binary_sensor.bevegelse_stue_home_security_motion_detection

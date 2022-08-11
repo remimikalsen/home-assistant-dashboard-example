@@ -1,0 +1,252 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  large: true
+  title: Innstillinger for full alarm
+  card:
+    type: custom:layout-card
+    layout_type: custom:horizontal-layout
+    layout:
+      width: 300
+      max_cols: 4
+      card_margin: 10px
+    cards:
+      - type: entities
+        state_color: true
+        show_header_toggle: false
+        title: Kaja
+        card_mod: &alarm_card_entities
+          style:
+            .: |
+              #states > * {
+                  margin: -7px 0px !important;
+                  font-size: 0.8em;
+              }
+              .card-header {
+                font-size: 1.2em;
+              }
+        entities:
+          - entity: binary_sensor.venstre_vindu_kaja_full_alarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Venstre vindu
+            entities:
+              - entity: input_boolean.venstre_vindu_kaja_trigge_full_alarm
+                toggle: true
+                name: false
+          - entity: binary_sensor.hoyre_vindu_kaja_full_alarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Høyre vindu
+            entities:
+              - entity: input_boolean.hoyre_vindu_kaja_trigge_full_alarm
+                toggle: true
+                name: false
+          - entity: binary_sensor.bevegelse_kaja_full_alarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Bevegelse
+            entities:
+              - entity: input_boolean.bevegelse_kaja_trigge_full_alarm
+                toggle: true
+                name: false
+      - type: entities
+        state_color: true
+        show_header_toggle: false
+        title: Sunniva
+        card_mod:
+          <<: *alarm_card_entities
+        entities:
+          - entity: binary_sensor.vindu_sunniva_full_alarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Vindu
+            entities:
+              - entity: input_boolean.vindu_sunniva_trigge_full_alarm
+                toggle: true
+                name: false
+          - entity: binary_sensor.bevegelse_sunniva_full_alarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Bevegelse
+            entities:
+              - entity: input_boolean.bevegelse_sunniva_trigge_full_alarm
+                toggle: true
+                name: false
+      - type: entities
+        state_color: true
+        show_header_toggle: false
+        title: ManCave
+        card_mod:
+          <<: *alarm_card_entities
+        entities:
+          - entity: binary_sensor.vindu_mancave_full_alarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Vindu
+            entities:
+              - entity: input_boolean.vindu_mancave_trigge_full_alarm
+                toggle: true
+                name: false
+          - entity: binary_sensor.bevegelse_mancave_full_alarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Bevegelse
+            entities:
+              - entity: input_boolean.bevegelse_mancave_trigge_full_alarm
+                toggle: true
+                name: false
+          - entity: binary_sensor.dor_mancave_full_alarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Dør
+            entities:
+              - entity: input_boolean.dor_mancave_trigge_full_alarm
+                toggle: true
+                name: false
+      - type: entities
+        state_color: true
+        show_header_toggle: false
+        title: Hovedsoverom
+        card_mod:
+          <<: *alarm_card_entities
+        entities:
+          - entity: binary_sensor.stort_vindu_hovedsoverom_full_alarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Stort vindu
+            entities:
+              - entity: >-
+                  input_boolean.stort_vindu_hovedsoverom_trigge_full_alarm
+                toggle: true
+                name: false
+          - entity: binary_sensor.lite_vindu_hovedsoverom_full_alarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Lite vindu
+            entities:
+              - entity: >-
+                  input_boolean.lite_vindu_hovedsoverom_trigge_full_alarm
+                toggle: true
+                name: false
+      - type: entities
+        state_color: true
+        show_header_toggle: false
+        title: Fellesområder nede
+        card_mod:
+          <<: *alarm_card_entities
+        entities:
+          - entity: binary_sensor.ytterdor_hovedinngang_full_alarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Ytterdør
+            entities:
+              - entity: input_boolean.ytterdor_hovedinngang_trigge_full_alarm
+                toggle: true
+                name: false
+          - entity: binary_sensor.bevegelse_gang_nede_full_alarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Gang
+            entities:
+              - entity: input_boolean.bevegelse_gang_nede_trigge_full_alarm
+                toggle: true
+                name: false
+      - type: entities
+        state_color: true
+        show_header_toggle: false
+        title: Fellesområder oppe
+        card_mod:
+          <<: *alarm_card_entities
+        entities:
+          - entity: binary_sensor.verandador_full_alarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Verandadør
+            entities:
+              - entity: input_boolean.verandador_trigge_full_alarm
+                toggle: true
+                name: false
+          - entity: binary_sensor.bevegelse_stue_full_alarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Stue
+            entities:
+              - entity: input_boolean.bevegelse_stue_trigge_full_alarm
+                toggle: true
+                name: false
+          - entity: binary_sensor.bevegelse_gang_oppe_full_alarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Gang
+            entities:
+              - entity: input_boolean.bevegelse_gang_oppe_trigge_full_alarm
+                toggle: true
+                name: false
+          - entity: binary_sensor.verandavindu_kjokken_full_alarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Verandavindu kjøkken
+            entities:
+              - entity: input_boolean.verandavindu_kjokken_trigge_full_alarm
+                toggle: true
+                name: false
+      - type: entities
+        state_color: true
+        show_header_toggle: false
+        title: Garasje
+        card_mod:
+          <<: *alarm_card_entities
+        entities:
+          - entity: binary_sensor.hoyre_garasjeport_full_alarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Høyre garasjeport
+            entities:
+              - entity: input_boolean.hoyre_garasjeport_trigge_full_alarm
+                toggle: true
+                name: false
+          - entity: binary_sensor.venstre_garasjeport_full_alarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Venstre garasjeport
+            entities:
+              - entity: input_boolean.venstre_garasjeport_trigge_full_alarm
+                toggle: true
+                name: false
+          - entity: binary_sensor.mellomdor_garasje_full_alarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Mellomdør
+            entities:
+              - entity: input_boolean.mellomdor_garasje_trigge_full_alarm
+                toggle: true
+                name: false
+          - entity: binary_sensor.ytterdor_garasje_full_alarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Ytterdør
+            entities:
+              - entity: input_boolean.ytterdor_garasje_trigge_full_alarm
+                toggle: true
+                name: false

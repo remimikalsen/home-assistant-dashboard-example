@@ -1,0 +1,16 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: Værvarsel
+  card:
+    type: vertical-stack
+    cards:
+      - entity: weather.myhome_hourly
+        type: weather-forecast
+        show_current: false
+        show_forecast: true     
+      - entity: weather.myhome 
+        type: weather-forecast
+        show_current: false
+        show_forecast: true
+        

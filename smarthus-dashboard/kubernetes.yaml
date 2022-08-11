@@ -1,0 +1,86 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: Kubernetes
+  large: true
+  card:
+    type: custom:layout-card
+    layout_type: custom:horizontal-layout
+    layout:
+      width: 350
+      max_cols: 3
+      card_margin: 20px
+    cards:
+      - type: grid
+        cards:
+          - type: history-graph
+            entities:
+              - entity: sensor.home_server_cpu_used
+              - entity: sensor.home_server_ram_used_percent
+            hours_to_show: 1
+            refresh_interval: 0
+          - type: history-graph
+            entities:
+              - entity: sensor.home_server_cpu_used
+              - entity: sensor.home_server_ram_used_percent
+            hours_to_show: 24
+            refresh_interval: 0
+          - type: glance
+            entities:
+              - entity: sensor.home_server_package_id_0_temperature
+                name: Temperature
+              - entity: sensor.home_server_cpu_used
+                name: CPU usage
+              - entity: sensor.home_server_ram_used_percent
+                name: RAM usage
+              - entity: sensor.home_server_ram_free
+                name: Server RAM free
+              - entity: sensor.home_server_free
+                name: Disk free
+              - entity: sensor.home_server_containers_active
+                name: Containers
+              - entity: sensor.home_server_containers_cpu_used
+                name: Docker CPU usage
+              - entity: sensor.home_server_containers_ram_used
+                name: Docker RAM usage
+            columns: 2
+            square: false
+        columns: 1
+        square: false
+        title: Home Server
+      - type: grid
+        cards:
+          - type: history-graph
+            entities:
+              - entity: sensor.proxmox_node_1_cpu_used
+              - entity: sensor.proxmox_node_1_ram_used_percent
+            hours_to_show: 1
+            refresh_interval: 0
+          - type: history-graph
+            entities:
+              - entity: sensor.proxmox_node_1_cpu_used
+              - entity: sensor.proxmox_node_1_ram_used_percent
+            hours_to_show: 24
+            refresh_interval: 0
+          - type: glance
+            entities:
+              - entity: sensor.proxmox_node_1_composite_temperature
+                name: Composite temperature
+              - entity: sensor.proxmox_node_1_cpu_used
+                name: CPU load
+              - entity: sensor.proxmox_node_1_ram_used_percent
+              - entity: sensor.proxmox_node_1_ram_free
+              - entity: sensor.proxmox_node_1_free
+              - entity: sensor.proxmox_node_1_mnt_data_free
+            columns: 2
+            square: false
+          - type: entities
+            entities:
+              - entity: binary_sensor.node1_frigate_running
+                name: Frigate container
+                secondary_info: >-
+                  Coral inference speed {{
+                  states('sensor.coral_inference_speed') }} ms
+        columns: 1
+        square: false
+        title: Proxmox Node 1

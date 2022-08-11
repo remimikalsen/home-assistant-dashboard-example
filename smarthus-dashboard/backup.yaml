@@ -1,0 +1,88 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: Backup
+  large: true
+  card:
+    type: custom:layout-card
+    layout_type: custom:horizontal-layout
+    layout:
+      width: 350
+      max_cols: 3
+      card_margin: 20px
+    cards:
+      - type: grid
+        cards:
+          - type: history-graph
+            entities:
+              - entity: sensor.rpi_backup_server_cpu_used
+              - entity: sensor.rpi_backup_server_ram_used_percent
+            hours_to_show: 1
+            refresh_interval: 0
+          - type: history-graph
+            entities:
+              - entity: sensor.rpi_backup_server_cpu_used
+              - entity: sensor.rpi_backup_server_ram_used_percent
+            hours_to_show: 24
+            refresh_interval: 0
+          - type: glance
+            entities:
+              - entity: sensor.rpi_backup_server_cpu_thermal_1_temperature
+                name: Temperature
+              - entity: sensor.rpi_backup_server_cpu_used
+                name: CPU usage
+              - entity: sensor.rpi_backup_server_ram_used_percent
+                name: RAM usage
+              - entity: sensor.rpi_backup_server_ram_free
+                name: Server RAM free
+              - entity: sensor.rpi_backup_server_free
+                name: System disk free
+              - entity: sensor.rpi_backup_server_used_percent
+                name: System disk used
+              - entity: sensor.rpi_backup_server_media_securebackup_raid_free
+                name: Backup disk free
+              - entity: sensor.rpi_backup_server_media_securebackup_raid_used_percent
+                name: Backup disk used
+            columns: 2
+            square: false
+        columns: 1
+        square: false
+        title: RPi Remote Backup Server
+      - type: grid
+        cards:
+          - type: history-graph
+            entities:
+              - entity: sensor.rpi_home_backup_server_cpu_used
+              - entity: sensor.rpi_home_backup_server_ram_used_percent
+            hours_to_show: 1
+            refresh_interval: 0
+          - type: history-graph
+            entities:
+              - entity: sensor.rpi_home_backup_server_cpu_used
+              - entity: sensor.rpi_home_backup_server_ram_used_percent
+            hours_to_show: 24
+            refresh_interval: 0
+          - type: glance
+            entities:
+              - entity: sensor.rpi_home_backup_server_cpu_thermal_1_temperature
+                name: Temperature
+              - entity: sensor.rpi_home_backup_server_cpu_used
+                name: CPU usage
+              - entity: sensor.rpi_home_backup_server_ram_used_percent
+                name: RAM usage
+              - entity: sensor.rpi_home_backup_server_ram_free
+                name: Server RAM free
+              - entity: sensor.rpi_home_backup_server_free
+                name: System disk free
+              - entity: sensor.rpi_home_backup_server_used_percent
+                name: System disk used
+              - entity: sensor.rpi_home_backup_server_media_securebackup_raid_free
+                name: Backup disk free
+              - entity: >-
+                  sensor.rpi_home_backup_server_media_securebackup_raid_used_percent
+                name: Backup disk used
+            columns: 2
+            square: false
+        columns: 1
+        square: false
+        title: RPi Home Backup Server

@@ -1,0 +1,160 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: Innstillinger for skallalarm
+  card:
+    type: custom:layout-card
+    layout_type: custom:horizontal-layout
+    layout:
+      width: 300
+      max_cols: 4
+      card_margin: 10px
+    cards:
+      - type: entities
+        state_color: true
+        show_header_toggle: false
+        title: Fellesområder
+        card_mod: &alarm_card_entities
+          style:
+            .: |
+              #states > * {
+                  margin: -7px 0px !important;
+                  font-size: 0.8em;
+              }
+              .card-header {
+                font-size: 1.2em;
+              }
+        entities:
+          - entity: binary_sensor.ytterdor_hovedinngang_skallalarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Ytterdør
+            entities:
+              - entity: input_boolean.ytterdor_hovedinngang_trigge_skallalarm
+                toggle: true
+                name: false
+          - entity: binary_sensor.verandador_skallalarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Verandadør
+            entities:
+              - entity: input_boolean.verandador_trigge_skallalarm
+                toggle: true
+                name: false
+          - entity: binary_sensor.verandavindu_kjokken_skallalarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Verandavindu kjøkken
+            entities:
+              - entity: input_boolean.verandavindu_kjokken_trigge_skallalarm
+                toggle: true
+                name: false
+          - entity: binary_sensor.vindu_mancave_skallalarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Vindu Mancave
+            entities:
+              - entity: input_boolean.vindu_mancave_trigge_skallalarm
+                toggle: true
+                name: false
+      - type: entities
+        state_color: true
+        show_header_toggle: false
+        title: Garasje
+        card_mod:
+          <<: *alarm_card_entities
+        entities:
+          - entity: binary_sensor.hoyre_garasjeport_skallalarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Høyre garasjeport
+            entities:
+              - entity: input_boolean.hoyre_garasjeport_trigge_skallalarm
+                toggle: true
+                name: false
+          - entity: binary_sensor.venstre_garasjeport_skallalarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Venstre garasjeport
+            entities:
+              - entity: input_boolean.venstre_garasjeport_trigge_skallalarm
+                toggle: true
+                name: false
+          - entity: binary_sensor.mellomdor_garasje_skallalarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Mellomdør garasje
+            entities:
+              - entity: input_boolean.mellomdor_garasje_trigge_skallalarm
+                toggle: true
+                name: false
+          - entity: binary_sensor.ytterdor_garasje_skallalarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Ytterdør garasje
+            entities:
+              - entity: input_boolean.ytterdor_garasje_trigge_skallalarm
+                toggle: true
+                name: false
+      - type: entities
+        state_color: true
+        show_header_toggle: false
+        title: Soverom
+        card_mod:
+          <<: *alarm_card_entities
+        entities:
+          - entity: binary_sensor.venstre_vindu_kaja_skallalarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Venstre vindu Kaja
+            entities:
+              - entity: input_boolean.venstre_vindu_kaja_trigge_skallalarm
+                toggle: true
+                name: false
+          - entity: binary_sensor.hoyre_vindu_kaja_skallalarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Høyre vindu Kaja
+            entities:
+              - entity: input_boolean.hoyre_vindu_kaja_trigge_skallalarm
+                toggle: true
+                name: false
+          - entity: binary_sensor.vindu_sunniva_skallalarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Vindu Sunniva
+            entities:
+              - entity: input_boolean.vindu_sunniva_trigge_skallalarm
+                toggle: true
+                name: false
+          - entity: binary_sensor.stort_vindu_hovedsoverom_skallalarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Stort vindu hovedsoverom
+            entities:
+              - entity: >-
+                  input_boolean.stort_vindu_hovedsoverom_trigge_skallalarm
+                toggle: true
+                name: false
+          - entity: binary_sensor.lite_vindu_hovedsoverom_skallalarm_trigget
+            type: custom:multiple-entity-row
+            state_color: true
+            show_state: false
+            name: Lite vindu hovedsoverom
+            entities:
+              - entity: >-
+                  input_boolean.lite_vindu_hovedsoverom_trigge_skallalarm
+                toggle: true
+                name: false

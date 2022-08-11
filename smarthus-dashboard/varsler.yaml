@@ -1,0 +1,68 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: Varsler
+  card:
+    type: custom:layout-card
+    layout_type: custom:vertical-layout
+    cards:
+      - type: conditional
+        conditions:
+          - entity: binary_sensor.aktive_varsler
+            state: "on"
+        card:
+          type: entity-filter
+          entities:
+            - entity: input_boolean.torketrommel_ferdig
+            - entity: input_boolean.vaskemaskin_ferdig
+            - entity: alert.garasjeport_hoyre
+            - entity: alert.garasjeport_venstre
+            - entity: alert.kjokkenvindu_veranda
+            - entity: alert.hovedinngangsdor
+            - entity: alert.garasje_ytterdor
+            - entity: alert.garasje_mellomdor
+            - entity: alert.dor_mancave
+            - entity: alert.lusking_i_garasjen
+            - entity: alert.lyd_hos_kaja_natt
+            - entity: alert.lyd_hos_sunniva_natt
+            - entity: alert.verandador
+            - entity: input_boolean.stromstans_pa_spa_bad
+            - entity: input_boolean.3d_printer_er_ferdig
+          state_filter:
+            - "on"
+          card:
+            type: entities
+            title: Aktive meldinger
+            show_title: true
+            show_header_toggle: false
+      - type: entities
+        entities:
+          - entity: input_boolean.varsle_at_noen_kommer
+            name: Engangsvarsel - noen kommer
+          - entity: input_boolean.varsle_inne_viktig_bevegelse_kamera
+            name: Bevegelse utendørs - varsle inne
+          - entity: input_boolean.varsle_mobil_viktig_bevegelse_kamera
+            name: Bevegelse utendørs - varsle mobil
+          - entity: input_boolean.aktiv_utesirene_ved_bevegelse_ute
+          - entity: input_boolean.varsle_vaskemaskin_ferdig
+            name: Varsle vaskemaskin
+          - entity: input_boolean.varsle_torketrommel_ferdig
+            name: Varsle tørketrommel
+          - entity: input_boolean.varsle_stromstans_pa_spa_bad
+            name: Varsle strømstans på spa-bad
+          - entity: input_boolean.varsle_at_3d_printer_er_ferdig
+            name: Varsle når 3D-printer er ferdig
+          - entity: input_boolean.varsle_lyd_kaja_natt
+            name: Varsle lyd hos Kaja på natta
+          - entity: input_number.lydgrense_kaja
+            name: Lydgrense Kaja
+          - entity: sensor.lydniva_lydsensor_kaja
+            name: Lyd Kaja
+          - entity: input_boolean.varsle_lyd_sunniva_natt
+            name: Varsle lyd hos Sunniva på natta
+          - entity: input_number.lydgrense_sunniva
+            name: Lydgrense Sunniva
+          - entity: sensor.lydniva_lydsensor_sunniva
+            name: Lyd Sunniva
+        title: Konfigurer varsling
+        show_header_toggle: false

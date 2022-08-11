@@ -1,0 +1,157 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: Remi
+  card:
+    type: custom:button-card
+    entity: person.remi_mikalsen
+    name: Person
+    show_entity_picture: false
+    show_name: false
+    show_icon: false
+    hold_action:
+      action: none
+    styles:
+      card:
+        - height: 400px
+        - width: 400px
+        - border-radius: 5%
+        - padding: 5%
+        - font-size: 16px
+        - justify-self: start
+        - align-self: middle
+      grid:
+        - grid-template-areas: >-
+            "icon icon" "zone zone" "address address" ". ." "car-proximity battery"
+            "car-time wifi" "air-proximity ."
+        - grid-template-columns: 1fr 1fr
+        - grid-template-rows: 200px 20px 25px 15px 25px 25px
+      custom_fields:
+        icon:
+          - clip-path: circle()
+          - width: 150px
+          - pointer-events: none
+          - display: grid
+          - border: 5px solid
+          - border-color: darkred
+          - border-radius: 100px
+          - justify-self: center
+          - opacity: 1
+        zone:
+          - align-self: middle
+          - justify-self: start
+        address:
+          - align-self: middle
+          - justify-self: start
+          - padding-left: 31px
+        car-proximity:
+          - align-self: middle
+          - justify-self: start
+        car-time:
+          - align-self: middle
+          - justify-self: start
+          - padding-left: 31px
+        air-proximity:
+          - align-self: middle
+          - justify-self: start
+        wifi:
+          - align-self: middle
+          - justify-self: start
+          - "--text-wifi-color-sensor": >-
+              [[[ if (states["sensor.mobilremi_wifi_connection"].state == '<not
+              connected>') return "#aaaaaa"; ]]]
+        battery:
+          - align-self: middle
+          - justify-self: start
+          - "--text-color-sensor": >-
+              [[[ if (states["sensor.mobil_remi_battery_level"].state < 50) return
+              "#EF4F1A"; ]]]
+    state:
+      - value: "home"
+        styles:
+          custom_fields:
+            icon:
+              - border-color: rgb(68, 115, 158)
+      - value: "Jobb Remi"
+        styles:
+          custom_fields:
+            icon:
+              - border-color: "#4F7942"
+    custom_fields:
+      icon: >
+        [[[ return entity === undefined ? null : `<img
+        src="${states[entity.entity_id].attributes.entity_picture}" width="100%">`;
+        ]]]
+      zone: |
+        [[[
+          if (states['person.remi_mikalsen'].state == 'home') {
+            return `<ha-icon 
+              icon="mdi:home-outline"
+              style="font-size: 25px;width: 20px; height: 20px; padding-right: 10px;">
+              </ha-icon><span>Hjemme</span>`;
+          } else if (states['person.remi_mikalsen'].state =='Jobb Remi') {
+            return `<ha-icon 
+              icon="mdi:briefcase-outline"
+              style="font-size: 25px;width: 20px; height: 20px; padding-right: 10px;">
+              </ha-icon><span>På jobb</span> <span style="font-size: 90%">${states['sensor.remi_to_home_direction'].state}</span>`;
+          } else if (states['person.remi_mikalsen'].state == 'not_home') { 
+            return `<ha-icon icon="mdi:home-export-outline"
+              style="font-size: 25px;width: 20px; height: 20px; padding-right: 10px;">
+              </ha-icon><span>Borte</span> <span style="font-size: 90%">${states['sensor.remi_to_home_direction'].state}</span>`;
+          } else {
+            return `<ha-icon 
+              icon="mdi:map-marker-radius"
+              style="font-size: 25px;width: 20px; height: 20px; padding-right: 10px;">
+              </ha-icon><span>${entity.state}</span> <span style="font-size: 90%">${states['sensor.remi_to_home_direction'].state}</span>`;
+          }
+        ]]]
+      address: |
+        [[[
+          return `<span style="font-size: 90%; ">${states['sensor.remi_current_location'].state}</span>`;
+        ]]]
+      car-proximity: |
+        [[[
+          return `<ha-icon
+            icon="mdi:car"
+            style="font-size: 25px;width: 20px; height: 20px; padding-right: 10px;">
+            </ha-icon><span style="color: var(--text-color-sensor);">${states['sensor.remi_to_home_travel_distance_rounded'].state} km</span>`
+        ]]]
+      car-time: |
+        [[[
+          return `<span style="color: var(--text-color-sensor);">${states['sensor.fra_remi_til_hjem'].state} min</span>`
+        ]]]
+      battery: |
+        [[[
+          if (states['sensor.mobil_remi_battery_state'].state =='charging') { 
+            return `<ha-icon
+            icon="mdi:battery-charging"
+            style="font-size: 25px; width: 20px; height: 20px; padding-right: 10px;">
+            </ha-icon><span style="color: var(--text-color-sensor);">${states['sensor.mobil_remi_battery_level'].state}% battery</span>`;
+          } else {
+            return `<ha-icon
+            icon="mdi:battery"
+            style="font-size: 25px;width: 20px; height: 20px; padding-right: 10px;">
+            </ha-icon><span style="color: var(--text-color-sensor);">${states['sensor.mobil_remi_battery_level'].state}% battery</span>`;
+          }
+        ]]]
+      wifi: |
+        [[[
+          if (states['sensor.mobilremi_wifi_connection'].state =='<not connected>') { 
+            return `<ha-icon
+            icon="mdi:wifi"
+            style="font-size: 25px;width: 20px; height: 20px; padding-right: 10px;">
+            </ha-icon><span>Disconnected</span>`; 
+          } else {
+            return `<ha-icon
+            icon="mdi:wifi"
+            style="font-size: 25px;width: 20px; height: 20px; padding-right: 10px;">
+            </ha-icon><span>${states['sensor.mobilremi_wifi_connection'].state}</span>`;
+          }
+        ]]]
+      air-proximity: |
+        [[[
+          return `<ha-icon
+            icon="mdi:map-marker-distance"
+            style="font-size: 25px;width: 20px; height: 20px; padding-right: 10px;">
+            </ha-icon><span style="color: var(--text-color-sensor);">${states['proximity.remi_to_home'].state} ${states['proximity.remi_to_home'].attributes.unit_of_measurement}</span>`
+        ]]]

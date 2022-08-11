@@ -1,0 +1,46 @@
+- id: '1626111522123'
+  name: Slå av alle lys på stue
+  entities:
+    switch.spot_speil_stue:
+      event: 0b110023012e59f601030070
+      friendly_name: Spot speil stue
+      assumed_state: true
+      state: 'off'
+    switch.lampe_sofa_stue:
+      event: 0b110020012e59f603000080
+      friendly_name: Lampe sofa stue
+      assumed_state: true
+      state: 'off'
+    switch.spot_tak_stue:
+      event: 0b110021012e59f602000070
+      friendly_name: Spot tak stue
+      assumed_state: true
+      state: 'off'
+    switch.spotter_vindu_stue:
+      event: 0b110036012e59f604000080
+      friendly_name: Spotter vindu stue
+      assumed_state: true
+      state: 'off'
+- id: '1626111640415'
+  name: Slå på alle lys på stue
+  entities:
+    switch.spotter_vindu_stue:
+      event: 0b110036012e59f604000080
+      friendly_name: Spotter vindu stue
+      assumed_state: true
+      state: 'on'
+    switch.lampe_sofa_stue:
+      event: 0b110020012e59f603000080
+      friendly_name: Lampe sofa stue
+      assumed_state: true
+      state: 'on'
+    switch.spot_tak_stue:
+      event: 0b110021012e59f602000070
+      friendly_name: Spot tak stue
+      assumed_state: true
+      state: 'on'
+    switch.spot_speil_stue:
+      event: 0b110023012e59f601030070
+      friendly_name: Spot speil stue
+      assumed_state: true
+      state: 'on'

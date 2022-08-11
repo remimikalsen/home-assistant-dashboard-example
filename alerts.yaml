@@ -1,0 +1,267 @@
+# Brannalarm varsles rikelig via automation. Debug-notifier er kun her for å initiere alerten
+brannalarm:
+  name: Brannalarmen er utløst
+  message: Brannalarmen er utløst
+  done_message: Brannalarmen er ferdig
+  entity_id: binary_sensor.advarsel_brannalarm_utlost
+  state: "on"
+  repeat: 60
+  can_acknowledge: true
+  skip_first: false
+  notifiers:
+    - debug
+kjokkenvindu_veranda:
+  name: Kjøkkenvinduet er åpent
+  message: Kjøkkenvinduet over verandaen er åpent
+  done_message: Kjøkkenvinduet over verandaen er OK
+  entity_id: binary_sensor.advarsel_kjokkenvinduet_er_apent
+  state: "on"
+  repeat: 0.5
+  can_acknowledge: true
+  skip_first: true
+  notifiers:
+    - varsler
+    - mannehule
+    - stue
+    - garasje
+    - hovedsoverom
+garasjeport_hoyre:
+  name: Høyre garasjeport er åpen
+  message: Høyre garasjeport er åpen
+  done_message: Høyre garasjeport er OK
+  entity_id: binary_sensor.advarsel_hoyre_garasjeport_er_apen
+  state: "on"
+  repeat: 0.5
+  can_acknowledge: true
+  skip_first: true
+  notifiers:
+    - varsler
+    - mannehule
+    - stue
+    - garasje
+    - hovedsoverom
+garasjeport_venstre:
+  name: Venstre garasjeport er åpen
+  message: Venstre garasjeport er åpen
+  done_message: Venstre garasjeport er OK
+  entity_id: binary_sensor.advarsel_venstre_garasjeport_er_apen
+  state: "on"
+  repeat: 0.5
+  can_acknowledge: true
+  skip_first: true
+  notifiers:
+    - varsler
+    - mannehule
+    - stue
+    - garasje
+    - hovedsoverom
+garasje_ytterdor:
+  name: Ytterdøren i garasje er åpen
+  message: Ytterdøren i garasje er åpen
+  done_message: Ytterdør i garasje er OK
+  entity_id: binary_sensor.advarsel_ytterdor_garasje_er_apen
+  state: "on"
+  repeat: 0.5
+  can_acknowledge: true
+  skip_first: true
+  notifiers:
+    - varsler
+    - mannehule
+    - stue
+    - garasje
+    - hovedsoverom
+garasje_mellomdor:
+  name: Mellomdøren i garasje er åpen
+  message: Mellomdøren i garasje er åpen
+  done_message: Mellomdør i garasje er OK
+  entity_id: binary_sensor.advarsel_mellomdor_garasje_er_apen
+  state: "on"
+  repeat: 0.5
+  can_acknowledge: true
+  skip_first: true
+  notifiers:
+    - varsler
+    - mannehule
+    - stue
+    - garasje
+    - hovedsoverom
+hovedinngangsdor:
+  name: Hovedinngangsdøren er åpen
+  message: Hovedinngangsdøren er åpen
+  done_message: Hovedinngangsdøren er OK
+  entity_id: binary_sensor.advarsel_hovedinngangsdor_er_apen
+  state: "on"
+  repeat: 0.5
+  can_acknowledge: true
+  skip_first: true
+  notifiers:
+    - varsler
+    - mannehule
+    - stue
+    - garasje
+    - hovedsoverom
+verandador:
+  name: Verandadøren er åpen
+  message: Verandadøren er åpen
+  done_message: Verandadøren er OK
+  entity_id: binary_sensor.advarsel_verandador_er_apen
+  state: "on"
+  repeat: 0.5
+  can_acknowledge: true
+  skip_first: true
+  notifiers:
+    - varsler
+    - mannehule
+    - stue
+    - garasje
+    - hovedsoverom
+dor_mancave:
+  name: Døren til mannehula er åpen
+  message: Døren til mannehula er åpen
+  done_message: Døren til mannehula er OK
+  entity_id: binary_sensor.advarsel_dor_mancave_er_apen
+  state: "on"
+  repeat: 0.5
+  can_acknowledge: true
+  skip_first: true
+  notifiers:
+    - varsler
+    - mannehule
+    - stue
+    - garasje
+    - hovedsoverom
+lusking_i_garasjen:
+  name: Noe lusker i garasjen
+  message: Noe lusker i garasjen
+  done_message: Lusking i garasjen ikke lenger detektert
+  entity_id: binary_sensor.advarsel_noe_lusker_i_garasjen
+  state: "on"
+  repeat: 1
+  can_acknowledge: true
+  skip_first: false
+  notifiers:
+    - alarmer
+    - mannehule
+    - stue
+    - garasje
+    - hovedsoverom
+vannlekkasje_vaskerom:
+  name: Vannlekkasje på vaskerom
+  message: Det er vann på gulvet på vakserommet
+  done_message: Vanndeteksjon på vaskerom ok
+  entity_id: binary_sensor.vannsensor_pa_vaskerommet
+  state: "on"
+  repeat: 1
+  can_acknowledge: true
+  skip_first: false
+  notifiers:
+    - alarmer
+    - mannehule
+    - stue
+    - garasje
+    - hovedsoverom
+vannlekkasje_kjokkenbenk:
+  name: Vannlekkasje under kjøkkenbenken
+  message: Det er vann under kjøkkenbenken
+  done_message: Vanndeteksjon under kjøkkenbenk ok
+  entity_id: binary_sensor.vannsensor_under_kjokkenbenken
+  state: "on"
+  repeat: 1
+  can_acknowledge: true
+  skip_first: false
+  notifiers:
+    - alarmer
+    - mannehule
+    - stue
+    - garasje
+    - hovedsoverom
+vannlekkasje_bad_oppe:
+  name: Vannlekkasje på badet oppe
+  message: Det er vann på gulvet på badet oppe
+  done_message: Vanndeteksjon på badet oppe ok
+  entity_id: binary_sensor.vannsensor_pa_badet_oppe
+  state: "on"
+  repeat: 1
+  can_acknowledge: true
+  skip_first: false
+  notifiers:
+    - alarmer
+    - mannehule
+    - stue
+    - garasje
+    - hovedsoverom
+vannlekkasje_under_oppvaskmaskinen:
+  name: Vannlekkasje under oppvaskmaskinen
+  message: Det er vann på gulvet under oppvaskmaskinen
+  done_message: Vanndeteksjon under oppvaskmaskinen ok
+  entity_id: binary_sensor.vannsensor_under_oppvaskmaskinen
+  state: "on"
+  repeat: 1
+  can_acknowledge: true
+  skip_first: false
+  notifiers:
+    - alarmer
+    - mannehule
+    - stue
+    - garasje
+    - hovedsoverom
+vannlekkasje_toalett_nede:
+  name: Vannlekkasje på toalettrommet nede
+  message: Det er vann på gulvet på toalettrommet nede
+  done_message: Vanndeteksjon på toalettrom nede ok
+  entity_id: binary_sensor.vannlekkasje_pa_toalettrommet_nede
+  state: "on"
+  repeat: 1
+  can_acknowledge: true
+  skip_first: false
+  notifiers:
+    - alarmer
+    - mannehule
+    - stue
+    - garasje
+    - hovedsoverom
+vannlekkasje_bad_nede:
+  name: Vannlekkasje på badet nede
+  message: Det er vann på gulvet på badet nede
+  done_message: Vanndeteksjon på bad nede ok
+  entity_id: binary_sensor.vannlekkasje_pa_bad_nede
+  state: "on"
+  repeat: 1
+  can_acknowledge: true
+  skip_first: false
+  notifiers:
+    - alarmer
+    - mannehule
+    - stue
+    - garasje
+    - hovedsoverom
+lyd_hos_kaja_natt:
+  name: Natt og høy lyd på Kaja sitt rom
+  message: Høy lyd på Kaja sitt rom
+  #done_message: Kaja lager lyder OK
+  entity_id: binary_sensor.advarsel_lyd_hos_kaja
+  state: "on"
+  repeat: 0.5
+  can_acknowledge: true
+  skip_first: false
+  notifiers:
+    - alarmer
+    - mannehule
+    - stue
+    - garasje
+    - hovedsoverom
+lyd_hos_sunniva_natt:
+  name: Natt og høy lyd på Sunniva sitt rom
+  message: Høy lyd på Sunniva sitt rom
+  #done_message: Sunniva lager lyder OK
+  entity_id: binary_sensor.advarsel_lyd_hos_sunniva
+  state: "on"
+  repeat: 0.5
+  can_acknowledge: true
+  skip_first: false
+  notifiers:
+    - alarmer
+    - mannehule
+    - stue
+    - garasje
+    - hovedsoverom

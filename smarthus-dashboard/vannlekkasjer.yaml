@@ -1,0 +1,20 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: Lekkasjesensorer
+  card:
+    type: entities
+    show_title: false
+    entities:
+      - entity: binary_sensor.vannlekkasje_pa_bad_nede
+        name: Bad nede
+      - entity: binary_sensor.vannlekkasje_pa_toalettrommet_nede
+        name: Toalettrom nede
+      - entity: binary_sensor.vannsensor_pa_badet_oppe
+        name: Bad oppe
+      - entity: binary_sensor.vannsensor_pa_vaskerommet
+        name: Vaskerom
+      - entity: binary_sensor.vannsensor_under_kjokkenbenken
+        name: Kjøkkenbenk
+      - entity: binary_sensor.vannsensor_under_oppvaskmaskinen
+        name: Oppvaskmaskin

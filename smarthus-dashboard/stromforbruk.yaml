@@ -1,0 +1,62 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  large: true
+  title: Strømforbruk vs strømpris
+  card:
+    type: custom:apexcharts-card
+    graph_span: 48h
+    update_interval: 5m
+    header:
+      show: false
+    span:
+      start: day
+    series:
+      - entity: sensor.nordpool_kwh_tromso_nok___
+        name: Pris i dag
+        opacity: 1
+        float_precision: 3
+        extend_to: false
+        data_generator: |
+          return entity.attributes.raw_today.map((start, index) => {
+            return [new Date(start["start"]).getTime(), entity.attributes.raw_today[index]["value"]];
+          });
+      - entity: sensor.nordpool_kwh_tromso_nok___
+        name: Pris i morgen
+        opacity: 1
+        float_precision: 3
+        data_generator: |
+          return entity.attributes.raw_tomorrow.map((start, index) => {
+            return [new Date(start["start"]).getTime(), entity.attributes.raw_tomorrow[index]["value"]];
+          });
+      - entity: sensor.power_myhome
+        type: area
+        name: Forbruk
+        opacity: 0.2
+        extend_to: false
+        statistics:
+          type: mean
+          period: hour
+          align: start
+    apex_config:
+      chart:
+        height: 400px
+      yaxis:
+        - show: true
+          title: 
+            text: Pris kr/kWh
+            style:
+              - font-weight: normal
+          name: Pris
+          decimalsInFloat: 2
+        - show: false
+          title: Pris
+          decimalsInFloat: 2
+        - show: true
+          title: 
+            text: Forbruk kWh
+            style:
+              - font-weight: normal
+          name: Forbruk
+          decimalsInFloat: 0
+          opposite: true

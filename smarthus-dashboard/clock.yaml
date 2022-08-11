@@ -1,0 +1,90 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: Tidsstyring
+  large: true
+  card:
+    type: custom:layout-card
+    layout_type: custom:horizontal-layout
+    layout:
+      width: 270
+      max_cols: 2
+      card_margin: 40px
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: "custom:time-picker-card"
+            entity: input_datetime.natt_i_huset
+            name: Natt i huset, hverdag
+            hour_mode: 24
+            hour_step: 1
+            minute_step: 30
+            layout:
+              name: inside
+              align_controls: right
+          - type: "custom:time-picker-card"
+            entity: input_datetime.natt_i_huset_helg
+            name: Natt i huset, helg
+            hour_mode: 24
+            hour_step: 1
+            minute_step: 30
+            layout:
+              name: inside
+              align_controls: right
+          - type: "custom:time-picker-card"
+            entity: input_datetime.morgen_i_huset
+            name: Morgen i huset, hverdag
+            hour_mode: 24
+            hour_step: 1
+            minute_step: 30
+            layout:
+              name: inside
+              align_controls: right
+          - type: "custom:time-picker-card"
+            entity: input_datetime.morgen_i_huset_helg
+            name: Morgen i huset, helg
+            hour_mode: 24
+            hour_step: 1
+            minute_step: 30
+            layout:
+              name: inside
+              align_controls: right
+
+      - type: vertical-stack
+        cards:
+          - type: "custom:time-picker-card"
+            entity: input_datetime.leggetid_for_kaja_pa_hverdager
+            name: Leggetid Kaja, hverdag
+            hour_mode: 24
+            hour_step: 1
+            minute_step: 30
+            layout:
+              name: inside
+              align_controls: right
+          - type: "custom:time-picker-card"
+            entity: input_datetime.leggetid_for_kaja_i_helg_og_ferie
+            name: Leggetid Kaja, helg
+            hour_mode: 24
+            hour_step: 1
+            minute_step: 30
+            layout:
+              name: inside
+              align_controls: right
+          - type: "custom:time-picker-card"
+            entity: input_datetime.leggetid_for_sunniva_pa_hverdager
+            name: Leggetid Sunniva, hverdag
+            hour_mode: 24
+            hour_step: 1
+            minute_step: 30
+            layout:
+              name: inside
+              align_controls: right
+          - type: "custom:time-picker-card"
+            entity: input_datetime.leggetid_for_sunniva_i_helg_og_ferie
+            name: Leggetid Sunniva, helg
+            hour_mode: 24
+            hour_step: 1
+            minute_step: 30
+            layout:
+              name: inside
+              align_controls: right

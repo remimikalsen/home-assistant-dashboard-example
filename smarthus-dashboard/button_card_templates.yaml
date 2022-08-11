@@ -1,0 +1,599 @@
+buttons_sidebar:
+  color_type: icon
+  show_name: false
+  show_state: false
+  styles:
+    card:
+      - width: 300px
+      - background-color: transparent
+      - box-shadow: none
+    grid:
+      - grid-template-areas: '"clock" "weather" "big_buttons" "small_buttons"'
+      - grid-template-rows:
+      - grid-gap: 0px
+
+button_clock:
+  show_name: false
+  show_state: true
+  styles:
+    card:
+      - width: 300px
+      - height: 160px
+      - box-shadow: none
+      - border: 0
+      - background: transparent
+      - margin: 0 auto
+      - margin-left: 15px
+    grid:
+      - grid-template-areas: '"nighttime s ." "workday s ." "day day day" "date date date"'
+      - grid-template-columns: 35px auto 35px
+      - grid-gap: 0px
+    state:
+      - font-size: 5em
+      - font-weight: 200
+    custom_fields:
+      nighttime:
+      workday:
+      day:
+        - font-size: 1.7em
+        - font-weight: 300
+      date:
+        - font-size: 1.3em
+        - font-weight: 100
+
+button_clock_nighttime:
+  show_name: false
+  show_state: false
+  icon: mdi:weather-night
+  styles:
+    card:
+      - width: 30px
+      - height: 30px
+      - box-shadow: none
+      - border: 0
+      - background: transparent
+      - margin-top: -30px
+      - margin-left: 7px
+    grid:
+      - grid-template-areas: '"i"'
+    icon:
+      - width: 20px
+      - height: 20px
+      - opacity: 0.75
+
+button_clock_workday:
+  template: button_clock_nighttime
+  icon: mdi:briefcase-outline
+  styles:
+    card:
+      - margin-top: -40px
+  state:
+    - value: "off"
+      icon: mdi:tshirt-crew-outline
+      styles:
+        icon:
+          - color: darkred
+    - value: "on"
+      styles:
+        icon:
+          - color: "#4F7942"
+
+button_sidebar_big_layout:
+  color_type: icon
+  show_name: false
+  show_state: false
+  styles:
+    card:
+      - width: 300px
+      - background-color: transparent
+      - box-shadow: none
+      - margin-top: 10px
+    grid:
+      - grid-template-areas: '". alarm cctv ."'
+      - grid-template-columns: auto repeat(2, 80px) auto
+      - grid-gap: 15px
+
+button_sidebar_big:
+  color_type: icon
+  show_name: false
+  show_state: false
+  styles:
+    card:
+      - width: 100px
+      - height: 100px
+      - background-color: transparent
+      - box-shadow: none
+    icon:
+      - width: 100px
+      - height: 100px
+
+buttons_sidebar_small_layout:
+  color_type: icon
+  show_name: false
+  show_state: false
+  styles:
+    card:
+      - width: 300px
+      - background-color: transparent
+      - box-shadow: none
+    grid:
+      - grid-template-areas: |
+          ". fire sirens cctv ."
+          ". leak messages car ."
+          ". birthdays mail trash ."
+      - grid-template-columns: auto repeat(3, 60px) auto
+      - grid-gap: 8px
+
+button_sidebar_small:
+  template: button_sidebar_big
+  styles:
+    card:
+      - width: 55px
+      - height: 55px
+      - margin: 5px
+      - margin-top: 10px
+    icon:
+      - width: 50px
+      - height: 50px
+
+button_tiny_person:
+  show_entity_picture: false
+  show_name: false
+  show_icon: false
+  hold_action:
+    action: none
+  styles:
+    card:
+      - width: 60px
+      - height: 55px
+      - margin-right: 10%
+      - margin-left: 10%
+      - background-color: transparent
+      - box-shadow: none
+      - justify-self: start
+      - align-self: middle
+    grid:
+      - grid-template-areas: '"icon" "zone"'
+    custom_fields:
+      icon:
+        - clip-path: circle()
+        - width: 27px
+        - pointer-events: none
+        - display: grid
+        - border: 4px solid
+        - border-color: darkred
+        - border-radius: 27px
+        - justify-self: center
+        - opacity: 1
+      zone:
+        - align-self: middle
+        - justify-self: center
+        - font-size: 10px
+
+button_edit_alarm:
+  template: button_sidebar_small
+  show_name: true
+  styles:
+    card:
+      - width: 120px
+      - height: 60px
+      - margin: 5px
+    icon:
+      - width: 30px
+      - height: 30px
+    name:
+      - font-size: 10px
+
+button_electricity_overview:
+  show_name: false
+  show_state: false
+  styles:
+    card:
+      - width: 160px
+      - background: transparent
+      - box-shadow: none
+      - border: 0
+      #- margin-top: 25px
+      - margin-top: -5px
+    grid:
+      - grid-template-areas: |
+          ". consumption_icon consumption_text ."
+          ". price_icon price_text ."
+      - grid-template-columns: 0px 35px 125px 0px
+      - grid-template-rows: 25px 25px
+      - grid-gap: 2px
+    custom_fields:
+      consumption_text:
+        - justify-self: start
+      price_text:
+        - justify-self: start
+
+button_content_group:
+  show_name: true
+  show_state: false
+  styles:
+    card:
+      - width: 250px
+      - background: transparent
+      - box-shadow: none
+      - border: 0
+      - border-left: 1px solid rgb(68, 115, 158)
+      - border-radius: 0 0 0 0
+      - padding-bottom: 4px
+      - border: 0
+    grid:
+      - grid-template-areas: '"n" "tiny_buttons" "action_buttons"'
+    name:
+      - border-bottom: 0
+      - justify-self: start
+      - padding-left: 10px
+      - padding-bottom: 8px
+      - padding-top: 0
+      - margin-top: -12px
+      - text-align: left
+      - font-size: 120%
+      - font-weight: 300
+      - width: 100%
+    custom_fields:
+      tiny_buttons:
+        - padding-left: 14px
+        #- margin-left: 5px
+        #- margin: 0 auto
+        - margin-bottom: 0px
+        - margin-top: 0px
+      action_buttons:
+        #- margin: 0 auto
+        - padding-left: 10px
+
+button_content_group_double:
+  show_name: false
+  show_state: false
+  styles:
+    card:
+      - width: 250px
+      - background: transparent
+      - box-shadow: none
+      - border: 0
+      - padding: 0
+    grid:
+      - grid-template-areas: '"first" "second"'
+    custom_fields:
+      first:
+        - margin-bottom: 18px
+
+button_content_group_tiny:
+  show_name: false
+  show_state: false
+  styles:
+    card:
+      - width: 27px
+      - height: 30px
+      - margin-top: 3px
+      - margin-bottom: 4px
+      - margin-right: -5px
+      - margin-left: -5px
+      - padding: 0
+      - box-shadow: none
+      - background: transparent
+    icon:
+      - width: 23px
+      - height: 23px
+    grid:
+      - grid-template-areas: '"i"'
+
+button_temperature:
+  color: rgb(68, 115, 158)
+  state:
+    - value: 18
+      operator: "<"
+      color: lightsteelblue
+    - value: 22
+      operator: ">"
+      color: darkred
+
+button_temperature_vaskerom:
+  color: rgb(68, 115, 158)
+  state:
+    - value: 20
+      operator: "<"
+      color: lightsteelblue
+    - value: 25
+      operator: ">"
+      color: darkred
+
+button_temperature_outdoor:
+  color: rgb(68, 115, 158)
+  state:
+    - value: -5
+      operator: "<"
+      color: lightsteelblue
+    - value: 22
+      operator: ">"
+      color: darkred
+
+button_temperature_garasjebod:
+  color: rgb(68, 115, 158)
+  state:
+    - value: 4
+      operator: "<"
+      color: lightsteelblue
+    - value: 22
+      operator: ">"
+      color: darkred
+
+button_humidity:
+  icon: mdi:water-percent
+  color: rgb(68, 115, 158)
+  state:
+    - value: 40
+      operator: "<"
+      color: orange
+    - value: 60
+      operator: ">"
+      color: orange
+
+button_lux:
+  color: rgb(68, 115, 158)
+  icon: mdi:brightness-6
+  state:
+    - value: 350
+      operator: ">"
+      color: white
+    - value: 200
+      operator: ">"
+      color: yellow
+    - value: 100
+      operator: ">"
+      color: orange
+    - value: 25
+      operator: ">"
+      color: darkred
+
+button_kattedo:
+  color: rgb(68, 115, 158)
+  icon: mdi:cat
+  state:
+    - value: 8
+      operator: ">"
+      color: darkred
+      styles:
+        card:
+          - animation: blink 2s ease infinite
+    - value: 4
+      operator: ">"
+      color: orange
+      styles:
+        card:
+          - animation: blink 2s ease infinite
+    - value: 0
+      operator: ">"
+      color: var(--paper-item-icon-active-color)
+
+button_lux_outdoor:
+  color: rgb(68, 115, 158)
+  icon: mdi:weather-night
+  state:
+    - value: 8000
+      operator: ">"
+      color: yellow
+      icon: mdi:white-balance-sunny
+    - value: 1700
+      operator: ">"
+      color: white
+      icon: mdi:weather-partly-cloudy
+    - value: 1000
+      operator: ">"
+      color: white
+      icon: mdi:weather-cloudy
+    - value: 500
+      operator: ">"
+      color: lightgrey
+      icon: mdi:weather-cloudy
+    - value: 100
+      operator: ">"
+      color: darkgrey
+      icon: mdi:weather-cloudy
+
+button_co2:
+  color: rgb(68, 115, 158)
+  state:
+    - value: 1000
+      operator: ">"
+      color: darkred
+    - value: 750
+      operator: ">"
+      color: orange
+
+button_heating:
+  color: rgb(68, 115, 158)
+  icon: mdi:radiator
+
+button_window:
+  state:
+    - value: "on"
+      color: var(--paper-item-icon-active-color)
+      icon: mdi:window-open
+    - value: "off"
+      color: rgb(68, 115, 158)
+      icon: mdi:window-closed
+
+button_door:
+  state:
+    - value: "on"
+      color: var(--paper-item-icon-active-color)
+      icon: mdi:door-open
+    - value: "off"
+      color: rgb(68, 115, 158)
+      icon: mdi:door-closed
+
+button_ups:
+  icon: "mdi:power-plug-outline"
+  color: rgb(68, 115, 158)
+  state:
+    - value: "on"
+      color: darkred
+
+button_voc:
+  icon: mdi:virus
+  color: rgb(68, 115, 158)
+  state:
+    - value: 400
+      operator: ">"
+      color: darkred
+    - value: 200
+      operator: ">"
+      color: orange
+
+button_content_group_action:
+  show_name: false
+  show_state: false
+  styles:
+    card:
+      - width: 70px
+      - height: 70px
+      - margin: 8px 4px 0px 4px
+    icon:
+      - width: 70px
+      - height: 70px
+    grid:
+      - grid-template-areas: '"i"'
+    img_cell:
+      - margin: none
+
+button_content_group_action_text:
+  show_name: true
+  show_state: false
+  show_icon: false
+  styles:
+    card:
+      - width: 70px
+      - height: 50px
+      - margin-top: 8px
+    grid:
+      - grid-template-areas: '"n"'
+    name:
+      - font-size: 12px
+
+button_footer:
+  show_state: false
+  styles:
+    card:
+      - width: 60px
+      - height: 55px
+      - margin-right: 10%
+      - margin-left: 10%
+      - background-color: transparent
+      - box-shadow: none
+    icon:
+      - width: 40px
+      - height: 40px
+    name:
+      - font-size: 10px
+      
+popup_info_card:
+  color_type: icon
+  show_name: true
+  show_state: true
+  styles:
+    card:
+      - width: 120px
+      - height: 120px
+      - background-color: rgb(40,40,40)
+    icon:
+      - width: 100px
+      - height: 100px
+
+title_button:
+  color_type: label-card
+  styles:
+    card:
+      - padding: 0px 0px 0px 2px
+      - background-color: transparent
+      - box-shadow: none
+    name:
+      - color: var(--primary-text-color)
+      - font-size: 16px
+      - font-weight: bold
+      - justify-self: start
+title_button_small:
+  template: title_button
+  styles:
+    card:
+      - padding-top: 8px
+    name:
+      - font-size: 14px
+      - font-weight: normal
+popup_button:
+  color_type: icon
+  styles:
+    card:
+      - padding: 5px
+      - width: 75px
+      - height: 75px
+    name:
+      - font-size: 10px
+    state:
+      - font-size: 10px
+    icon:
+      - width: 40px
+      - height: 40px
+big_popup_button:
+  color_type: icon
+  styles:
+    card:
+      - padding: 5px
+      - width: 150px
+      - height: 150px
+    name:
+      - font-size: 12px
+      - font-weight: bold
+    state:
+      - font-size: 12px
+    icon:
+      - width: 40px
+      - height: 40px
+small_info_button:
+  color_type: icon
+  show_name: false
+  show_state: true
+  styles:
+    card:
+      - padding: 5px
+      - width: 50px
+      - height: 50px
+      - background-color: "#242424"
+    name:
+      - font-size: 10px
+    state:
+      - font-size: 10px
+    icon:
+      - width: 25px
+      - height: 25px
+small_transparent_info_button:
+  template: small_info_button
+  color_type: icon
+  show_name: false
+  show_state: true
+  styles:
+    card:
+      - background-color: transparent
+      - box-shadow: none
+    icon:
+      - width: 30px
+      - height: 30px
+info_button:
+  template: small_info_button
+  color_type: icon
+  show_name: true
+  show_state: false
+  styles:
+    card:
+      - padding: 5px
+      - width: 100px
+      - height: 100px
+      - background-color: "#242424"
+    name:
+      - font-size: 12px
+    icon:
+      - width: 75px
+      - height: 75px

@@ -1,0 +1,20 @@
+volume_announcement:
+  name: Volume for Googe speaker announcements
+  max: 1.0
+  min: 0.0
+  step: 0.05
+volume_smart_speaker_default:
+  name: Default volume for Google speaker
+  max: 1.0
+  min: 0.0
+  step: 0.05
+lydgrense_kaja:
+  name: Akseptabelt lydnivå på Kajas rom nattestid
+  max: 2.0
+  min: 0.0
+  step: 0.05
+lydgrense_sunniva:
+  name: Akseptabelt lydnivå på Sunnivas rom nattestid
+  max: 2.0
+  min: 0.0
+  step: 0.05

@@ -1,0 +1,37 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: 3D printer
+  large: true
+  card:
+    type: custom:layout-card
+    layout_type: custom:horizontal-layout
+    layout:
+      width: 350
+      max_cols: 3
+      card_margin: 20px
+    cards:
+      - type: picture-entity
+        entity: binary_sensor.octoprint_printing
+        camera_image: camera.octoprint
+        camera_view: live
+      - type: entities
+        entities:
+          - entity: binary_sensor.octoprint_printing_error
+          - entity: sensor.octoprint_current_state
+          - entity: sensor.octoprint_job_percentage
+          - entity: sensor.octoprint_actual_bed_temp
+          - entity: sensor.octoprint_target_bed_temp
+          - entity: sensor.octoprint_actual_tool0_temp
+          - entity: sensor.octoprint_target_tool0_temp
+      - type: glance
+        entities:
+          - entity: >-
+              sensor.3d_printer_filament_temperatur_og_luftfuktighet_temperature
+            name: Temperatur
+          - entity: >-
+              sensor.3d_printer_filament_temperatur_og_luftfuktighet_humidity
+            name: Luftfuktighet
+        title: Filamentkasse
+        show_state: true
+        show_name: true

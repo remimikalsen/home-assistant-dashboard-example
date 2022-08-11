@@ -1,0 +1,387 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  large: true
+  title: Brannvarslere
+  card:
+    type: custom:layout-card
+    layout_type: custom:horizontal-layout
+    layout:
+      width: 290
+      max_cols: 4
+      card_margin: 5px
+      margin: 4px 50px 0px 50px
+    cards:
+      - type: conditional
+        conditions:
+          - entity: alert.brannalarm
+            state: "on"
+        card:
+          type: custom:html-template-card
+          ignore_line_breaks: true
+          content: >
+            <div style="min-height: 100px;">
+
+            <p style="font-size: 1.2em; margin-top: -8px;">Brannalarmen sist
+            trigget fra:</p>
+
+            <span>{{ states('sensor.brannalarm_trigget_fra') }}</span>
+
+            </div>
+      - type: custom:layout-card
+        layout_type: custom:vertical-layout
+        cards:
+          - type: custom:button-card
+            template: title_button_small
+            name: Kaja
+          - type: horizontal-stack
+            cards:
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_kaja_smoke_alarm_smoke_detected
+                icon: mdi:smoke
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_kaja_heat_alarm_overheat_detected
+                icon: mdi:fire
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_kaja_system_system_hardware_failure
+                icon: mdi:alert
+              - type: custom:button-card
+                template: small_info_button
+                entity: sensor.roykvarsler_kaja_air_temperature
+                icon: mdi:thermometer
+              - type: custom:button-card
+                template: small_info_button
+                entity: sensor.roykvarsler_kaja_battery_level
+                icon: mdi:battery
+      - type: custom:layout-card
+        layout_type: custom:vertical-layout
+        cards:
+          - type: custom:button-card
+            template: title_button_small
+            name: Sunniva
+          - type: horizontal-stack
+            cards:
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_sunniva_smoke_alarm_smoke_detected
+                icon: mdi:smoke
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_sunniva_heat_alarm_overheat_detected
+                icon: mdi:fire
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_sunniva_system_system_hardware_failure
+                icon: mdi:alert
+              - type: custom:button-card
+                template: small_info_button
+                entity: sensor.roykvarsler_sunniva_air_temperature
+                icon: mdi:thermometer
+              - type: custom:button-card
+                template: small_info_button
+                entity: sensor.roykvarsler_sunniva_battery_level
+                icon: mdi:battery
+      - type: custom:layout-card
+        layout_type: custom:vertical-layout
+        cards:
+          - type: custom:button-card
+            template: title_button_small
+            name: Hovedsoverom
+          - type: horizontal-stack
+            cards:
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_hovedsoverom_smoke_alarm_smoke_detected
+                icon: mdi:smoke
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_hovedsoverom_heat_alarm_overheat_detected
+                icon: mdi:fire
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_hovedsoverom_system_system_hardware_failure
+                icon: mdi:alert
+              - type: custom:button-card
+                template: small_info_button
+                entity: sensor.roykvarsler_hovedsoverom_air_temperature
+                icon: mdi:thermometer
+              - type: custom:button-card
+                template: small_info_button
+                entity: sensor.roykvarsler_hovedsoverom_battery_level
+                icon: mdi:battery
+      - type: custom:layout-card
+        layout_type: custom:vertical-layout
+        cards:
+          - type: custom:button-card
+            template: title_button_small
+            name: Bod nede
+          - type: horizontal-stack
+            cards:
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_bod_nede_smoke_alarm_smoke_detected
+                icon: mdi:smoke
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_bod_nede_heat_alarm_overheat_detected
+                icon: mdi:fire
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_bod_nede_system_system_hardware_failure
+                icon: mdi:alert
+              - type: custom:button-card
+                template: small_info_button
+                entity: sensor.roykvarsler_bod_nede_air_temperature
+                icon: mdi:thermometer
+              - type: custom:button-card
+                template: small_info_button
+                entity: sensor.roykvarsler_bod_nede_battery_level
+                icon: mdi:battery
+      - type: custom:layout-card
+        layout_type: custom:vertical-layout
+        cards:
+          - type: custom:button-card
+            template: title_button_small
+            name: Vaskerom
+          - type: horizontal-stack
+            cards:
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_vaskerom_smoke_alarm_smoke_detected
+                icon: mdi:smoke
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_vaskerom_heat_alarm_overheat_detected
+                icon: mdi:fire
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_vaskerom_system_system_hardware_failure
+                icon: mdi:alert
+              - type: custom:button-card
+                template: small_info_button
+                entity: sensor.roykvarsler_vaskerom_air_temperature
+                icon: mdi:thermometer
+              - type: custom:button-card
+                template: small_info_button
+                entity: sensor.roykvarsler_vaskerom_battery_level
+                icon: mdi:battery
+      - type: custom:layout-card
+        layout_type: custom:vertical-layout
+        cards:
+          - type: custom:button-card
+            template: title_button_small
+            name: ManCave
+          - type: horizontal-stack
+            cards:
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_mancave_smoke_alarm_smoke_detected
+                icon: mdi:smoke
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_mancave_heat_alarm_overheat_detected
+                icon: mdi:fire
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_mancave_system_system_hardware_failure
+                icon: mdi:alert
+              - type: custom:button-card
+                template: small_info_button
+                entity: sensor.roykvarsler_mancave_air_temperature
+                icon: mdi:thermometer
+              - type: custom:button-card
+                template: small_info_button
+                entity: sensor.roykvarsler_mancave_battery_level
+                icon: mdi:battery
+      - type: custom:layout-card
+        layout_type: custom:vertical-layout
+        cards:
+          - type: custom:button-card
+            template: title_button_small
+            name: Gang nede
+          - type: horizontal-stack
+            cards:
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_gang_nede_smoke
+                icon: mdi:smoke
+              - type: custom:button-card
+                template: small_info_button
+                color_type: blank-card
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_gang_nede_fault
+                icon: mdi:alert
+              - type: custom:button-card
+                template: small_info_button
+                entity: sensor.roykvarsler_gang_nede_temperature
+                icon: mdi:thermometer
+              - type: custom:button-card
+                template: small_info_button
+                entity: sensor.roykvarsler_gang_nede_battery
+                icon: mdi:battery
+      - type: custom:layout-card
+        layout_type: custom:vertical-layout
+        cards:
+          - type: custom:button-card
+            template: title_button_small
+            name: Gang oppe
+          - type: horizontal-stack
+            cards:
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_gang_oppe_smoke
+                icon: mdi:smoke
+              - type: custom:button-card
+                template: small_info_button
+                color_type: blank-card
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_gang_oppe_fault
+                icon: mdi:alert
+              - type: custom:button-card
+                template: small_info_button
+                entity: sensor.roykvarsler_gang_oppe_temperature
+                icon: mdi:thermometer
+              - type: custom:button-card
+                template: small_info_button
+                entity: sensor.roykvarsler_gang_oppe_battery
+                icon: mdi:battery
+      - type: custom:layout-card
+        layout_type: custom:vertical-layout
+        cards:
+          - type: custom:button-card
+            template: title_button_small
+            name: Stue
+          - type: horizontal-stack
+            cards:
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_stue_smoke_alarm_smoke_detected
+                icon: mdi:smoke
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_stue_heat_alarm_overheat_detected
+                icon: mdi:fire
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_stue_system_system_hardware_failure
+                icon: mdi:alert
+              - type: custom:button-card
+                template: small_info_button
+                entity: sensor.roykvarsler_stue_air_temperature
+                icon: mdi:thermometer
+              - type: custom:button-card
+                template: small_info_button
+                entity: sensor.roykvarsler_stue_battery_level
+                icon: mdi:battery
+      - type: custom:layout-card
+        layout_type: custom:vertical-layout
+        cards:
+          - type: custom:button-card
+            template: title_button_small
+            name: Garasje nede
+          - type: horizontal-stack
+            cards:
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_garasje_nede_smoke_alarm_smoke_detected
+                icon: mdi:smoke
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_garasje_nede_heat_alarm_overheat_detected
+                icon: mdi:fire
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_garasje_nede_system_system_hardware_failure
+                icon: mdi:alert
+              - type: custom:button-card
+                template: small_info_button
+                entity: sensor.roykvarsler_garasje_nede_air_temperature
+                icon: mdi:thermometer
+              - type: custom:button-card
+                template: small_info_button
+                entity: sensor.roykvarsler_garasje_nede_battery_level
+                icon: mdi:battery
+      - type: custom:layout-card
+        layout_type: custom:vertical-layout
+        cards:
+          - type: custom:button-card
+            template: title_button_small
+            name: Garasje oppe
+          - type: horizontal-stack
+            cards:
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_garasje_oppe_smoke_alarm_smoke_detected
+                icon: mdi:smoke
+              - type: custom:button-card
+                template: small_info_button
+                color_type: blank-card
+              - type: custom:button-card
+                template: small_info_button
+                color_type: blank-card
+              - type: custom:button-card
+                template: small_info_button
+                entity: sensor.temperatur_og_luftfuktighet_garasje_temperature
+                icon: mdi:thermometer
+              - type: custom:button-card
+                template: small_info_button
+                entity: sensor.roykvarsler_garasje_oppe_battery_level
+                icon: mdi:battery
+      - type: custom:layout-card
+        layout_type: custom:vertical-layout
+        cards:
+          - type: custom:button-card
+            template: title_button_small
+            name: Leieboer
+          - type: horizontal-stack
+            cards:
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_leieboer_smoke_alarm_smoke_detected
+                icon: mdi:smoke
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_leieboer_heat_alarm_overheat_detected
+                icon: mdi:fire
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_leieboer_system_system_hardware_failure
+                icon: mdi:alert
+              - type: custom:button-card
+                template: small_info_button
+                entity: sensor.roykvarsler_leieboer_air_temperature
+                icon: mdi:thermometer
+              - type: custom:button-card
+                template: small_info_button
+                entity: sensor.roykvarsler_leieboer_battery_level
+                icon: mdi:battery
+      - type: custom:layout-card
+        layout_type: custom:vertical-layout
+        cards:
+          - type: custom:button-card
+            template: title_button_small
+            name: Yttergang
+          - type: horizontal-stack
+            cards:
+              - type: custom:button-card
+                template: small_info_button
+                entity: binary_sensor.roykvarsler_yttergang_smoke_alarm_smoke_detected
+                icon: mdi:smoke
+              - type: custom:button-card
+                template: small_info_button
+                color_type: blank-card
+              - type: custom:button-card
+                template: small_info_button
+                color_type: blank-card
+              - type: custom:button-card
+                template: small_info_button
+                color_type: blank-card
+              - type: custom:button-card
+                template: small_info_button
+                entity: sensor.roykvarsler_yttergang_battery_level
+                icon: mdi:battery

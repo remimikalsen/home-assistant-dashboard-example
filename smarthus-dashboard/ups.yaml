@@ -1,0 +1,103 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  large: true
+  title: UPS
+  card:
+    type: custom:layout-card
+    layout_type: custom:horizontal-layout
+    layout:
+      width: 350
+      max_cols: 3
+      card_margin: 20px
+    cards:
+      - type: grid
+        cards:
+          - type: entities
+            entities:
+              - entity: switch.ups_1_stikkontakt
+            show_header_toggle: false
+          - type: entities
+            entities:
+              - entity: sensor.ups_1_stikkontakt_electric_consumed_w
+                name: Strøminntak
+              - entity: sensor.ups_1_status
+              - entity: sensor.ups_1_status_data
+              - entity: sensor.ups_1_load
+              - entity: sensor.ups_1_battery_charge
+              - entity: sensor.ups_1_battery_runtime
+                secondary_info: >-
+                  {{ (states('sensor.ups_1_battery_runtime')|int / 60 /
+                  60)|int   }} t {{ (states('sensor.ups_1_battery_runtime')|int
+                  / 60 % 60)|int   }} min
+              - entity: sensor.ups_1_low_battery_setpoint
+              - entity: sensor.ups_1_low_battery_runtime
+                secondary_info: >-
+                  {{ (states('sensor.ups_1_low_battery_runtime')|int / 60
+                  )|int   }} min
+              - entity: sensor.ups_1_load_shutdown_timer
+              - entity: sensor.ups_1_ups_shutdown_delay
+          - type: history-graph
+            entities:
+              - entity: sensor.ups_1_battery_runtime
+                name: Battery runtime
+            hours_to_show: 24
+            refresh_interval: 0
+          - type: history-graph
+            entities:
+              - entity: sensor.ups_1_stikkontakt_electric_consumed_w
+                name: Power consumption
+            hours_to_show: 24
+            refresh_interval: 0
+        columns: 1
+        square: false
+        title: Servere og backup
+      - type: grid
+        cards:
+          - type: entities
+            entities:
+              - entity: switch.ups_2_stikkontakt
+            show_header_toggle: false
+          - type: entities
+            entities:
+              - entity: sensor.ups_2_stikkontakt_electric_consumed_w
+                name: Strøminntak
+              - entity: sensor.ups_2_status
+              - entity: sensor.ups_2_status_data
+              - entity: sensor.ups_2_load
+              - entity: sensor.ups_2_battery_charge
+              - entity: sensor.ups_2_battery_runtime
+                secondary_info: >-
+                  {{ (states('sensor.ups_2_battery_runtime')|int / 60 /
+                  60)|int   }} t {{ (states('sensor.ups_2_battery_runtime')|int
+                  / 60 % 60)|int   }} min
+              - entity: sensor.ups_2_load_shutdown_timer
+              - entity: sensor.ups_2_ups_shutdown_delay
+          - type: history-graph
+            entities:
+              - entity: sensor.ups_2_battery_runtime
+                name: Battery runtime
+            hours_to_show: 24
+            refresh_interval: 0
+          - type: history-graph
+            entities:
+              - entity: sensor.ups_2_stikkontakt_electric_consumed_w
+                name: Power consumption
+            hours_to_show: 24
+            refresh_interval: 0
+        columns: 1
+        square: false
+        title: Internett og CCTV trapp
+      - type: grid
+        cards:
+          - type: entities
+            entities:
+              - entity: switch.ups_3_stikkontakt
+            show_header_toggle: false
+          - type: entities
+            entities:
+              - entity: sensor.ups_3_stikkontakt_power
+                name: Strøminntak
+        columns: 1
+        title: Desktop
+        square: false

@@ -1,0 +1,28 @@
+user_1:
+  name: "Bruker #1"
+user_2:
+  name: "Bruker #2"
+user_3:
+  name: "Bruker #3"
+user_4:
+  name: "Bruker #4"
+user_5:
+  name: "Bruker #5"
+user_6:
+  name: "Bruker #6"
+user_7:
+  name: "Bruker #7"
+user_8:
+  name: "Bruker #8"
+user_9:
+  name: "Bruker #9"
+kodepanel_1:
+  name: "Kodepanel #1"
+kodepanel_2:
+  name: "Kodepanel #2"
+kodepanel_3:
+  name: "Kodepanel #3"
+kodepanel_4:
+  name: "Kodepanel #4"
+masterkode_alarm:
+  name: Masterkode for alarmen

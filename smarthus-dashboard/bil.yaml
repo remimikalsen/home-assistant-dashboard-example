@@ -1,0 +1,121 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  large: true
+  title: Bil
+  card:
+    type: custom:layout-card
+    layout_type: custom:horizontal-layout
+    layout:
+      width: 290
+      max_cols: 4
+      card_margin: 15px
+      margin: 4px 50px 0px 50px
+    cards:
+      - type: custom:mod-card
+        style:
+          .: |
+            ha-card {
+              background-color: transparent;
+            }
+          hui-grid-card$: |
+            #root {
+              justify-items: center !important;
+            }
+            .card-header {
+              text-align: center;
+            }
+        card:
+          type: grid
+          columns: 1
+          title: Ladestyring
+          square: false
+          cards:
+            - type: custom:button-card
+              template: info_button
+              entity: sensor.elbil_lader_status
+              styles:
+                card:
+                  - justify-self: center
+              icon: mdi:car-electric
+              tap_action:
+                action: call-service
+                service: easee.toggle
+                service_data:
+                  charger_id: <READACTED>
+                target: {}
+              show_state: true
+              show_icon: true
+              show_name: false
+            - type: entities
+              entities:
+                - entity: sensor.elbil_lader_power
+                  name: Effekt nå
+                  secondary_info: >-
+                    {{ states('sensor.easee_home____current') }} A, Ladesesjon {{
+                    (float(states('sensor.elbil_lader_session_energy')) ) | round(2) }}
+                    kWh
+      - type: custom:apexcharts-card
+        header:
+          show: true
+          title: Siste 24 timer
+          show_states: false
+          colorize_states: true
+        series:
+          - entity: sensor.easee_home____energy_per_hour
+            type: column
+            name: Siste 24 timer
+            opacity: 0.2
+            extend_to: false
+            show:
+              in_header: false
+        apex_config:
+          yaxis:
+            - show: true
+              title:
+                text: kWh
+                style:
+                  - font-weight: normal
+              name: Siste 24 timer
+              decimalsInFloat: 1
+        graph_span: 24h
+      - type: custom:apexcharts-card
+        header:
+          show: true
+          title: Siste 30 dager
+          show_states: false
+          colorize_states: true
+        series:
+          - entity: sensor.easee_daglig_forbruk
+            type: column
+            name: Siste 30 dager
+            opacity: 0.5
+            extend_to: false
+            show:
+              in_header: false
+            statistics:
+              type: state
+              period: day
+              align: middle
+        apex_config:
+          yaxis:
+            - show: true
+              title:
+                text: kWh
+                style:
+                  - font-weight: normal
+              name: Siste 30 dager
+              decimalsInFloat: 1
+        graph_span: 30d
+      - type: entities
+        entities:
+          - entity: device_tracker.easee_ladeboks
+            name: WiFi Status
+            secondary_info: "Skystatus: {{ states('binary_sensor.easee_home____online') }}"
+          - entity: switch.easee_home____cable_locked_permanently
+            name: Kabel låst
+            secondary_info: "Låst: {{ states('binary_sensor.easee_home____cable_locked') }}"
+          - entity: switch.easee_home____smart_charging
+            name: Smartlading
+        show_header_toggle: false
+        state_color: false

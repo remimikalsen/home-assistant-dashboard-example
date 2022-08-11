@@ -1,0 +1,19 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: Søppelhenting
+  card:
+    type: entities
+    entities:
+      - entity: sensor.remiks_optisk_sortert_avfall_tomasjordvegen_129
+        name: Neste restsøppel
+        secondary_info: >-
+          {% if
+          is_state('binary_sensor.remiks_boolean_optisk_sortert_avfall_tomasjordvegen_129',
+          'on') %} Ut med sort dunk i kveld {% endif %}
+      - entity: sensor.remiks_glass_og_metallemballasje_tomasjordvegen_129
+        name: Neste glass og metall
+        secondary_info: >-
+          {% if
+          is_state('binary_sensor.remiks_boolean_glass_og_metallemballasje_tomasjordvegen_129',
+          'on') %} Ut med gul dunk i kveld {% endif %}

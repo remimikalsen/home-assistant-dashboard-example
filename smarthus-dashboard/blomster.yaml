@@ -1,0 +1,99 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  large: true
+  title: Garasjebod
+  card:
+    type: custom:layout-card
+    layout_type: custom:horizontal-layout
+    layout:
+      width: 350
+      max_cols: 2
+      card_margin: 20px
+    cards:
+      - type: horizontal-stack
+        cards:
+        - type: "custom:button-card"
+          template:
+            - popup_info_card
+            - button_heating
+          entity: climate.garasjebod
+          name: "Panelovn"
+        - type: "custom:button-card"
+          template:
+            - popup_info_card
+          tap_action:
+            action: toggle
+          entity: switch.blomsterlys
+          icon: mdi:flower
+          show_state: true
+          show_name: true
+        - type: "custom:button-card"
+          template:
+            - popup_info_card
+          tap_action:
+            action: toggle
+          entity: input_boolean.timer_for_blomsterlys
+          icon: mdi:timer
+          name: "Lystimer"
+          show_state: true
+          show_name: true
+      - type: gauge
+        entity: sensor.temperatur_og_luftfuktighet_garasje_humidity
+        min: 0
+        max: 100
+        name: Luftfuktighet
+      - type: custom:apexcharts-card
+        header:
+          show: true
+          show_states: true
+          colorize_states: true
+        series:
+          - entity: sensor.temperatursensor_hovedinngang_air_temperature
+            show:
+              legend_value: false
+            name: Hovedinngang
+          - entity: sensor.temperatursensor_verandador_air_temperature
+            show:
+              legend_value: false
+            name: Veranda
+          - entity: sensor.temperatur_og_luftfuktighet_garasje_temperature
+            show:
+              legend_value: false
+            name: Garasjebod
+      - type: grid
+        cards:
+          - type: custom:html-template-card
+            title: null
+            ignore_line_breaks: true
+            content: |
+              <h3 style="text-align: center;">
+                  {% set td = strptime(states('input_datetime.blomsterlys_stopp'),
+                  '%H:%M:%S') - strptime(states('input_datetime.blomsterlys_start'),
+                  '%H:%M:%S') %}{{ td.seconds // 3600 }}t {{ ((td.seconds % 3600) /
+                  60)|int }}min lystid per døgn
+              </h3>              
+          - type: custom:time-picker-card
+            entity: input_datetime.blomsterlys_start
+            hour_mode: 24
+            hour_step: 1
+            minute_step: 5
+            second_step: 5
+            name: ''
+            layout:
+              name: header
+              align_controls: center
+          - type: custom:time-picker-card
+            entity: input_datetime.blomsterlys_stopp
+            hour_mode: 24
+            hour_step: 1
+            minute_step: 5
+            second_step: 5
+            name: ''
+            layout:
+              embedded: false
+              name: header
+              align_controls: center
+        columns: 1
+        square: false
+

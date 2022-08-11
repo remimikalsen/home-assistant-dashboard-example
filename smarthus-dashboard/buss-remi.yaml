@@ -1,0 +1,89 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: Busser
+  hide_header: true
+  card:
+    type: vertical-stack
+    cards:
+      - type: conditional
+        conditions:
+          - entity: person.remi_mikalsen
+            state: "Lunheim skole"
+        card:
+          type: custom:entur-card
+          name: Til sentrum
+          show_clock: false
+          show_next: false
+          show_human: true
+          show_extra_departures: true
+          entities:
+            - entity: sensor.buss_til_jobb_remi_lunheim_skole
+              name: Lunheim skole
+              destination: Sentrum
+      - type: conditional
+        conditions:
+          - entity: person.remi_mikalsen
+            state: "Isbjørnen barnehage"
+        card:
+          type: custom:entur-card
+          name: Til sentrum
+          show_clock: false
+          show_next: false
+          show_human: true
+          show_extra_departures: true
+          entities:
+            - entity: sensor.buss_til_jobb_remi_siriusvegen_sor_platform_90446
+              name: Siriusvegen sør
+              destination: Sentrum
+      - type: conditional
+        conditions:
+          - entity: person.remi_mikalsen
+            state: "home"
+        card:
+          type: custom:entur-card
+          name: Til sentrum
+          show_clock: false
+          show_next: false
+          show_human: true
+          show_extra_departures: true
+          entities:
+            - entity: sensor.buss_til_jobb_remi_siriusvegen_sor_platform_90446
+              name: Siriusvegen sør
+              destination: Sentrum
+            - entity: sensor.buss_til_jobb_remi_tomasjordnes_platform_88471
+              name: Tomasjordnes
+              destination: Sentrum
+      - type: conditional
+        conditions:
+          - entity: person.remi_mikalsen
+            state: "Sentrum"
+        card:            
+          type: custom:entur-card
+          name: Buss hjem
+          show_clock: false
+          show_next: false
+          show_human: true
+          show_extra_departures: true
+          entities:
+            - entity: sensor.buss_til_jobb_remi_kystens_hus
+              name: Kystens hus
+              destination: Hjem
+      - type: conditional
+        conditions:
+          - entity: person.remi_mikalsen
+            state: "Jobb Remi"
+        card:            
+          type: custom:entur-card
+          name: Buss hjem
+          show_clock: false
+          show_next: false
+          show_human: true
+          show_extra_departures: true
+          entities:
+            - entity: sensor.buss_til_jobb_remi_kystens_hus
+              name: Kystens hus
+              destination: Hjem
+            - entity: sensor.buss_til_jobb_remi_tromso_prostneset
+              name: Prostneset
+              destination: Hjem                 

@@ -1,0 +1,7 @@
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: Kaja
+  card:
+    type: light
+    entity: light.taklys_pa_kaja_sitt_rom

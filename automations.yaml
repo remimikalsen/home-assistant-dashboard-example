@@ -1,0 +1,3114 @@
+- id: '1624363663430'
+  alias: Hovedsoverom - slå av termostat når vindu åpnes
+  description: ''
+  trigger:
+  - type: opened
+    platform: device
+    device_id: f1cda40d7e7b4ce3f837024de0ed4440
+    entity_id: binary_sensor.vindu_hovedsoverom_lite_access_control_window_door_is_open
+    domain: binary_sensor
+  - type: opened
+    platform: device
+    device_id: 47213abdcf9e6d7b0677a760dbc36d06
+    entity_id: binary_sensor.vindu_hovedsoverom_stort_access_control_window_door_is_open
+    domain: binary_sensor
+  condition: []
+  action:
+  - service: climate.turn_off
+    target:
+      entity_id: climate.hovedsoverom
+  mode: single
+  max: 10
+- id: '1624363719626'
+  alias: Hovedsoverom - slå på termostat når vindu lukkes
+  description: ''
+  trigger:
+  - type: not_opened
+    platform: device
+    device_id: f1cda40d7e7b4ce3f837024de0ed4440
+    entity_id: binary_sensor.vindu_hovedsoverom_lite_access_control_window_door_is_open
+    domain: binary_sensor
+  - type: not_opened
+    platform: device
+    device_id: 47213abdcf9e6d7b0677a760dbc36d06
+    entity_id: binary_sensor.vindu_hovedsoverom_stort_access_control_window_door_is_open
+    domain: binary_sensor
+  condition:
+  - type: is_not_open
+    condition: device
+    device_id: f1cda40d7e7b4ce3f837024de0ed4440
+    entity_id: binary_sensor.vindu_hovedsoverom_lite_access_control_window_door_is_open
+    domain: binary_sensor
+  - type: is_not_open
+    condition: device
+    device_id: 47213abdcf9e6d7b0677a760dbc36d06
+    entity_id: binary_sensor.vindu_hovedsoverom_stort_access_control_window_door_is_open
+    domain: binary_sensor
+  action:
+  - service: climate.turn_on
+    target:
+      entity_id: climate.hovedsoverom
+  mode: single
+  max: 10
+- id: '1624824942701'
+  alias: Low battery level detection & notification for all battery sensors
+  description: ''
+  use_blueprint:
+    path: sbyx/low-battery-level-detection-notification-for-all-battery-sensors.yaml
+    input:
+      threshold: 30
+      actions:
+      - service: notify.mobile_app_mobilremi
+        continue_on_error: true
+        data:
+          message: Lavt batteri på {{sensors}}
+      - service: notify.slack
+        continue_on_error: true
+        data:
+          title: Lavt batterinivå
+          message: Lavt batteri på {{sensors}}
+      exclude:
+        entity_id:
+        - sensor.mobil_remi_battery_level
+        - sensor.lenovo_skjerm_oppe_battery_level
+- id: '1626037686686'
+  alias: Gang oppe - Slå på lys bevegelse (kveld)
+  description: ''
+  trigger:
+  - type: motion
+    platform: device
+    device_id: 1763c097f8bf92a483bb44b4a4137eb2
+    entity_id: binary_sensor.gang_oppe_occupancy
+    domain: binary_sensor
+  condition:
+  - condition: state
+    entity_id: binary_sensor.natta_for_sunniva
+    state: 'on'
+  action:
+  - service: light.turn_on
+    target:
+      entity_id: light.taklyset_i_gangen_oppe
+    data:
+      brightness_pct: 15
+      transition: 1
+      kelvin: 2700
+  mode: single
+- id: '1626206025548'
+  alias: Kodepanel nede - alarm på
+  description: ''
+  trigger:
+  - platform: event
+    event_type: zwave_js_notification
+    event_data:
+      device_id: 5f6ceaa128ea784d286b2c860773a06d
+      type: 6
+      event: 5
+  condition:
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: alarm_control_panel.innbruddsalarm
+      state: armed_away
+  action:
+  - service: python_script.set_state
+    data_template:
+      entity_id: sensor.alarm_sist_aktivert
+      state: '#K3#B{{ trigger.event.data.parameters.userId }}#'
+  - service: notify.debug
+    data:
+      title: Full alarm aktiveres av bruker
+      message: Bruker startet aktivering av full alarm fra kodepanel nede {{ states('sensor.alarm_sist_aktivert') }}.
+  - service: alarm_control_panel.alarm_arm_away
+    target:
+      entity_id: alarm_control_panel.innbruddsalarm
+    data:
+      code: '{{ states(''input_text.masterkode_alarm'') }}'
+  mode: single
+- id: '1626209134765'
+  alias: Kodepanel nede - alarm av
+  description: ''
+  trigger:
+  - platform: event
+    event_type: zwave_js_notification
+    event_data:
+      device_id: 5f6ceaa128ea784d286b2c860773a06d
+      type: 6
+      event: 6
+  condition:
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: alarm_control_panel.innbruddsalarm
+      state: disarmed
+  action:
+  - service: python_script.set_state
+    data_template:
+      entity_id: sensor.alarm_sist_deaktivert
+      state: '#K3#B{{ trigger.event.data.parameters.userId }}#'
+  - service: notify.debug
+    data:
+      title: Alarm deaktiveres av bruker
+      message: Bruker startet deaktivering av alarmen fra kodepanel nede {{ states('sensor.alarm_sist_deaktivert') }}.
+  - service: alarm_control_panel.alarm_disarm
+    target:
+      entity_id: alarm_control_panel.innbruddsalarm
+    data:
+      code: '{{ states(''input_text.masterkode_alarm'') }}'
+  mode: single
+- id: '1626377941267'
+  alias: Kodepanel oppe - alarm av
+  description: ''
+  trigger:
+  - platform: mqtt
+    topic: zigbee2mqtt/Kodepanel oppe
+  condition:
+  - condition: template
+    value_template: '{{ "disarm" == trigger.payload_json.action }}'
+  - condition: template
+    value_template: '{{ states(''input_text.masterkode_alarm'') == trigger.payload_json.action_code
+      }}'
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: alarm_control_panel.innbruddsalarm
+      state: disarmed
+  action:
+  - service: python_script.set_state
+    data_template:
+      entity_id: sensor.alarm_sist_deaktivert
+      state: '#K2#'
+  - service: notify.debug
+    data:
+      message: Alarm deaktiveres fra kodepanel oppe {{ states('sensor.alarm_sist_deaktivert') }}.
+      title: Alarm deaktiveres
+  - service: alarm_control_panel.alarm_disarm
+    target:
+      entity_id: alarm_control_panel.innbruddsalarm
+    data:
+      code: '{{ states(''input_text.masterkode_alarm'') }}'
+  mode: single
+- id: '1626378133068'
+  alias: Kodepanel oppe - hjemmealarm på
+  description: ''
+  trigger:
+  - platform: mqtt
+    topic: zigbee2mqtt/Kodepanel oppe
+  condition:
+  - condition: template
+    value_template: '{{ "arm_day_zones" == trigger.payload_json.action }}'
+  - condition: template
+    value_template: '{{ states(''input_text.masterkode_alarm'') == trigger.payload_json.action_code
+      }}'
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: alarm_control_panel.innbruddsalarm
+      state: armed_home
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: alarm_control_panel.innbruddsalarm
+      state: arming
+  action:
+  - service: python_script.set_state
+    data_template:
+      entity_id: sensor.alarm_sist_aktivert
+      state: '#K2#'
+  - service: notify.debug
+    data:
+      title: Hjemmealarm aktiveres
+      message: Hjemmealarm aktiveres fra kodepanel oppe {{ states('sensor.alarm_sist_aktivert') }}.
+  - service: alarm_control_panel.alarm_arm_home
+    target:
+      entity_id: alarm_control_panel.innbruddsalarm
+    data:
+      code: '{{ states(''input_text.masterkode_alarm'') }}'
+  mode: single
+- id: '1626378273646'
+  alias: Kodepanel oppe - alarm på
+  description: ''
+  trigger:
+  - platform: mqtt
+    topic: zigbee2mqtt/Kodepanel oppe
+  condition:
+  - condition: template
+    value_template: '{{ "arm_all_zones" == trigger.payload_json.action }}'
+  - condition: template
+    value_template: '{{ states(''input_text.masterkode_alarm'') == trigger.payload_json.action_code
+      }}'
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: alarm_control_panel.innbruddsalarm
+      state: armed_away
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: alarm_control_panel.innbruddsalarm
+      state: arming
+  action:
+  - service: python_script.set_state
+    data_template:
+      entity_id: sensor.alarm_sist_aktivert
+      state: '#K2#'
+  - service: notify.debug
+    data:
+      title: Full alarm aktiveres
+      message: Full alarm aktiveres fra kodepanel oppe {{ states('sensor.alarm_sist_aktivert')
+        }}.
+  - service: alarm_control_panel.alarm_arm_away
+    target:
+      entity_id: alarm_control_panel.innbruddsalarm
+    data:
+      code: '{{ states(''input_text.masterkode_alarm'') }}'
+  mode: single
+- id: '1626378968656'
+  alias: Kodepanel master - alarm av
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: alarm_control_panel.innbruddsalarm
+    to: disarmed
+  condition: []
+  action:
+  - service: script.master_kodepanel_alarm_deaktivert
+  - service: script.update_alarm_sist_deaktivert_tekst
+  - service: notify.varsler
+    data:
+      title: Alarmen er deaktivert
+      message: Alarmen er deaktivert {{ states('sensor.alarm_sist_deaktivert_tekst')
+        }}
+  - service: script.announcement_google_hoyttalere
+    data:
+      entity_id: media_player.nest_audio_mannehula,media_player.nest_audio_hovedsoverom,media_player.nest_audio_stue
+      volume: 0.5
+      message: Alarmen er deaktivert {{ states('sensor.alarm_sist_deaktivert_tekst')
+        }}
+      message_length: 5
+  - service: python_script.set_state
+    data_template:
+      entity_id: sensor.alarm_trigget_fra
+      state: ''
+  - service: python_script.set_state
+    data_template:
+      entity_id: sensor.alarm_sist_deaktivert
+      state: ''
+  mode: single
+- id: '1626379113193'
+  alias: Kodepanel master - hjemmealarm på
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: alarm_control_panel.innbruddsalarm
+    to: armed_home
+  condition: []
+  action:
+  - service: script.master_kodepanel_alarm_aktivert
+  - service: script.update_alarm_sist_aktivert_tekst
+  - service: notify.varsler
+    data:
+      title: Hjemmealarmen er aktivert
+      message: Hjemmealarmen er aktivert {{ states('sensor.alarm_sist_aktivert_tekst')
+        }}
+  - service: script.announcement_google_hoyttalere
+    data:
+      entity_id: media_player.nest_audio_mannehula,media_player.nest_audio_hovedsoverom,media_player.nest_audio_stue
+      volume: 0.5
+      message: Hjemmealarmen er aktivert {{ states('sensor.alarm_sist_aktivert_tekst')
+        }}
+      message_length: 5
+  - service: python_script.set_state
+    data_template:
+      entity_id: sensor.alarm_sist_aktivert
+      state: ''
+  mode: single
+- id: '1626379113887'
+  alias: Kodepanel master - alarm på
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: alarm_control_panel.innbruddsalarm
+    to: armed_away
+  condition: []
+  action:
+  - service: script.master_kodepanel_alarm_aktivert
+  - service: script.update_alarm_sist_aktivert_tekst
+  - service: notify.varsler
+    data:
+      title: Full alarm er aktivert
+      message: Full alarm er aktivert {{ states('sensor.alarm_sist_aktivert_tekst')
+        }}
+  - service: script.announcement_google_hoyttalere
+    data:
+      entity_id: media_player.nest_audio_mannehula,media_player.nest_audio_hovedsoverom,media_player.nest_audio_stue
+      volume: 0.5
+      message: Full alarm er aktivert {{ states('sensor.alarm_sist_aktivert_tekst')
+        }}
+      message_length: 5
+  - service: python_script.set_state
+    data_template:
+      entity_id: sensor.alarm_sist_aktivert
+      state: ''
+  mode: single
+- id: '1626382251271'
+  alias: Kodepanel master - alarm på (arming)
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: alarm_control_panel.innbruddsalarm
+    to: arming
+  condition: []
+  action:
+  - service: script.master_kodepanel_alarm_aktivert
+  - service: script.update_alarm_sist_aktivert_tekst
+  - service: notify.varsler
+    data:
+      title: Full alarm er initiert
+      message: Full alarm aktiveres om 30 sekunder. Påstartet {{ states('sensor.alarm_sist_aktivert_tekst')
+        }}
+  - service: script.announcement_google_hoyttalere
+    data:
+      entity_id: media_player.nest_audio_mannehula,media_player.nest_audio_hovedsoverom,media_player.nest_audio_stue
+      volume: 0.5
+      message: Full alarm aktiveres om 30 sekunder. Påstartet {{ states('sensor.alarm_sist_aktivert_tekst')
+        }}
+      message_length: 5
+  mode: single
+- id: '1626555122872'
+  alias: Gang oppe - Slå av lys ved mangel på bevegelse
+  description: ''
+  trigger:
+  - type: no_motion
+    platform: device
+    device_id: 1763c097f8bf92a483bb44b4a4137eb2
+    entity_id: binary_sensor.gang_oppe_occupancy
+    domain: binary_sensor
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+  condition: []
+  action:
+  - service: light.turn_off
+    target:
+      entity_id: light.taklyset_i_gangen_oppe
+    data: {}
+  mode: single
+- id: '1626555882581'
+  alias: Gang oppe - Slå på lys bevegelse (dag)
+  description: ''
+  trigger:
+  - type: motion
+    platform: device
+    device_id: 1763c097f8bf92a483bb44b4a4137eb2
+    entity_id: binary_sensor.gang_oppe_occupancy
+    domain: binary_sensor
+  condition:
+  - condition: state
+    entity_id: binary_sensor.natta_for_sunniva
+    state: 'off'
+  action:
+  - service: light.turn_on
+    target:
+      entity_id: light.taklyset_i_gangen_oppe
+    data:
+      brightness_pct: 80
+      transition: 0
+      kelvin: 2700
+  mode: single
+- id: '1626557913680'
+  alias: ManCave - Slå på lys når dør åpnes
+  description: ''
+  trigger:
+  - type: opened
+    platform: device
+    device_id: 97f90121cf44aed604753bcbf248eef6
+    entity_id: binary_sensor.dorsensor_mancave_door_window
+    domain: binary_sensor
+  condition:
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: light.spotter_pa_mannehula
+      state: 'on'
+    - condition: state
+      entity_id: input_boolean.manuelle_lys_mannehula
+      state: 'on'
+    - condition: device
+      type: is_on
+      device_id: 3d9c7b5d9fda7e8317204242555c9352
+      entity_id: light.taklys_mancave
+      domain: light
+  action:
+  - service: homeassistant.turn_on
+    target:
+      entity_id:
+      - light.spotter_pa_mannehula
+      - light.taklys_mancave
+    data: {}
+  mode: single
+- id: '1626605722973'
+  alias: ManCave - Slå av lys når ingen bevegelse
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: group.bevegelse_mancave
+    to: 'off'
+    for: 00:20:00
+  condition:
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: input_boolean.manuelle_lys_mannehula
+      state: 'on'
+  action:
+  - service: homeassistant.turn_off
+    target:
+      entity_id:
+      - light.spotter_pa_mannehula
+      - light.taklys_mancave
+  mode: single
+- id: '1627675709898'
+  alias: Brannvarsler sirene på
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: alert.brannalarm
+    to: 'on'
+  condition: []
+  action:
+  - service: notify.mobile_app_mobilremi
+    continue_on_error: true
+    data:
+      message: TTS
+      title: Advarsel! Brannalarm utløst! Sjekk Home Assistant!
+      data:
+        ttl: 0
+        priority: high
+        channel: alarm_stream_max
+  - service: notify.alarmer
+    continue_on_error: true
+    data:
+      title: Brannalarm!
+      message: Brannalarm! {{ states('sensor.brannalarm_trigget_fra') }}
+  - service: script.announcement_google_hoyttalere
+    continue_on_error: true
+    data:
+      entity_id: media_player.nest_audio_mannehula,media_player.nest_audio_hovedsoverom,media_player.nest_audio_stue,media_player.nest_audio_garasje
+      volume: 1
+      message: Brannalarm! {{ states('sensor.brannalarm_trigget_fra') }}
+      message_length: 5
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 5
+      milliseconds: 0
+  - repeat:
+      while:
+      - condition: state
+        entity_id: alert.brannalarm
+        state: 'on'
+      sequence:
+      - service: homeassistant.turn_on
+        target:
+          entity_id: group.sirener
+        data: {}
+      - service: mqtt.publish
+        data:
+          topic: zigbee2mqtt/Multisirene nede/set
+          payload: '{"warning":{"duration":5,"level":"very_high","mode":"fire_panic","strobe":false,"strobe_duty_cycle":0}}'
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 5
+          milliseconds: 0
+      - service: homeassistant.turn_off
+        target:
+          entity_id: group.sirener
+        data: {}
+      - service: script.announcement_google_hoyttalere
+        data:
+          entity_id: media_player.nest_audio_mannehula,media_player.nest_audio_hovedsoverom,media_player.nest_audio_stue,media_player.nest_audio_garasje
+          volume: 1
+          message: Brannalarm! {{ states('sensor.brannalarm_trigget_fra') }}
+          message_length: 5
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 15
+          milliseconds: 0
+  mode: single
+  max: 10
+- id: '1627676336178'
+  alias: System hardware failure
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.roykvarsler_bod_nede_system_system_hardware_failure
+    - binary_sensor.roykvarsler_garasje_nede_system_system_hardware_failure
+    - binary_sensor.roykvarsler_hovedsoverom_system_system_hardware_failure
+    - binary_sensor.roykvarsler_mancave_system_system_hardware_failure
+    - binary_sensor.roykvarsler_stue_system_system_hardware_failure
+    - binary_sensor.roykvarsler_sunniva_system_system_hardware_failure
+    - binary_sensor.roykvarsler_kaja_system_system_hardware_failure
+    - binary_sensor.roykvarsler_vaskerom_system_system_hardware_failure
+    - binary_sensor.roykvarsler_gang_nede_fault
+    - binary_sensor.roykvarsler_gang_oppe_fault
+    to: 'on'
+  condition: []
+  action:
+  - service: notify.slack
+    continue_on_error: true
+    data:
+      message: 'Kritisk feil på: {{ trigger.to_state.attributes.friendly_name }}'
+      title: Kritisk feil
+  - service: notify.mobile_app_mobilremi
+    continue_on_error: true
+    data:
+      message: 'Kritisk feil på: {{ trigger.to_state.attributes.friendly_name }}'
+  mode: single
+- id: '1627679895578'
+  alias: Trigge full alarm
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.vindu_sunniva_full_alarm_trigget,binary_sensor.dor_mancave_full_alarm_trigget,binary_sensor.mellomdor_garasje_full_alarm_trigget,binary_sensor.ytterdor_garasje_full_alarm_trigget,binary_sensor.ytterdor_hovedinngang_full_alarm_trigget,binary_sensor.stort_vindu_hovedsoverom_full_alarm_trigget,binary_sensor.lite_vindu_hovedsoverom_full_alarm_trigget,binary_sensor.verandavindu_kjokken_full_alarm_trigget,binary_sensor.verandador_full_alarm_trigget,binary_sensor.vindu_mancave_full_alarm_trigget,binary_sensor.venstre_vindu_kaja_full_alarm_trigget,binary_sensor.hoyre_vindu_kaja_full_alarm_trigget,binary_sensor.hoyre_garasjeport_full_alarm_trigget,binary_sensor.venstre_garasjeport_full_alarm_trigget,binary_sensor.bevegelse_gang_nede_full_alarm_trigget,binary_sensor.bevegelse_gang_oppe_full_alarm_trigget,binary_sensor.bevegelse_mancave_full_alarm_trigget,binary_sensor.bevegelse_stue_full_alarm_trigget,binary_sensor.bevegelse_kaja_full_alarm_trigget,binary_sensor.bevegelse_sunniva_full_alarm_trigget
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: alarm_control_panel.innbruddsalarm
+    state: armed_away
+  action:
+  - service: alarm_control_panel.alarm_trigger
+    continue_on_error: true
+    target:
+      entity_id: alarm_control_panel.innbruddsalarm
+  - service: notify.alarmer
+    continue_on_error: true
+    data:
+      title: Full alarm utløst
+      message: Alarm! Utløst ved {{ trigger.to_state.attributes.friendly_name }}.
+        Du har 15 sekunder på å slå av alarmen.
+  - service: script.announcement_google_hoyttalere
+    continue_on_error: true
+    data:
+      entity_id: media_player.nest_audio_mannehula,media_player.nest_audio_hovedsoverom,media_player.nest_audio_stue
+      volume: 1
+      message: Alarm utløst ved {{ trigger.to_state.attributes.friendly_name }}. Du
+        har 15 sekunder på å slå av alarmen.
+      message_length: 7
+  - service: python_script.set_state
+    continue_on_error: true
+    data_template:
+      entity_id: sensor.alarm_trigget_fra
+      state: "{% if trigger.to_state.attributes.friendly_name not in states('sensor.alarm_trigget_fra')
+        %}\n  {{ states('sensor.alarm_trigget_fra') }} {{ trigger.to_state.attributes.friendly_name
+        }}\n{% else %}\n  {{ states('sensor.alarm_trigget_fra') }}\n{% endif %}"
+  mode: single
+  max: 10
+- id: '1627824049002'
+  alias: Yttergang - Lys på ved bevegelse eller ytterdør åpnes
+  description: ''
+  trigger:
+  - type: motion
+    platform: device
+    device_id: da7dab060a4447f6d432fbc988c2fe1e
+    entity_id: binary_sensor.bevegelse_gang_nede_home_security_motion_detection
+    domain: binary_sensor
+  - type: opened
+    platform: device
+    device_id: a4159ff59bce90609e885ed0a3895a57
+    entity_id: binary_sensor.hovedinngangsdor_access_control_window_door_is_open
+    domain: binary_sensor
+  - platform: state
+    entity_id: binary_sensor.trapp_person_motion
+    to: 'on'
+  - platform: state
+    entity_id: alarm_control_panel.innbruddsalarm
+    from: disarmed
+  - platform: state
+    entity_id: alarm_control_panel.innbruddsalarm
+    to: disarmed
+  condition: []
+  action:
+  - service: light.turn_on
+    target:
+      entity_id: light.taklyset_i_yttergangen
+    data:
+      brightness_pct: 90
+      transition: 0.5
+      rgb_color: '{% if is_state(''alarm_control_panel.innbruddsalarm'', ''disarmed'')
+        %}  [''230'',''185'',''108''] {% else %} [''252'',''61'',''50''] {% endif
+        %}'
+  mode: single
+- id: '1627824117497'
+  alias: Yttergang - Lys av ved mangel på bevegelse
+  description: ''
+  trigger:
+  - type: no_motion
+    platform: device
+    device_id: da7dab060a4447f6d432fbc988c2fe1e
+    entity_id: binary_sensor.bevegelse_gang_nede_home_security_motion_detection
+    domain: binary_sensor
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+      milliseconds: 0
+  - type: no_motion
+    platform: device
+    device_id: da7dab060a4447f6d432fbc988c2fe1e
+    entity_id: binary_sensor.bevegelse_gang_nede_home_security_motion_detection
+    domain: binary_sensor
+    for:
+      hours: 0
+      minutes: 30
+      seconds: 0
+      milliseconds: 0
+  - platform: state
+    entity_id: binary_sensor.trapp_person_motion
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+      milliseconds: 0
+  condition:
+  - condition: not
+    conditions:
+    - type: is_motion
+      condition: device
+      device_id: da7dab060a4447f6d432fbc988c2fe1e
+      entity_id: binary_sensor.bevegelse_gang_nede_home_security_motion_detection
+      domain: binary_sensor
+  action:
+  - service: homeassistant.turn_off
+    target:
+      entity_id: light.taklyset_i_yttergangen
+  mode: single
+- id: '1627850813502'
+  alias: Trigge skallalarm
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.vindu_sunniva_skallalarm_trigget,binary_sensor.mellomdor_garasje_skallalarm_trigget,binary_sensor.ytterdor_garasje_skallalarm_trigget,binary_sensor.ytterdor_hovedinngang_skallalarm_trigget,binary_sensor.stort_vindu_hovedsoverom_skallalarm_trigget,binary_sensor.lite_vindu_hovedsoverom_skallalarm_trigget,binary_sensor.verandavindu_kjokken_skallalarm_trigget,binary_sensor.verandador_skallalarm_trigget,binary_sensor.vindu_mancave_skallalarm_trigget,binary_sensor.venstre_vindu_kaja_skallalarm_trigget,binary_sensor.hoyre_vindu_kaja_skallalarm_trigget,binary_sensor.hoyre_garasjeport_skallalarm_trigget,binary_sensor.venstre_garasjeport_skallalarm_trigget
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: alarm_control_panel.innbruddsalarm
+    state: armed_home
+  action:
+  - service: alarm_control_panel.alarm_trigger
+    continue_on_error: true
+    target:
+      entity_id: alarm_control_panel.innbruddsalarm
+  - service: notify.alarmer
+    continue_on_error: true
+    data:
+      title: Hjemmealarm utløst
+      message: Alarm utløst ved {{ trigger.to_state.attributes.friendly_name }}. Du
+        har 20 sekunder på å slå av alarmen.
+  - service: script.announcement_google_hoyttalere
+    continue_on_error: true
+    data:
+      entity_id: media_player.nest_audio_mannehula,media_player.nest_audio_hovedsoverom,media_player.nest_audio_stue
+      volume: 1
+      message: Alarm utløst ved {{ trigger.to_state.attributes.friendly_name }}. Du
+        har 20 sekunder på å slå av alarmen.
+      message_length: 7
+  - service: python_script.set_state
+    continue_on_error: true
+    data_template:
+      entity_id: sensor.alarm_trigget_fra
+      state: "{% if trigger.to_state.attributes.friendly_name not in states('sensor.alarm_trigget_fra')
+        %}\n  {{ states('sensor.alarm_trigget_fra') }} {{ trigger.to_state.attributes.friendly_name
+        }}\n{% else %}\n  {{ states('sensor.alarm_trigget_fra') }}\n{% endif %}\n"
+  mode: queued
+  max: 10
+- id: '1627908780558'
+  alias: Sunniva lys på (dag)
+  description: ''
+  trigger:
+  - device_id: 149eb856bf77c45930e277aa9f994335
+    domain: mqtt
+    platform: device
+    type: action
+    subtype: on_press
+    discovery_id: 0x0017880109a5117d action_on_press
+  condition:
+  - condition: state
+    entity_id: binary_sensor.natta_for_sunniva
+    state: 'off'
+  action:
+  - service: light.turn_on
+    data:
+      brightness_pct: 80
+      kelvin: 2700
+    target:
+      entity_id: light.taklys_pa_sunniva_sitt_rom
+  mode: single
+- id: '1627908805705'
+  alias: Sunniva lys av
+  description: ''
+  trigger:
+  - device_id: 149eb856bf77c45930e277aa9f994335
+    domain: mqtt
+    platform: device
+    type: action
+    subtype: off_press
+    discovery_id: 0x0017880109a5117d action_off_press
+  condition: []
+  action:
+  - service: input_boolean.turn_off
+    continue_on_error: true
+    target:
+      entity_id: input_boolean.disko_sunniva
+  - service: light.turn_off
+    target:
+      entity_id: light.taklys_pa_sunniva_sitt_rom
+  mode: single
+- id: '1628151988975'
+  alias: Trigge alarmsirene
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: alarm_control_panel.innbruddsalarm
+    to: triggered
+  condition: []
+  action:
+  - service: notify.mobile_app_mobilremi
+    continue_on_error: true
+    data:
+      message: TTS
+      title: Advarsel! Innbruddsalarm utløst! Sjekk Home Assistant!
+      data:
+        channel: alarm_stream_max
+  - repeat:
+      while:
+      - condition: state
+        entity_id: alarm_control_panel.innbruddsalarm
+        state: triggered
+      sequence:
+      - service: homeassistant.turn_on
+        target:
+          entity_id:
+          - group.sirener
+          - siren.sirene_ute_forside
+        data: {}
+      - service: mqtt.publish
+        data:
+          topic: zigbee2mqtt/Multisirene nede/set
+          payload: '{"warning":{"duration":10,"level":"very_high","mode":"burglar","strobe":false,"strobe_duty_cycle":0}}'
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 10
+          milliseconds: 0
+      - service: homeassistant.turn_off
+        target:
+          entity_id:
+          - group.sirener
+          - siren.sirene_ute_forside
+        data: {}
+      - service: script.announcement_google_hoyttalere
+        data:
+          entity_id: media_player.nest_audio_mannehula,media_player.nest_audio_hovedsoverom,media_player.nest_audio_stue,media_player.nest_audio_garasje
+          volume: 1
+          message: Forlat området umiddelbart. Inntrenging detektert fra {{ states('sensor.alarm_trigget_fra')
+            }}. Bildebevis er sikret og politiet kontaktes.
+          message_length: 10
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 20
+          milliseconds: 0
+  mode: single
+- id: '1628157320516'
+  alias: Brannvarsler oppdatere lokasjoner
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.roykvarsler_bod_nede_smoke_alarm_smoke_detected
+    - binary_sensor.roykvarsler_gang_nede_smoke
+    - binary_sensor.roykvarsler_gang_oppe_smoke
+    - binary_sensor.roykvarsler_garasje_nede_smoke_alarm_smoke_detected
+    - binary_sensor.roykvarsler_garasje_oppe_smoke_alarm_smoke_detected
+    - binary_sensor.roykvarsler_hovedsoverom_smoke_alarm_smoke_detected
+    - binary_sensor.roykvarsler_mancave_smoke_alarm_smoke_detected
+    - binary_sensor.roykvarsler_stue_smoke_alarm_smoke_detected
+    - binary_sensor.roykvarsler_sunniva_smoke_alarm_smoke_detected
+    - binary_sensor.roykvarsler_kaja_smoke_alarm_smoke_detected
+    - binary_sensor.roykvarsler_vaskerom_smoke_alarm_smoke_detected
+    - binary_sensor.garasje_mellomdor_heat_alarm_overheat_detected
+    - binary_sensor.garasje_ytterdor_heat_alarm_overheat_detected
+    - binary_sensor.roykvarsler_bod_nede_heat_alarm_overheat_detected
+    - binary_sensor.roykvarsler_garasje_nede_heat_alarm_overheat_detected
+    - binary_sensor.roykvarsler_hovedsoverom_heat_alarm_overheat_detected
+    - binary_sensor.roykvarsler_mancave_heat_alarm_overheat_detected
+    - binary_sensor.roykvarsler_stue_heat_alarm_overheat_detected
+    - binary_sensor.roykvarsler_sunniva_heat_alarm_overheat_detected
+    - binary_sensor.roykvarsler_kaja_heat_alarm_overheat_detected
+    - binary_sensor.roykvarsler_vaskerom_heat_alarm_overheat_detected
+    - binary_sensor.temperatursensor_hovedinngang_heat_alarm_overheat_detected
+    - binary_sensor.temperatursensor_verandador_heat_alarm_overheat_detected
+    - binary_sensor.vindu_kjokken_veranda_heat_alarm_overheat_detected
+    to: 'on'
+  condition: []
+  action:
+  - service: python_script.set_state
+    continue_on_error: true
+    data_template:
+      entity_id: sensor.brannalarm_trigget_fra
+      state: "{% if trigger.to_state.attributes.friendly_name not in states('sensor.brannalarm_trigget_fra')
+        %}\n  {{ states('sensor.brannalarm_trigget_fra') }} {{ trigger.to_state.attributes.friendly_name
+        }}\n{% else %}\n  {{ states('sensor.brannalarm_trigget_fra') }}\n{% endif
+        %}"
+  mode: queued
+  max: 10
+- id: '1628157844525'
+  alias: Brannvarsler av - resette varsling
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.advarsel_brannalarm_utlost
+    to: 'off'
+  condition: []
+  action:
+  - service: python_script.set_state
+    continue_on_error: true
+    data_template:
+      entity_id: sensor.brannalarm_trigget_fra
+      state: ''
+  mode: single
+- id: '1628163083495'
+  alias: Trigge alarm - legge til nye deteksjoner
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.vindu_sunniva_full_alarm_trigget,binary_sensor.dor_mancave_full_alarm_trigget,binary_sensor.mellomdor_garasje_full_alarm_trigget,binary_sensor.ytterdor_garasje_full_alarm_trigget,binary_sensor.ytterdor_hovedinngang_full_alarm_trigget,binary_sensor.stort_vindu_hovedsoverom_full_alarm_trigget,binary_sensor.lite_vindu_hovedsoverom_full_alarm_trigget,binary_sensor.verandavindu_kjokken_full_alarm_trigget,binary_sensor.verandador_full_alarm_trigget,binary_sensor.vindu_mancave_full_alarm_trigget,binary_sensor.venstre_vindu_kaja_full_alarm_trigget,binary_sensor.hoyre_vindu_kaja_full_alarm_trigget,binary_sensor.hoyre_garasjeport_full_alarm_trigget,binary_sensor.venstre_garasjeport_full_alarm_trigget,binary_sensor.bevegelse_gang_nede_full_alarm_trigget,binary_sensor.bevegelse_gang_oppe_full_alarm_trigget,binary_sensor.bevegelse_mancave_full_alarm_trigget,binary_sensor.bevegelse_stue_full_alarm_trigget,binary_sensor.bevegelse_kaja_full_alarm_trigget,binary_sensor.bevegelse_sunniva_full_alarm_trigget,binary_sensor.vindu_sunniva_skallalarm_trigget,binary_sensor.mellomdor_garasje_skallalarm_trigget,binary_sensor.ytterdor_garasje_skallalarm_trigget,binary_sensor.ytterdor_hovedinngang_skallalarm_trigget,binary_sensor.stort_vindu_hovedsoverom_skallalarm_trigget,binary_sensor.lite_vindu_hovedsoverom_skallalarm_trigget,binary_sensor.verandavindu_kjokken_skallalarm_trigget,binary_sensor.verandador_skallalarm_trigget,binary_sensor.vindu_mancave_skallalarm_trigget,binary_sensor.venstre_vindu_kaja_skallalarm_trigget,binary_sensor.hoyre_vindu_kaja_skallalarm_trigget,binary_sensor.hoyre_garasjeport_skallalarm_trigget,binary_sensor.venstre_garasjeport_skallalarm_trigget
+    to: 'on'
+  condition:
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: alarm_control_panel.innbruddsalarm
+      state: pending
+    - condition: state
+      entity_id: alarm_control_panel.innbruddsalarm
+      state: triggered
+  action:
+  - service: python_script.set_state
+    continue_on_error: true
+    data_template:
+      entity_id: sensor.alarm_trigget_fra
+      state: "{% if trigger.to_state.attributes.friendly_name not in states('sensor.alarm_trigget_fra')
+        %}\n  {{ states('sensor.alarm_trigget_fra') }} {{ trigger.to_state.attributes.friendly_name
+        }}\n{% else %}\n  {{ states('sensor.alarm_trigget_fra') }}\n{% endif %}\n"
+  mode: queued
+  max: 10
+- id: '1628166696315'
+  alias: Sunniva - termostat på når vindu lukkes
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.vindu_sunniva_access_control_window_door_is_open
+    to: 'off'
+  condition: []
+  action:
+  - service: climate.turn_on
+    target:
+      entity_id: climate.sunniva
+  mode: single
+- id: '1628166756979'
+  alias: Sunniva - termostat av når vindu åpnes
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.vindu_sunniva_access_control_window_door_is_open
+    to: 'on'
+  condition: []
+  action:
+  - service: climate.turn_off
+    target:
+      entity_id: climate.sunniva
+  mode: single
+- id: '1628249150948'
+  alias: Sunniva lys på (natt)
+  description: ''
+  trigger:
+  - device_id: 149eb856bf77c45930e277aa9f994335
+    domain: mqtt
+    platform: device
+    type: action
+    subtype: on_press
+    discovery_id: 0x0017880109a5117d action_on_press
+  condition:
+  - condition: state
+    entity_id: binary_sensor.natta_for_sunniva
+    state: 'on'
+  action:
+  - service: light.turn_on
+    data:
+      brightness_pct: 10
+      kelvin: 2700
+    target:
+      entity_id: light.taklys_pa_sunniva_sitt_rom
+  mode: single
+- id: '1628249281752'
+  alias: Sunniva - dim opp lys
+  description: ''
+  trigger:
+  - device_id: 149eb856bf77c45930e277aa9f994335
+    domain: mqtt
+    platform: device
+    type: action
+    subtype: up_press
+    discovery_id: 0x0017880109a5117d action_up_press
+  condition: []
+  action:
+  - service: light.turn_on
+    data:
+      brightness_step_pct: 10
+    target:
+      entity_id: light.taklys_pa_sunniva_sitt_rom
+  mode: single
+- id: '1628249340830'
+  alias: Sunniva - dim ned lys
+  description: ''
+  trigger:
+  - platform: device
+    domain: mqtt
+    device_id: 149eb856bf77c45930e277aa9f994335
+    type: action
+    subtype: down_press
+    discovery_id: 0x0017880109a5117d action_down_press
+  condition: []
+  action:
+  - service: light.turn_on
+    data:
+      brightness_step_pct: -10
+    target:
+      entity_id: light.taklys_pa_sunniva_sitt_rom
+  mode: single
+- id: '1628249694941'
+  alias: Sunniva - dim ned lys når det er leggetid
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.natta_for_sunniva
+    to: 'on'
+  condition:
+  - condition: device
+    type: is_on
+    device_id: 034c8ec64cce4157367c3e8948fc2ee1
+    entity_id: light.taklys_pa_sunniva_sitt_rom
+    domain: light
+  - condition: numeric_state
+    entity_id: light.taklys_pa_sunniva_sitt_rom
+    attribute: brightness
+    above: '25'
+  action:
+  - service: light.turn_on
+    data:
+      brightness_pct: 10
+      kelvin: 2700
+    target:
+      entity_id: light.taklys_pa_sunniva_sitt_rom
+  mode: single
+- id: '1628249793808'
+  alias: Sunniva - slå ned lyd på nest ved leggetid
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.natta_for_sunniva
+    to: 'on'
+  condition: []
+  action:
+  - service: media_player.volume_set
+    data:
+      volume_level: 0.25
+    target:
+      device_id: 56faa66d339f6da37bcf54006bd6f32b
+  mode: single
+- id: '1629042146962'
+  alias: Persienner i My-position når det er sol ute mellom 12 og 17
+  description: ''
+  trigger:
+  - type: temperature
+    platform: device
+    device_id: ad363ae8d2a7594528e2745bc956c6ac
+    entity_id: sensor.temperatursensor_verandador_air_temperature
+    domain: sensor
+    above: 20
+  condition:
+  - type: is_illuminance
+    condition: device
+    device_id: ad363ae8d2a7594528e2745bc956c6ac
+    entity_id: sensor.temperatursensor_verandador_illuminance
+    domain: sensor
+    above: 4000
+  - condition: time
+    after: '12:00:00'
+    before: '18:00:00'
+  - condition: state
+    entity_id: input_boolean.manuelle_persienner
+    state: 'off'
+  - condition: state
+    entity_id: input_boolean.persienner_lukket_av_automatikk
+    state: 'off'
+  action:
+  - device_id: 86a37aaad9521b6a62f91963d85dab76
+    domain: cover
+    entity_id: cover.persienner_stue
+    type: stop
+  - service: input_boolean.turn_on
+    data: {}
+    target:
+      entity_id: input_boolean.persienner_lukket_av_automatikk
+  mode: single
+- id: '1629042845521'
+  alias: Persienne tilbakestill til auto hver natt
+  description: ''
+  trigger:
+  - platform: time
+    at: 02:30:00
+  condition: []
+  action:
+  - service: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.manuelle_persienner
+    data: {}
+  - device_id: 86a37aaad9521b6a62f91963d85dab76
+    domain: cover
+    entity_id: cover.persienner_stue
+    type: open
+  - service: input_boolean.turn_off
+    data: {}
+    target:
+      entity_id: input_boolean.persienner_lukket_av_automatikk
+  mode: single
+- id: '1630519363848'
+  alias: Remiks - Optisk sortert søppel
+  description: ''
+  trigger:
+  - platform: time
+    at: '22:02'
+  condition:
+  - condition: state
+    entity_id: binary_sensor.remiks_boolean_optisk_sortert_avfall_tomasjordvegen_129
+    state: 'on'
+  action:
+  - service: notify.varsler
+    continue_on_error: true
+    data:
+      title: Restsøppel
+      message: Restsøppelet hentes i morgen
+  - service: script.announcement_google_hoyttalere
+    continue_on_error: true
+    data:
+      entity_id: media_player.nest_audio_mannehula,media_player.nest_audio_hovedsoverom,media_player.nest_audio_stue
+      volume: 0.5
+      message: Restsøppelet hentes i morgen
+      message_length: 5
+  mode: single
+- id: '1630519407088'
+  alias: Remiks - Glass og metall
+  description: ''
+  trigger:
+  - platform: time
+    at: '22:00'
+  condition:
+  - condition: state
+    entity_id: binary_sensor.remiks_boolean_glass_og_metallemballasje_tomasjordvegen_129
+    state: 'on'
+  action:
+  - service: notify.varsler
+    continue_on_error: true
+    data:
+      title: Glass og metall
+      message: Glass og metallsøppel hentes i morgen
+  - service: script.announcement_google_hoyttalere
+    continue_on_error: true
+    data:
+      entity_id: media_player.nest_audio_mannehula,media_player.nest_audio_hovedsoverom,media_player.nest_audio_stue
+      volume: 0.5
+      message: Glass og metallsøppel hentes i morgen
+      message_length: 5
+  mode: single
+- id: '1630955828870'
+  alias: Varsle før noen kommer hjem
+  description: ''
+  trigger:
+  - type: opened
+    platform: device
+    device_id: eaee7466157e150681067ea509e7bd7e
+    entity_id: binary_sensor.status_hoyre_garasjeport_access_control_window_door_is_open
+    domain: binary_sensor
+  - platform: state
+    to: 'on'
+    entity_id: binary_sensor.trapp_person_motion
+  - platform: state
+    entity_id: binary_sensor.oppkjorsel_person_motion
+    to: 'on'
+  - platform: state
+    entity_id: binary_sensor.oppkjorsel_car_motion
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: input_boolean.varsle_at_noen_kommer
+    state: 'on'
+  action:
+  - service: script.announcement_google_hoyttalere
+    continue_on_error: true
+    data:
+      entity_id: media_player.nest_audio_mannehula,media_player.nest_audio_hovedsoverom,media_player.nest_audio_stue
+      volume: 0.5
+      message: Noen kommer, {{ trigger.to_state.attributes.friendly_name }}
+      message_length: 5
+  - service: input_boolean.turn_off
+    continue_on_error: true
+    target:
+      entity_id: input_boolean.varsle_at_noen_kommer
+  mode: single
+- id: '1631872676134'
+  alias: Send bilde av person utenfor huset til telefonen
+  description: ''
+  trigger:
+  - platform: mqtt
+    topic: frigate/events
+  condition:
+  - condition: template
+    value_template: '{{ trigger.payload_json[''after''][''label''] == ''person'' }}'
+  - condition: template
+    value_template: '{{ ''trapp'' in trigger.payload_json[''after''][''entered_zones'']
+      or ''veranda'' in trigger.payload_json[''after''][''entered_zones''] }}'
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: alarm_control_panel.innbruddsalarm
+      state: armed_away
+    - condition: time
+      after: 02:00
+      before: 06:30
+    - condition: time
+      after: 08:15
+      before: '15:15'
+      weekday:
+      - mon
+      - tue
+      - wed
+      - thu
+      - fri
+  - condition: state
+    entity_id: input_boolean.varsle_mobil_viktig_bevegelse_kamera
+    state: 'on'
+  action:
+  - service: notify.slack
+    continue_on_error: true
+    data:
+      title: En {{trigger.payload_json['after']['label']}} på trappa eller verandaen
+      target: '#smarthus-debug'
+      message: Nå skal det komme et bilde av en {{trigger.payload_json['after']['label']}}
+        som vanlig varsel  på telefon
+  - service: notify.mobile_app_mobilremi
+    continue_on_error: true
+    data:
+      message: En {{trigger.payload_json['after']['label']}} er utfor huset.
+      data:
+        ttl: 0
+        priority: high
+        image: https://<REDACTED>/api/frigate/notifications/{{trigger.payload_json['after']['id']}}/thumbnail.jpg
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 30
+      milliseconds: 0
+  mode: single
+- id: '1632251278110'
+  alias: ManCave - termostat av når vindu åpnes
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.vinduet_pa_mannehula_access_control_window_door_is_open
+    to: 'on'
+  condition: []
+  action:
+  - service: climate.turn_off
+    target:
+      entity_id: climate.mancave
+  mode: single
+- id: '1632251325102'
+  alias: ManCave - termostat på når vindu lukkes
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.vinduet_pa_mannehula_access_control_window_door_is_open
+    to: 'off'
+  condition: []
+  action:
+  - service: climate.turn_on
+    target:
+      entity_id: climate.mancave
+  mode: single
+- id: '1632773382275'
+  alias: UPS-1 er på batteri
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: sensor.ups_1_status_data
+    from: OL
+  condition: []
+  action:
+  - service: notify.slack
+    continue_on_error: true
+    data:
+      message: UPS-1 (servere) har mistet strømmen!
+  - device_id: 34961cc523ce43cd1f8ad4bce8605edb
+    continue_on_error: true
+    domain: mobile_app
+    type: notify
+    title: UPS-1
+    message: UPS-1 (servere) har mistet strømmen!
+  mode: single
+- id: '1632773422977'
+  alias: UPS-1 er online
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: sensor.ups_1_status_data
+    to: OL
+  condition: []
+  action:
+  - service: notify.slack
+    continue_on_error: true
+    data:
+      message: UPS-1 har fått tilbake strømmen!
+  - device_id: 34961cc523ce43cd1f8ad4bce8605edb
+    continue_on_error: true
+    domain: mobile_app
+    type: notify
+    title: UPS-1
+    message: UPS-1 har fått tilbake strømmen!
+  mode: single
+- id: '1632773529461'
+  alias: UPS-1 har startet shutdown
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: sensor.ups_1_status_data
+    to: OB LB
+  condition: []
+  action:
+  - service: notify.slack
+    continue_on_error: true
+    data:
+      message: UPS-1 slår av servere
+  - device_id: 34961cc523ce43cd1f8ad4bce8605edb
+    continue_on_error: true
+    domain: mobile_app
+    type: notify
+    title: UPS-1
+    message: UPS-1 slår av servere
+  mode: single
+- id: '1633114376442'
+  alias: Kaja - dim ned lys
+  description: ''
+  trigger:
+  - device_id: c5bc1f14ab5dccb26c4a15689db583f4
+    domain: mqtt
+    platform: device
+    type: action
+    subtype: down_press
+    discovery_id: 0x0017880109a4e5f9 action_down_press
+  condition: []
+  action:
+  - service: light.turn_on
+    data:
+      brightness_step_pct: -10
+    target:
+      entity_id: light.taklys_pa_kaja_sitt_rom
+  mode: single
+- id: '1633114457824'
+  alias: Kaja - dim ned lys når det er leggetid
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.natta_for_kaja
+    to: 'on'
+  condition:
+  - condition: numeric_state
+    entity_id: light.taklys_pa_kaja_sitt_rom
+    above: '25'
+    attribute: brightness
+  - condition: device
+    type: is_on
+    device_id: 9a432e60690f96f6ee95ab48fc2a27d2
+    entity_id: light.taklys_pa_kaja_sitt_rom
+    domain: light
+  action:
+  - service: light.turn_on
+    data:
+      brightness_pct: 10
+      kelvin: 2700
+    target:
+      entity_id: light.taklys_pa_kaja_sitt_rom
+  mode: single
+- id: '1633114506300'
+  alias: Kaja - dim opp lys
+  description: ''
+  trigger:
+  - device_id: c5bc1f14ab5dccb26c4a15689db583f4
+    domain: mqtt
+    platform: device
+    type: action
+    subtype: up_press
+    discovery_id: 0x0017880109a4e5f9 action_up_press
+  condition: []
+  action:
+  - service: light.turn_on
+    data:
+      brightness_step_pct: 10
+    target:
+      entity_id: light.taklys_pa_kaja_sitt_rom
+  mode: single
+- id: '1633114582755'
+  alias: Kaja lys av
+  description: ''
+  trigger:
+  - device_id: c5bc1f14ab5dccb26c4a15689db583f4
+    domain: mqtt
+    platform: device
+    type: action
+    subtype: off_press
+    discovery_id: 0x0017880109a4e5f9 action_off_press
+  condition: []
+  action:
+  - service: input_boolean.turn_off
+    continue_on_error: true
+    target:
+      entity_id: input_boolean.disko_kaja
+  - service: light.turn_off
+    continue_on_error: true
+    target:
+      entity_id: light.taklys_pa_kaja_sitt_rom
+  mode: single
+- id: '1633114636977'
+  alias: Kaja lys på (dag)
+  description: ''
+  trigger:
+  - device_id: c5bc1f14ab5dccb26c4a15689db583f4
+    domain: mqtt
+    platform: device
+    type: action
+    subtype: on_press
+    discovery_id: 0x0017880109a4e5f9 action_on_press
+  condition:
+  - condition: state
+    entity_id: binary_sensor.natta_for_kaja
+    state: 'off'
+  action:
+  - service: light.turn_on
+    data:
+      brightness_pct: 80
+      kelvin: 2700
+    target:
+      entity_id: light.taklys_pa_kaja_sitt_rom
+  mode: single
+- id: '1633114686500'
+  alias: Kaja lys på (natt)
+  description: ''
+  trigger:
+  - device_id: c5bc1f14ab5dccb26c4a15689db583f4
+    domain: mqtt
+    platform: device
+    type: action
+    subtype: on_press
+    discovery_id: 0x0017880109a4e5f9 action_on_press
+  condition:
+  - condition: state
+    entity_id: binary_sensor.natta_for_kaja
+    state: 'on'
+  action:
+  - service: light.turn_on
+    data:
+      brightness_pct: 10
+      kelvin: 2700
+    target:
+      entity_id: light.taklys_pa_kaja_sitt_rom
+  mode: single
+- id: '1633191033937'
+  alias: Varsle vannlekkasje til telefon
+  description: ''
+  trigger:
+  - type: moist
+    platform: device
+    device_id: 6be8412eb32dcf67bcac9ea9138f527d
+    entity_id: binary_sensor.vannlekkasje_pa_badet_nede
+    domain: binary_sensor
+  - type: moist
+    platform: device
+    device_id: 94ff06bd1e289a448fc5b78f81cbbd54
+    entity_id: binary_sensor.vannlekkasje_pa_toalettrommet_nede
+    domain: binary_sensor
+  - type: moist
+    platform: device
+    device_id: 09933124d615983bdbc1cdea5f046cb8
+    entity_id: binary_sensor.vannsensor_pa_vaskerommet
+    domain: binary_sensor
+  - type: moist
+    platform: device
+    device_id: d808bab7744d2730f17d4f84a827c473
+    entity_id: binary_sensor.vannsensor_pa_badet_oppe
+    domain: binary_sensor
+  - type: moist
+    platform: device
+    device_id: 5e1e1d2e72ba50321c3efd835ae99a66
+    entity_id: binary_sensor.vannsensor_under_oppvaskmaskinen
+    domain: binary_sensor
+  - type: moist
+    platform: device
+    device_id: 3069a7358a95f925272187dc044f356f
+    entity_id: binary_sensor.vannsensor_under_kjokkenbenken
+    domain: binary_sensor
+  condition: []
+  action:
+  - service: notify.mobile_app_mobilremi
+    continue_on_error: true
+    data:
+      message: TTS
+      title: Advarsel! Vannlekkasje! Sjekk Home Assistant!
+      data:
+        ttl: 0
+        priority: high
+        channel: alarm_stream_max
+  mode: single
+- id: '1633195574331'
+  alias: Ukjent enhet kom på nett
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: device_tracker.unifi_ee_fc_f8_7c_a1_a1_default
+    to: Home
+  condition: []
+  action:
+  - service: notify.mobile_app_mobilremi
+    continue_on_error: true
+    data:
+      message: Ukjent enhet på nett - sjekk logg
+  mode: single
+- id: '1634676201176'
+  alias: Garasjebod - sjekk frostvakt
+  description: ''
+  trigger:
+  - platform: time_pattern
+    minutes: '0'
+    seconds: '0'
+  condition:
+  - condition: and
+    conditions:
+    - condition: device
+      type: is_off
+      device_id: 7c4bfa0b38ac7a4e853b1b5dd66ad062
+      entity_id: switch.panelovn_garasjebod
+      domain: switch
+      for:
+        hours: 4
+        minutes: 0
+        seconds: 0
+        milliseconds: 0
+    - type: is_temperature
+      condition: device
+      device_id: 181e4e23ce4064fd3a3ad0790683ac01
+      entity_id: sensor.temperatursensor_hovedinngang_air_temperature
+      domain: sensor
+      below: 2
+  - type: is_temperature
+    condition: device
+    device_id: 4c62ed2509c4ecc13eb00cf34eff3b9c
+    entity_id: sensor.temperatur_og_luftfuktighet_garasje_temperature
+    domain: sensor
+    below: 4
+  action:
+  - service: switch.turn_on
+    target:
+      device_id: 7c4bfa0b38ac7a4e853b1b5dd66ad062
+  - service: notify.slack
+    data:
+      message: Slo på ovnen i garasjeboden - sjekk automasjonene
+  mode: single
+- id: '1634677480321'
+  alias: Garasjebod - slå av termostat hvis dør åpen
+  description: ''
+  trigger:
+  - type: opened
+    platform: device
+    device_id: e1e313e5428c05f26acc03c22c415f40
+    entity_id: binary_sensor.garasje_ytterdor_access_control_window_door_is_open
+    domain: binary_sensor
+  - type: opened
+    platform: device
+    device_id: 4f3680e226af12133d0e22342b7e265f
+    entity_id: binary_sensor.garasje_mellomdor_access_control_window_door_is_open
+    domain: binary_sensor
+  condition: []
+  action:
+  - service: climate.turn_off
+    target:
+      entity_id: climate.garasjebod
+  mode: single
+- id: '1634677559246'
+  alias: Garasjebod - slå på termostat hvis dør lukkes
+  description: ''
+  trigger:
+  - type: not_opened
+    platform: device
+    device_id: e1e313e5428c05f26acc03c22c415f40
+    entity_id: binary_sensor.garasje_ytterdor_access_control_window_door_is_open
+    domain: binary_sensor
+  - type: not_opened
+    platform: device
+    device_id: 4f3680e226af12133d0e22342b7e265f
+    entity_id: binary_sensor.garasje_mellomdor_access_control_window_door_is_open
+    domain: binary_sensor
+  condition:
+  - type: is_not_open
+    condition: device
+    device_id: e1e313e5428c05f26acc03c22c415f40
+    entity_id: binary_sensor.garasje_ytterdor_access_control_window_door_is_open
+    domain: binary_sensor
+  - type: is_not_open
+    condition: device
+    device_id: 4f3680e226af12133d0e22342b7e265f
+    entity_id: binary_sensor.garasje_mellomdor_access_control_window_door_is_open
+    domain: binary_sensor
+  action:
+  - service: climate.turn_on
+    target:
+      entity_id: climate.garasjebod
+  mode: single
+- id: '1634931592521'
+  alias: Veranda - slå på lys ved bevegelse
+  description: ''
+  trigger:
+  - platform: state
+    to: 'on'
+    entity_id: binary_sensor.verandador_person_motion
+  condition:
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: alarm_control_panel.innbruddsalarm
+      state: disarmed
+  action:
+  - service: light.turn_on
+    continue_on_error: true
+    target:
+      entity_id: light.spot_tak_stue
+  - delay:
+      hours: 0
+      minutes: 3
+      seconds: 0
+      milliseconds: 0
+  - service: light.turn_off
+    continue_on_error: true
+    target:
+      entity_id: light.spot_tak_stue
+  mode: single
+- id: '1635193802346'
+  alias: UPS-2 er online
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: sensor.ups_2_status_data
+    to: OL
+  condition: []
+  action:
+  - service: notify.slack
+    continue_on_error: true
+    data:
+      message: UPS-2 har fått tilbake strømmen!
+  - device_id: 34961cc523ce43cd1f8ad4bce8605edb
+    continue_on_error: true
+    domain: mobile_app
+    type: notify
+    title: UPS-2
+    message: UPS-2 har fått tilbake strømmen!
+  mode: single
+- id: '1635193890579'
+  alias: UPS-2 er på batteri
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: sensor.ups_2_status_data
+    from: OL
+  condition: []
+  action:
+  - service: notify.slack
+    continue_on_error: true
+    data:
+      message: UPS-2 (fiber) har mistet strømmen!
+  - device_id: 34961cc523ce43cd1f8ad4bce8605edb
+    continue_on_error: true
+    domain: mobile_app
+    type: notify
+    title: UPS-2
+    message: UPS-2 (fiber) har mistet strømmen!
+  mode: single
+- id: '1635193991291'
+  alias: UPS-2 har startet shutdown
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: sensor.ups_2_status_data
+    to: OB LB
+  condition: []
+  action:
+  - service: notify.slack
+    continue_on_error: true
+    data:
+      message: UPS-2 slår av fiberen
+  - device_id: 34961cc523ce43cd1f8ad4bce8605edb
+    continue_on_error: true
+    domain: mobile_app
+    type: notify
+    title: UPS-2
+    message: UPS-2 slår av fiberen
+  mode: single
+- id: '1635806064515'
+  alias: Vaskemaskinen er ferdig
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.stikkontakt_vaskemaskin_power
+    below: '20'
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+      milliseconds: 0
+  condition:
+  - condition: state
+    entity_id: input_boolean.vaskemaskin_startet
+    state: 'on'
+  action:
+  - service: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.vaskemaskin_startet
+  - service: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.vaskemaskin_ferdig
+  - repeat:
+      while:
+      - condition: state
+        entity_id: input_boolean.varsle_vaskemaskin_ferdig
+        state: 'on'
+      - condition: state
+        entity_id: input_boolean.vaskemaskin_ferdig
+        state: 'on'
+      sequence:
+      - service: script.announcement_google_hoyttalere_daytimeonly
+        data:
+          entity_id: media_player.nest_audio_mannehula,media_player.nest_audio_hovedsoverom,media_player.nest_audio_stue
+          volume: 0.5
+          message: Vaskemaskinen er ferdig
+          message_length: 5
+      - delay:
+          hours: 0
+          minutes: 15
+          seconds: 0
+          milliseconds: 0
+  mode: single
+- id: '1635806221590'
+  alias: Tørketrommelen er ferdig
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.stikkontakt_torketrommel_power
+    below: '20'
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+      milliseconds: 0
+  condition:
+  - condition: state
+    entity_id: input_boolean.torketrommel_startet
+    state: 'on'
+  action:
+  - service: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.torketrommel_startet
+  - service: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.torketrommel_ferdig
+  - repeat:
+      while:
+      - condition: state
+        entity_id: input_boolean.varsle_torketrommel_ferdig
+        state: 'on'
+      - condition: state
+        entity_id: input_boolean.torketrommel_ferdig
+        state: 'on'
+      sequence:
+      - service: script.announcement_google_hoyttalere_daytimeonly
+        data:
+          entity_id: media_player.nest_audio_mannehula,media_player.nest_audio_hovedsoverom,media_player.nest_audio_stue
+          volume: 0.5
+          message: Tørketrommelen er ferdig
+          message_length: 5
+      - delay:
+          hours: 0
+          minutes: 15
+          seconds: 0
+          milliseconds: 0
+  mode: single
+- id: '1635978491226'
+  alias: Vaskemaskinen har startet
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.stikkontakt_vaskemaskin_power
+    above: '20'
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+      milliseconds: 0
+  condition: []
+  action:
+  - service: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.vaskemaskin_startet
+  - service: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.vaskemaskin_ferdig
+  mode: single
+- id: '1635978604506'
+  alias: Tørketrommelen har startet
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.stikkontakt_torketrommel_power
+    above: '20'
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+      milliseconds: 0
+  condition: []
+  action:
+  - service: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.torketrommel_startet
+  - service: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.torketrommel_ferdig
+  mode: single
+- id: '1636036473485'
+  alias: Sunniva taklys disko
+  description: ''
+  trigger:
+  - platform: device
+    domain: mqtt
+    device_id: 149eb856bf77c45930e277aa9f994335
+    type: action
+    subtype: on_hold
+    discovery_id: 0x0017880109a5117d action_on_hold
+  condition: []
+  action:
+  - service: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.disko_sunniva
+  - repeat:
+      until:
+      - condition: state
+        entity_id: input_boolean.disko_sunniva
+        state: 'off'
+      sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.taklys_pa_sunniva_sitt_rom
+        data:
+          rgb_color:
+          - '{{ (range(0, 255)|random) }}'
+          - '{{ (range(0, 255)|random) }}'
+          - '{{ (range(0, 255)|random) }}'
+          brightness: '{{ (range(150, 255)|random) }}'
+          transition: 0.3
+      - delay:
+          hours: 0
+          minutes: 0
+          milliseconds: '{{ (range(300, 800)|random) }}'
+  mode: single
+- id: '1636063082122'
+  alias: Vibrasjonssensor på ManCave
+  description: ''
+  trigger:
+  - platform: device
+    domain: mqtt
+    device_id: c40a45e95460b6ce89087e6bb7d1f249
+    type: action
+    subtype: vibration
+    discovery_id: 0x00158d0006690333 action_vibration
+  - platform: device
+    domain: mqtt
+    device_id: c40a45e95460b6ce89087e6bb7d1f249
+    type: action
+    subtype: tilt
+    discovery_id: 0x00158d0006690333 action_tilt
+  - platform: device
+    domain: mqtt
+    device_id: c40a45e95460b6ce89087e6bb7d1f249
+    type: action
+    subtype: drop
+    discovery_id: 0x00158d0006690333 action_drop
+  condition: []
+  action:
+  - service: notify.mobile_app_mobilremi
+    data:
+      title: Vibrasjonssensor ManCave
+      message: Trigget
+  mode: single
+- id: '1636185025992'
+  alias: Varsle nede når verandadør åpnes
+  description: ''
+  trigger:
+  - type: opened
+    platform: device
+    device_id: 3a60ae095200c4cac39db01bd71c4c85
+    entity_id: binary_sensor.verandador_access_control_window_door_is_open
+    domain: binary_sensor
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 1
+      milliseconds: 0
+  condition: []
+  action:
+  - service: mqtt.publish
+    data:
+      topic: zigbee2mqtt/Multisirene nede/set
+      payload: '{"warning":{"duration":1,"level":"low","mode":"fire_panic","strobe":false,"strobe_duty_cycle":0}}'
+  mode: queued
+  max: 2
+- id: '1636233878483'
+  alias: Varsle når verandadør åpnes
+  description: ''
+  trigger:
+  - type: opened
+    platform: device
+    device_id: 3a60ae095200c4cac39db01bd71c4c85
+    entity_id: binary_sensor.verandador_access_control_window_door_is_open
+    domain: binary_sensor
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+  condition: []
+  action:
+  - service: esphome.stue_multisensor_play_rtttl
+    continue_on_error: true
+    data:
+      song_str: Open:d=10,o=8,b=180:c,e,g
+  - service: esphome.mancave_multisensor_play_rtttl
+    continue_on_error: true
+    data:
+      song_str: Open:d=10,o=8,b=180:c,e,g
+  mode: queued
+  max: 2
+- id: '1636237531577'
+  alias: Star Wars når verandavindu åpnes
+  description: ''
+  trigger:
+  - type: opened
+    platform: device
+    device_id: 0fb0ac90294102c3664225d294e5c1da
+    entity_id: binary_sensor.vindu_kjokken_veranda_access_control_window_door_is_open
+    domain: binary_sensor
+  condition: []
+  action:
+  - service: esphome.stue_multisensor_play_rtttl
+    data:
+      song_str: starwars:d=4,o=5,b=180:8f,8f,8f,2a#.,2f.6,8d#6,8d6,8c6,2a#.6,f.6,8d#6,8d6,8c6,2a#.6,f.6,8d#6,8d6,8d#6,2c6,p,8f,8f,8f,2a#.,2f.6,8d#6,8d6,8c6,2a#.6,f.6,8d#6,8d6,8c6,2a#.6,f.6,8d#6,8d6,8d#6,2c6
+  mode: single
+- id: '1636409150407'
+  alias: Dobbelklapp på stua spiller super mario
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: sensor.stue_multisensor_antall_lyder
+    to: '2'
+  condition:
+  - condition: template
+    value_template: '{{ as_timestamp(now()) - as_timestamp(states.automation.dobbelklapp_pa_stua_spiller_super_mario.attributes.last_triggered)
+      | int > 45 }}'
+  action:
+  - service: esphome.stue_multisensor_play_rtttl
+    data:
+      song_str: mario:d=4,o=5,b=100:16e6,16e6,32p,8e6,16c6,8e6,8g6,8p,8g,8p,8c6,16p,8g,16p,8e,16p,8a,8b,16a#,8a,16g.,16e6,16g6,8a6,16f6,8g6,8e6,16c6,16d6,8b,16p,8c6,16p,8g,16p,8e,16p,8a,8b,16a#,8a,16g.,16e6,16g6,8a6,16f6,8g6,8e6,16c6,16d6,8b,8p,16g6,16f#6,16f6,16d#6,16p,16e6,16p,16g#,16a,16c6,16p,16a,16c6,16d6,8p,16g6,16f#6,16f6,16d#6,16p,16e6,16p,16c7,16p,16c7,16c7,p,16g6,16f#6,16f6,16d#6,16p,16e6,16p,16g#,16a,16c6,16p,16a,16c6,16d6,8p,16d#6,8p,16d6,8p,16c6
+  mode: single
+- id: '1636665761003'
+  alias: Posten - splitte oppdaterte leveringsdager
+  description: ''
+  trigger:
+  - platform: template
+    value_template: '{{ (as_timestamp(now()) - as_timestamp(states.sensor.postendeliverydays.last_changed))
+      < 60 }}'
+  - platform: homeassistant
+    event: start
+  condition:
+  - condition: template
+    value_template: '{{ as_timestamp(now()) - as_timestamp(states.automation.posten_splitte_oppdaterte_leveringsdager.attributes.last_triggered)
+      | int > 60 }}'
+  action:
+  - service: python_script.posten_leveringsdager
+  mode: single
+- id: '1636818681189'
+  alias: Kaja taklys disko
+  description: ''
+  trigger:
+  - platform: device
+    domain: mqtt
+    device_id: c5bc1f14ab5dccb26c4a15689db583f4
+    type: action
+    subtype: on_hold
+    discovery_id: 0x0017880109a4e5f9 action_on_hold
+  condition: []
+  action:
+  - service: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.disko_kaja
+  - repeat:
+      until:
+      - condition: state
+        entity_id: input_boolean.disko_kaja
+        state: 'off'
+      sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.taklys_pa_kaja_sitt_rom
+        data:
+          rgb_color:
+          - '{{ (range(0, 255)|random) }}'
+          - '{{ (range(0, 255)|random) }}'
+          - '{{ (range(0, 255)|random) }}'
+          brightness: '{{ (range(150, 255)|random) }}'
+          transition: 0.3
+      - delay:
+          hours: 0
+          minutes: 0
+          milliseconds: '{{ (range(300, 800)|random) }}'
+  mode: single
+- id: '1636818684291'
+  alias: Kaja taklys disko
+  description: ''
+  trigger:
+  - platform: device
+    domain: mqtt
+    device_id: c5bc1f14ab5dccb26c4a15689db583f4
+    type: action
+    subtype: on_hold
+    discovery_id: 0x0017880109a4e5f9 action_on_hold
+  condition: []
+  action:
+  - service: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.disko_kaja
+  - repeat:
+      until:
+      - condition: state
+        entity_id: input_boolean.disko_kaja
+        state: 'off'
+      sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.taklys_pa_kaja_sitt_rom
+        data:
+          rgb_color:
+          - '{{ (range(0, 255)|random) }}'
+          - '{{ (range(0, 255)|random) }}'
+          - '{{ (range(0, 255)|random) }}'
+          brightness: '{{ (range(150, 255)|random) }}'
+          transition: 0.3
+      - delay:
+          hours: 0
+          minutes: 0
+          milliseconds: '{{ (range(300, 800)|random) }}'
+  mode: single
+- id: '1636875803318'
+  alias: Purge MariaDB
+  description: ''
+  trigger:
+  - platform: time
+    at: 09:00
+  action:
+  - service: recorder.purge_entities
+    data:
+      domains:
+      - media_player
+      - uptime
+      - time_date
+      - worldclock
+      - light
+      - camera
+      - climate
+      - weather
+      - sun
+      - switch
+      entity_globs:
+      - sensor.date*
+      - sensor.time*
+      - sensor.uptime*
+      - binary_sensor.bbsb*
+      - sensor.epson_xp_540*
+      - sensor.home_server_snap_canonical*
+      - sensor.remiks*
+      - sensor.*battery_level
+      - binary_sensor.*battery_low
+      - binary_sensor.*battery_level
+      - binary_sensor.*_replace_battery_now
+      - sensor.*battery
+      - sensor.*battery_health
+      - sensor.*battery_state
+      - sensor.*current
+      - sensor.*speed
+      - sensor.current*
+      - sensor.*fps
+      - sensor.*thread
+      - sensor.*sleeping
+      - sensor.*power
+  - service: recorder.purge
+    data:
+      keep_days: 7
+      repack: true
+  mode: single
+- id: '1639991671560'
+  alias: Timer slår på blomsterlys
+  description: ''
+  trigger:
+  - platform: time
+    at: input_datetime.blomsterlys_start
+  condition:
+  - condition: state
+    entity_id: input_boolean.timer_for_blomsterlys
+    state: 'on'
+  action:
+  - type: turn_on
+    device_id: 299c37019f4a7cf47043fe6f679c971f
+    entity_id: switch.blomsterlys
+    domain: switch
+  mode: single
+- id: '1639991690634'
+  alias: Timer slår av blomsterlys
+  description: ''
+  trigger:
+  - platform: time
+    at: input_datetime.blomsterlys_stopp
+  condition:
+  - condition: state
+    entity_id: input_boolean.timer_for_blomsterlys
+    state: 'on'
+  action:
+  - type: turn_off
+    device_id: 299c37019f4a7cf47043fe6f679c971f
+    entity_id: switch.blomsterlys
+    domain: switch
+  mode: single
+- id: '1639991885013'
+  alias: Blomsterlys - tidsendring fører til lys på
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: input_datetime.blomsterlys_start
+  - platform: state
+    entity_id: input_datetime.blomsterlys_stopp
+  condition:
+  - condition: time
+    after: input_datetime.blomsterlys_start
+    before: input_datetime.blomsterlys_stopp
+  - condition: state
+    entity_id: input_boolean.timer_for_blomsterlys
+    state: 'on'
+  action:
+  - type: turn_on
+    device_id: 299c37019f4a7cf47043fe6f679c971f
+    entity_id: switch.blomsterlys
+    domain: switch
+  mode: single
+- id: '1639991918183'
+  alias: Blomsterlys - tidsendring fører til lys av
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: input_datetime.blomsterlys_start
+  - platform: state
+    entity_id: input_datetime.blomsterlys_stopp
+  condition:
+  - condition: time
+    after: input_datetime.blomsterlys_stopp
+    before: input_datetime.blomsterlys_start
+  - condition: state
+    entity_id: input_boolean.timer_for_blomsterlys
+    state: 'on'
+  action:
+  - type: turn_off
+    device_id: 299c37019f4a7cf47043fe6f679c971f
+    entity_id: switch.blomsterlys
+    domain: switch
+  mode: single
+- id: '1641625791850'
+  alias: Slå av manuelle lys på ManCave
+  description: ''
+  trigger:
+  - platform: time
+    at: 02:00
+  condition:
+  - condition: state
+    entity_id: input_boolean.manuelle_lys_mannehula
+    state: 'on'
+  action:
+  - service: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.manuelle_lys_mannehula
+  - service: light.turn_off
+    target:
+      entity_id: light.lys_mancave_kontor
+  - service: light.turn_off
+    target:
+      entity_id: light.lys_mancave_trening
+  - service: light.turn_off
+    target:
+      entity_id: light.taklys_mancave
+  mode: single
+- id: '1643666968788'
+  alias: Lerret ManCave På
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: input_boolean.lerret_mancave
+    to: 'on'
+  condition: []
+  action:
+  - service: remote.send_command
+    target:
+      device_id: 3286d0a916f61e2be088211cc60ec718
+    data:
+      device: receiver
+      command: power
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 200
+  - service: remote.send_command
+    target:
+      device_id: 3286d0a916f61e2be088211cc60ec718
+    data:
+      device: projector
+      command: power_on
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 500
+  - service: remote.send_command
+    target:
+      device_id: 3286d0a916f61e2be088211cc60ec718
+    data:
+      device: receiver
+      command: hdmi1
+  mode: single
+- id: '1643667218782'
+  alias: Lerret ManCave Av
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: input_boolean.lerret_mancave
+    to: 'off'
+  condition: []
+  action:
+  - service: remote.send_command
+    target:
+      device_id: 3286d0a916f61e2be088211cc60ec718
+    data:
+      device: receiver
+      command: power
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 200
+  - service: remote.send_command
+    target:
+      device_id: 3286d0a916f61e2be088211cc60ec718
+    data:
+      device: projector
+      command: power_off
+      num_repeats: 2
+      delay_secs: 0.5
+  mode: single
+- id: '1643667773028'
+  alias: Lerret Boolean På
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.stikkontakt_tv_mancave_power
+    above: '0.5'
+  condition: []
+  action:
+  - service: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.lerret_mancave
+  mode: single
+- id: '1643667815667'
+  alias: Lerret Boolean Av
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.stikkontakt_tv_mancave_power
+    below: '0.5'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 2
+  condition: []
+  action:
+  - service: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.lerret_mancave
+  mode: single
+- id: '1643928343082'
+  alias: Kaja - slå ned lyd på nest ved leggetid
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.natta_for_kaja
+    to: 'on'
+  condition: []
+  action:
+  - service: media_player.volume_set
+    data:
+      volume_level: 0.25
+    target:
+      device_id: 7633c9534472685ff1616fc88741c176
+  mode: single
+- id: '1644265199354'
+  alias: Purge MariaDB (Extensive)
+  description: ''
+  trigger:
+  - platform: template
+    value_template: '{{ false }}'
+  condition: []
+  action:
+  - service: recorder.purge_entities
+    data:
+      domains:
+      - media_player
+      - uptime
+      - time_date
+      - worldclock
+      - light
+      - camera
+      - climate
+      - weather
+      - sun
+      - switch
+      entity_globs:
+      - sensor.date*
+      - sensor.time*
+      - sensor.uptime*
+      - binary_sensor.bbsb*
+      - sensor.epson_xp_540*
+      - sensor.home_server_snap_canonical*
+      - sensor.remiks*
+      - sensor.*battery_level
+      - binary_sensor.*battery_low
+      - binary_sensor.*battery_level
+      - binary_sensor.*_replace_battery_now
+      - sensor.*battery
+      - sensor.*battery_health
+      - sensor.*battery_state
+      - sensor.*current
+      - sensor.*speed
+      - sensor.current*
+      - sensor.*fps
+      - sensor.*thread
+      - sensor.*sleeping
+      - sensor.lydniva*
+      - sensor.*lydniva
+      - sensor.*power
+  - service: recorder.purge
+    data:
+      keep_days: 7
+      repack: true
+  mode: single
+- id: '1648920450240'
+  alias: Mobilvarsel til Remi ved alarm
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: alert.lyd_hos_kaja_natt
+    to: 'on'
+  - platform: state
+    entity_id: alert.lyd_hos_sunniva_natt
+    to: 'on'
+  condition: []
+  action:
+  - service: notify.mobile_app_mobilremi
+    data:
+      message: TTS
+      title: Alarm {{ trigger.to_state.attributes.friendly_name }}
+      data:
+        channel: alarm_stream_max
+  mode: single
+- id: '1651181931917'
+  alias: Aktiver bursdagsvarsel
+  description: ''
+  trigger:
+  - platform: event
+    event_type: birthday
+  condition: []
+  action:
+  - service: input_boolean.turn_on
+    data: {}
+    target:
+      entity_id: input_boolean.noen_har_bursdag
+  mode: single
+- id: '1651324894965'
+  alias: Varsle når ytterdør åpnes
+  description: ''
+  trigger:
+  - type: opened
+    platform: device
+    device_id: a4159ff59bce90609e885ed0a3895a57
+    entity_id: binary_sensor.hovedinngangsdor_access_control_window_door_is_open
+    domain: binary_sensor
+  condition: []
+  action:
+  - service: esphome.stue_multisensor_play_rtttl
+    continue_on_error: true
+    data:
+      song_str: Open:d=10,o=8,b=180:c,e
+  - service: esphome.mancave_multisensor_play_rtttl
+    continue_on_error: true
+    data:
+      song_str: Open:d=10,o=8,b=180:c,e
+  mode: queued
+  max: 2
+- id: '1651325007698'
+  alias: Varsle når ytterdør lukkes
+  description: ''
+  trigger:
+  - type: not_opened
+    platform: device
+    device_id: a4159ff59bce90609e885ed0a3895a57
+    entity_id: binary_sensor.hovedinngangsdor_access_control_window_door_is_open
+    domain: binary_sensor
+  condition: []
+  action:
+  - service: esphome.stue_multisensor_play_rtttl
+    continue_on_error: true
+    data:
+      song_str: Open:d=10,o=8,b=180:e,c
+  - service: esphome.mancave_multisensor_play_rtttl
+    continue_on_error: true
+    data:
+      song_str: Open:d=10,o=8,b=180:e,c
+  mode: queued
+  max: 2
+- id: '1651582686699'
+  alias: Varsle inne og vis CCTV ved bevegelse ute
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.important_motion_on_camera
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: input_boolean.varsle_inne_viktig_bevegelse_kamera
+    state: 'on'
+  - condition: template
+    value_template: "{{\n (as_timestamp(now()) - as_timestamp(states.binary_sensor.hovedinngangsdor_access_control_window_door_is_open.last_changed))
+      > 4*60 \n and\n (as_timestamp(now()) - as_timestamp(states.binary_sensor.verandador_access_control_window_door_is_open.last_changed))
+      > 2*60\n and\n (as_timestamp(now()) - as_timestamp(states.switch.garasjeport_hoyre.last_changed))
+      > 4*60\n and\n (as_timestamp(now()) - as_timestamp(states.switch.venstre_garasjeport.last_changed))
+      > 4*60 \n and \n is_state('binary_sensor.hovedinngangsdor_access_control_window_door_is_open',
+      'off')\n and\n is_state('binary_sensor.verandador_access_control_window_door_is_open',
+      'off')\n}}"
+  action:
+  - service: script.popup_cctv
+    continue_on_error: true
+    data:
+      deviceID:
+      - LenovoTabletOppe
+  - service: script.popup_cctv
+    continue_on_error: true
+    data:
+      deviceID:
+      - SamsungTablet
+  - service: esphome.stue_multisensor_play_rtttl
+    continue_on_error: true
+    data:
+      song_str: starwars:d=4,o=5,b=180:8f,8f,8f,2a#.
+  - service: esphome.mancave_multisensor_play_rtttl
+    continue_on_error: true
+    data:
+      song_str: starwars:d=4,o=5,b=180:8f,8f,8f,2a#.
+  mode: single
+- id: '1651680900685'
+  alias: Skjul CCTV etter ingen bevegelse
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.important_motion_on_camera
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+  condition: []
+  action:
+  - service: browser_mod.close_popup
+    data: {}
+  mode: single
+- id: '1651761610459'
+  alias: Kattedo benyttes
+  description: ''
+  trigger:
+  - type: motion
+    platform: device
+    device_id: 0c84c081c58d0d3f09e9690ba4d7249e
+    entity_id: binary_sensor.bevegelse_kattedo_home_security_motion_detection
+    domain: binary_sensor
+  condition: []
+  action:
+  - service: counter.increment
+    data: {}
+    target:
+      entity_id: counter.kattedo_antall_ganger_brukt
+  - service: esphome.stue_multisensor_play_rtttl
+    continue_on_error: true
+    data:
+      song_str: MissionImp:d=16,o=6,b=95:32d,32d#,32d,32d#,32d,32d#,32d,32d#,32d,32d,32d#,32e,32f,32f#,32g,g,8p,g,8p,a#,p,c7,p
+  - service: esphome.mancave_multisensor_play_rtttl
+    continue_on_error: true
+    data:
+      song_str: MissionImp:d=16,o=6,b=95:32d,32d#,32d,32d#,32d,32d#,32d,32d#,32d,32d,32d#,32e,32f,32f#,32g,g,8p,g,8p,a#,p,c7,p
+  mode: single
+- id: '1651764153315'
+  alias: Varsle når verandadør lukkes
+  description: ''
+  trigger:
+  - type: not_opened
+    platform: device
+    device_id: 3a60ae095200c4cac39db01bd71c4c85
+    entity_id: binary_sensor.verandador_access_control_window_door_is_open
+    domain: binary_sensor
+  condition: []
+  action:
+  - service: esphome.stue_multisensor_play_rtttl
+    continue_on_error: true
+    data:
+      song_str: Open:d=10,o=8,b=180:g,e,c
+  - service: esphome.mancave_multisensor_play_rtttl
+    continue_on_error: true
+    data:
+      song_str: Open:d=10,o=8,b=180:g,e,c
+  mode: queued
+  max: 2
+- id: '1651777193537'
+  alias: Aktiver varsling av bevegelse på CCTV hver natt
+  description: ''
+  trigger:
+  - platform: time
+    at: 02:00:00
+  condition: []
+  action:
+  - service: input_boolean.turn_on
+    data: {}
+    target:
+      entity_id: input_boolean.varsle_inne_viktig_bevegelse_kamera
+  mode: single
+- id: '1653034295890'
+  alias: Oppdatere sensor.fra_remi_til_hjem
+  description: ''
+  trigger:
+  - platform: time_pattern
+    minutes: '10'
+  condition: []
+  action:
+  - service: homeassistant.update_entity
+    data: {}
+    target:
+      entity_id: sensor.fra_remi_til_hjem
+  mode: single
+- id: '1654525704677'
+  alias: Test slack
+  description: ''
+  trigger:
+  - type: opened
+    platform: device
+    device_id: 97f90121cf44aed604753bcbf248eef6
+    entity_id: binary_sensor.dorsensor_mancave_door_window
+    domain: binary_sensor
+  condition: []
+  action:
+  - service: notify.slack
+    continue_on_error: true
+    data:
+      title: Døra på mannehula åpnet
+      target: '#smarthus-debug'
+      message: Debug melding
+  - service: notify.slack
+    continue_on_error: true
+    data:
+      title: Døra på mannehula åpnet
+      message: Ikke debug melding
+  mode: single
+- id: '1655155576961'
+  alias: Unavailable entity detection & notification
+  description: ''
+  use_blueprint:
+    path: gmlupatelli/unavailable_entities_notification.yaml
+    input:
+      time: '23:00:00'
+      actions:
+      - service: notify.mobile_app_mobilremi
+        data:
+          message: Unavailable entities follow... {{entities}}
+      exclude:
+        entity_id:
+        - media_player.browser_mod_30f62bbe_3aeb0ff1
+        - light.browser_mod_30f62bbe_3aeb0ff1
+        - sensor.browser_mod_30f62bbe_3aeb0ff1
+        - number.taklys_mancave_effect_speed
+        - media_player.lerret
+        - abd73
+        - media_player.browser_mod_abd730be_7db185b4
+        - light.browser_mod_abd730be_7db185b4
+        - sensor.browser_mod_abd730be_7db185b4
+        - media_player.shield
+        - media_player.tv_i_stuen
+        - media_player.browser_mod_f68d91d5_ff60303e
+        - light.browser_mod_f68d91d5_ff60303e
+        - sensor.browser_mod_f68d91d5_ff60303e
+- id: '1655329611663'
+  alias: Strømstans på spa-bad
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.spa_bad_power
+    below: '5'
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+      milliseconds: 0
+  condition:
+  - condition: state
+    entity_id: input_boolean.varsle_stromstans_pa_spa_bad
+    state: 'on'
+  action:
+  - service: input_boolean.turn_on
+    data: {}
+    target:
+      entity_id: input_boolean.stromstans_pa_spa_bad
+  - repeat:
+      while:
+      - condition: state
+        entity_id: input_boolean.stromstans_pa_spa_bad
+        state: 'on'
+      - condition: state
+        entity_id: input_boolean.varsle_stromstans_pa_spa_bad
+        state: 'on'
+      sequence:
+      - service: script.announcement_google_hoyttalere_daytimeonly
+        data:
+          entity_id: media_player.nest_audio_mannehula,media_player.nest_audio_hovedsoverom,media_player.nest_audio_stue
+          volume: 0.5
+          message: Strømstans på spa-bad
+          message_length: 5
+      - delay:
+          hours: 0
+          minutes: 15
+          seconds: 0
+          milliseconds: 0
+  mode: single
+- id: '1655330089647'
+  alias: Spa-bad har strøm
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.spa_bad_power
+    above: '5'
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+      milliseconds: 0
+  condition:
+  - condition: state
+    entity_id: automation.stromstans_pa_spa_bad
+    state: 'on'
+  action:
+  - service: input_boolean.turn_off
+    data: {}
+    target:
+      entity_id: input_boolean.stromstans_pa_spa_bad
+  mode: single
+- id: '1656583900012'
+  alias: 3D-printer er ferdig
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.octoprint_printing
+    from: 'on'
+    to: 'off'
+  condition:
+  - condition: state
+    entity_id: input_boolean.varsle_at_3d_printer_er_ferdig
+    state: 'on'
+  - condition: numeric_state
+    entity_id: sensor.octoprint_job_percentage
+    above: '99.99'
+  action:
+  - service: input_boolean.turn_on
+    data: {}
+    target:
+      entity_id: input_boolean.3d_printer_er_ferdig
+  - repeat:
+      while:
+      - condition: state
+        entity_id: input_boolean.3d_printer_er_ferdig
+        state: 'on'
+      - condition: state
+        entity_id: input_boolean.varsle_at_3d_printer_er_ferdig
+        state: 'on'
+      sequence:
+      - service: script.announcement_google_hoyttalere_daytimeonly
+        data:
+          entity_id: media_player.nest_audio_mannehula,media_player.nest_audio_hovedsoverom,media_player.nest_audio_stue
+          volume: 0.5
+          message: 3D-printer er ferdig
+          message_length: 5
+      - delay:
+          hours: 0
+          minutes: 15
+          seconds: 0
+          milliseconds: 0
+  mode: single
+- id: '1656700522226'
+  alias: Innerbod ManCave - Slå på lys ved bevegelse
+  description: ''
+  trigger:
+  - type: motion
+    platform: device
+    device_id: 9c09d921dab911e0250e59b62c664c9a
+    entity_id: binary_sensor.bevegelse_mancave_innerbod_occupancy
+    domain: binary_sensor
+  condition:
+  - condition: state
+    entity_id: light.taklys_mancave_innerbod
+    state: 'off'
+  action:
+  - service: light.turn_on
+    data:
+      transition: 2
+      brightness_pct: 50
+    target:
+      entity_id: light.taklys_mancave_innerbod
+  mode: single
+- id: '1656700584117'
+  alias: Innerbod ManCave - Slå av lys ved mangel på bevegelse
+  description: ''
+  trigger:
+  - type: no_motion
+    platform: device
+    device_id: 9c09d921dab911e0250e59b62c664c9a
+    entity_id: binary_sensor.bevegelse_mancave_innerbod_occupancy
+    domain: binary_sensor
+    for:
+      hours: 0
+      minutes: 2
+      seconds: 0
+  condition: []
+  action:
+  - type: turn_off
+    device_id: b603d4d4efaa805b4ec15ac82c369610
+    entity_id: light.taklys_mancave_innerbod
+    domain: light
+  mode: single
+- id: '1656708966332'
+  alias: Bod nede - Slå på lys ved bevegelse
+  description: ''
+  trigger:
+  - type: motion
+    platform: device
+    device_id: 3b84f8b4be3e93e94b4a6877076a9c85
+    entity_id: binary_sensor.bevegelse_bod_nede_home_security_motion_detection
+    domain: binary_sensor
+  condition:
+  - condition: state
+    entity_id: light.taklys_bod_nede
+    state: 'off'
+  - type: is_illuminance
+    condition: device
+    device_id: 181e4e23ce4064fd3a3ad0790683ac01
+    entity_id: sensor.temperatursensor_hovedinngang_illuminance
+    domain: sensor
+    below: 800
+  action:
+  - service: light.turn_on
+    data:
+      transition: 2
+      brightness_pct: 50
+    target:
+      entity_id: light.taklys_bod_nede
+  mode: single
+- id: '1656709028326'
+  alias: Bod nede - Slå av lys ved mangel på bevegelse
+  description: ''
+  trigger:
+  - type: no_motion
+    platform: device
+    device_id: 3b84f8b4be3e93e94b4a6877076a9c85
+    entity_id: binary_sensor.bevegelse_bod_nede_home_security_motion_detection
+    domain: binary_sensor
+    for:
+      hours: 0
+      minutes: 2
+      seconds: 0
+  condition: []
+  action:
+  - type: turn_off
+    device_id: e560d2732af0cb96266c0f4fea95ba79
+    entity_id: light.taklys_bod_nede
+    domain: light
+  mode: single
+- id: '1656709874404'
+  alias: Gang nede trapp - Slå på lys ved bevegelse
+  description: ''
+  trigger:
+  - type: motion
+    platform: device
+    device_id: da7dab060a4447f6d432fbc988c2fe1e
+    entity_id: binary_sensor.bevegelse_gang_nede_home_security_motion_detection
+    domain: binary_sensor
+  - type: motion
+    platform: device
+    device_id: 664210908e611579acab91eee8b64e29
+    entity_id: binary_sensor.bevegelse_innerst_i_gang_nede_occupancy
+    domain: binary_sensor
+  - type: opened
+    platform: device
+    device_id: a4159ff59bce90609e885ed0a3895a57
+    entity_id: binary_sensor.hovedinngangsdor_access_control_window_door_is_open
+    domain: binary_sensor
+  condition:
+  - condition: state
+    entity_id: light.taklys_gang_nede_trapp
+    state: 'off'
+  - type: is_illuminance
+    condition: device
+    device_id: 181e4e23ce4064fd3a3ad0790683ac01
+    entity_id: sensor.temperatursensor_hovedinngang_illuminance
+    domain: sensor
+    below: 1000
+  action:
+  - service: light.turn_on
+    data:
+      brightness_pct: 5
+    target:
+      entity_id: light.taklys_gang_nede_trapp
+  mode: single
+- id: '1656710085510'
+  alias: Gang nede trapp - Slå av lys ved mangel på bevegelse
+  description: ''
+  trigger:
+  - type: no_motion
+    platform: device
+    device_id: da7dab060a4447f6d432fbc988c2fe1e
+    entity_id: binary_sensor.bevegelse_gang_nede_home_security_motion_detection
+    domain: binary_sensor
+    for:
+      hours: 0
+      minutes: 2
+      seconds: 0
+  - type: no_motion
+    platform: device
+    device_id: 664210908e611579acab91eee8b64e29
+    entity_id: binary_sensor.bevegelse_innerst_i_gang_nede_occupancy
+    domain: binary_sensor
+    for:
+      hours: 0
+      minutes: 2
+      seconds: 0
+  condition:
+  - type: is_no_motion
+    condition: device
+    device_id: da7dab060a4447f6d432fbc988c2fe1e
+    entity_id: binary_sensor.bevegelse_gang_nede_home_security_motion_detection
+    domain: binary_sensor
+  - type: is_no_motion
+    condition: device
+    device_id: 664210908e611579acab91eee8b64e29
+    entity_id: binary_sensor.bevegelse_innerst_i_gang_nede_occupancy
+    domain: binary_sensor
+  action:
+  - type: turn_off
+    device_id: 66702228d45dfd736e76582ab39ca126
+    entity_id: light.taklys_gang_nede_trapp
+    domain: light
+  mode: single
+- id: '1656710575398'
+  alias: 'Gang nede innerst- Slå av lys ved mangel på bevegelse '
+  description: ''
+  trigger:
+  - type: no_motion
+    platform: device
+    device_id: 664210908e611579acab91eee8b64e29
+    entity_id: binary_sensor.bevegelse_innerst_i_gang_nede_occupancy
+    domain: binary_sensor
+    for:
+      hours: 0
+      minutes: 2
+      seconds: 0
+  condition: []
+  action:
+  - type: turn_off
+    device_id: aecca56df2465c6baed30545fb0f4b9a
+    entity_id: light.taklys_gang_nede_innerst
+    domain: light
+  mode: single
+- id: '1656710653662'
+  alias: Gang nede innerst - Slå på lys ved bevegelse (dagtid)
+  description: ''
+  trigger:
+  - type: motion
+    platform: device
+    device_id: 664210908e611579acab91eee8b64e29
+    entity_id: binary_sensor.bevegelse_innerst_i_gang_nede_occupancy
+    domain: binary_sensor
+  condition:
+  - condition: state
+    entity_id: light.taklys_gang_nede_innerst
+    state: 'off'
+  - type: is_illuminance
+    condition: device
+    device_id: 181e4e23ce4064fd3a3ad0790683ac01
+    entity_id: sensor.temperatursensor_hovedinngang_illuminance
+    domain: sensor
+    below: 1500
+  - condition: state
+    entity_id: binary_sensor.natta_for_kaja
+    state: 'off'
+  action:
+  - service: light.turn_on
+    data:
+      brightness_pct: 5
+    target:
+      entity_id: light.taklys_gang_nede_innerst
+  mode: single
+- id: '1656711192593'
+  alias: Gang nede garderobe - Slå av lys ved mangel på bevegelse
+  description: ''
+  trigger:
+  - type: no_motion
+    platform: device
+    device_id: da7dab060a4447f6d432fbc988c2fe1e
+    entity_id: binary_sensor.bevegelse_gang_nede_home_security_motion_detection
+    domain: binary_sensor
+    for:
+      hours: 0
+      minutes: 2
+      seconds: 0
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 8d25eb7aed4e643aeee5f464f0b29ae4
+    entity_id: light.taklys_gang_nede_garderobe
+    domain: light
+  mode: single
+- id: '1656711280301'
+  alias: Gang nede garderobe - Slå på lys ved bevegelse
+  description: ''
+  trigger:
+  - type: motion
+    platform: device
+    device_id: da7dab060a4447f6d432fbc988c2fe1e
+    entity_id: binary_sensor.bevegelse_gang_nede_home_security_motion_detection
+    domain: binary_sensor
+  - type: opened
+    platform: device
+    device_id: a4159ff59bce90609e885ed0a3895a57
+    entity_id: binary_sensor.hovedinngangsdor_access_control_window_door_is_open
+    domain: binary_sensor
+  condition:
+  - condition: state
+    entity_id: light.taklys_gang_nede_garderobe
+    state: 'off'
+  - type: is_illuminance
+    condition: device
+    device_id: 181e4e23ce4064fd3a3ad0790683ac01
+    entity_id: sensor.temperatursensor_hovedinngang_illuminance
+    domain: sensor
+    below: 500
+  action:
+  - service: light.turn_on
+    data:
+      brightness_pct: 5
+    target:
+      entity_id: light.taklys_gang_nede_garderobe
+  mode: single
+- id: '1658950930060'
+  alias: Trigge utesirene ved bevegelse i hagen
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.plen_person_motion
+    - binary_sensor.hage_person_motion
+    to: 'on'
+    from: 'off'
+  condition:
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: alarm_control_panel.innbruddsalarm
+      state: armed_home
+    - condition: state
+      entity_id: alarm_control_panel.innbruddsalarm
+      state: armed_away
+  - condition: state
+    entity_id: input_boolean.aktiv_utesirene_ved_bevegelse_ute
+    state: 'on'
+  action:
+  - service: siren.turn_on
+    data:
+      tone: '4'
+      volume_level: 1
+    target:
+      entity_id: siren.sirene_ute_forside
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 2
+      milliseconds: 0
+  - service: siren.turn_off
+    data: {}
+    target:
+      entity_id: siren.sirene_ute_forside
+  - service: notify.mobile_app_mobilremi
+    continue_on_error: true
+    data:
+      message: Bevegelse på plen eller hage
+      title: Utealarm utløst i 2 sekunder
+      data:
+        ttl: 0
+        priority: high
+  - service: notify.slack
+    continue_on_error: true
+    data:
+      target: '#smarthus-debug'
+      message: Bevegelse på plen eller hage
+      title: Utealarm utløst i 2 sekunder
+  - delay:
+      hours: 0
+      minutes: 2
+      seconds: 0
+      milliseconds: 0
+  mode: single
+- id: '1658952775255'
+  alias: Utesirenen er trigget
+  description: ''
+  trigger:
+  - type: sound
+    platform: device
+    device_id: e1d5e31c056eed5b62ffbe499f7934af
+    entity_id: binary_sensor.sirene_ute_forside_siren_siren_active
+    domain: binary_sensor
+  condition:
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: alarm_control_panel.innbruddsalarm
+      state: triggered
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: alert.brannalarm
+      state: 'on'
+  action:
+  - repeat:
+      while:
+      - type: is_sound
+        condition: device
+        device_id: e1d5e31c056eed5b62ffbe499f7934af
+        entity_id: binary_sensor.sirene_ute_forside_siren_siren_active
+        domain: binary_sensor
+      sequence:
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 5
+          milliseconds: 0
+      - service: notify.mobile_app_mobilremi
+        continue_on_error: true
+        data:
+          message: Utesirenen uler
+          title: Utesirenen uler
+          data:
+            ttl: 0
+            priority: high
+  mode: single
+- id: '1658952916981'
+  alias: Utesirenen er sabotert
+  description: ''
+  trigger:
+  - type: tampered
+    platform: device
+    device_id: e1d5e31c056eed5b62ffbe499f7934af
+    entity_id: binary_sensor.sirene_ute_forside_home_security_tampering_product_cover_removed
+    domain: binary_sensor
+  condition: []
+  action:
+  - service: notify.mobile_app_mobilremi
+    data:
+      message: Deksel fjernet på utesirenen
+      title: Deksel fjernet på utesirenen
+      data:
+        ttl: 0
+        priority: high
+  mode: single
+- id: '1659040008514'
+  alias: Gang nede innerst - Slå på lys ved bevegelse (Natta for Kaja)
+  description: ''
+  trigger:
+  - type: motion
+    platform: device
+    device_id: 664210908e611579acab91eee8b64e29
+    entity_id: binary_sensor.bevegelse_innerst_i_gang_nede_occupancy
+    domain: binary_sensor
+  condition:
+  - condition: state
+    entity_id: light.taklys_gang_nede_innerst
+    state: 'off'
+  - type: is_illuminance
+    condition: device
+    device_id: 181e4e23ce4064fd3a3ad0790683ac01
+    entity_id: sensor.temperatursensor_hovedinngang_illuminance
+    domain: sensor
+    below: 1500
+  - condition: state
+    entity_id: binary_sensor.natta_for_kaja
+    state: 'on'
+  action:
+  - service: light.turn_on
+    data:
+      brightness: 2
+    target:
+      entity_id: light.taklys_gang_nede_innerst
+  mode: single
