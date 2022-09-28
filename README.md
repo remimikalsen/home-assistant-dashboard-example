@@ -1,9 +1,9 @@
 # A Home Assistant dashboard for mobile, tablet and desktop
 This repository contains code examples to support articles written on my blog [TheAwesomeGarage.com](https://theawesomegarage.com).
 
-NOTE! You need to modify this code to work with browser-mod 2.0. The good news: it's pretty easy! You mostly only have to change the popups.
+NOTE! You need to modify this code to work with browser-mod 2. The good news: it's pretty easy! You mostly only have to change the popups.
 
-This is an example of how a popup could look like with browser-mod 2.0:
+This is an example of how a popup could look like with browser-mod 2:
 
 ```
 action: fire-dom-event
